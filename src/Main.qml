@@ -29,7 +29,7 @@ ApplicationWindow {
                 // Suchfeld für Nachrichtentext
                 TextField {
                     id: messageSearch
-                    placeholderText: "Nachricht..."
+                    placeholderText: qsTr("Message...")
                     Layout.fillWidth: true
                     onTextChanged: msgTimer.restart()
                     Timer { id: msgTimer; interval: 500; onTriggered: chatModel.filterMessage = messageSearch.text }
@@ -38,7 +38,7 @@ ApplicationWindow {
                 // Suchfeld für Nickname
                 TextField {
                     id: nickSearch
-                    placeholderText: "Absender..."
+                    placeholderText: qsTr("Sender...")
                     Layout.preferredWidth: 150
                     onTextChanged: nickTimer.restart()
                     Timer { id: nickTimer; interval: 500; onTriggered: chatModel.filterNick = nickSearch.text }
@@ -217,7 +217,7 @@ ApplicationWindow {
                                     width: parent.width
                                     wrapMode: Text.WordWrap
                                     font.pointSize: 10
-                                    textFormat: Text.StyledText
+                                    textFormat: Text.RichText
                                     readOnly: true
                                     selectByMouse: true
                                     selectionColor: "#3498db"

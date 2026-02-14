@@ -128,7 +128,9 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
             
             message.setDestinationNick(participantNicknames.value(message.destination()));
             message.setTimestamp(getTimestamp(year, month, msgElem.attribute("time")));
-            message.setContent(decodeMessage(msgElem.text()));
+            QString content = decodeMessage(msgElem.text());
+            message.setContent(content);
+            message.setContent(content);
             messages.push_back(message);
         }
     }

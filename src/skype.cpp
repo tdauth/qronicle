@@ -20,6 +20,40 @@ QByteArray loadAvatarFromDb(int contactId) {
     }
     return QByteArray(); // Rückgabe eines leeren Bildes bei Fehler
 }
+
+QString replaceSmileys(const QString &text) {
+    QString result = text;
+    // Skype smileys:
+    static QRegularExpression smileyRegex("<ss type=\"([^\"]+)\">(.*?)</ss>");
+    // 1. Alle Matches sammeln
+    auto i = smileyRegex.globalMatch(result);
+    QList<QRegularExpressionMatch> matches;
+    
+    while (i.hasNext()) {
+        matches.append(i.next());
+    }
+
+    // 2. Rückwärts abarbeiten, um Positionsfehler zu vermeiden
+    for (int j = matches.count() - 1; j >= 0; --j) {
+        QRegularExpressionMatch match = matches.at(j);
+        QString type = match.captured(1);
+        QString originalText = match.captured(2);
+    
+        QString checkPath = QString(":/icons/smileys/skype/%1").arg(type);
+
+        if (QFile::exists(checkPath)) {
+            QString imgTag = QString("<img src=\"qrc:/icons/smileys/skype/%1\" width=\"20\" height=\"20\" align=\"middle\">")
+                            .arg(type);
+            
+            result.replace(match.capturedStart(0), match.capturedLength(0), imgTag);
+        } else {
+            // Fallback auf Text
+            result.replace(match.capturedStart(0), match.capturedLength(0), originalText);
+        }
+    }
+    
+    return result;
+}
     
 QString Skype::id() const {
     return "skype";
@@ -74,18 +108,18 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
                 QString receiver_display_name = query.value("receiver_display_name").toString();
                 
                 if (!m_avatars.contains(sender_id)) {
-                    qDebug() << "Avatar for" << sender_id;
+                    //qDebug() << "Avatar for" << sender_id;
                     QByteArray senderAvatar = query.value("sender_avatar").toByteArray();
                     QImage img;
                     
                     if (!senderAvatar.isEmpty()) {
                         if (!img.loadFromData(senderAvatar)) {
-                            qDebug() << "Avatar image could not be loaded for:" << sender_id;
+                            //qDebug() << "Avatar image could not be loaded for:" << sender_id;
                         } else {
-                            qDebug() << "Avatar image works for:" << sender_id;
+                            //qDebug() << "Avatar image works for:" << sender_id;
                         }
                     } else {
-                        qDebug() << "Avatar image is empty for:" << sender_id;
+                        //qDebug() << "Avatar image is empty for:" << sender_id;
                     }
                     
                     m_avatars.insert(sender_id, img);
@@ -97,12 +131,12 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
                     
                     if (!receiverAvatar.isEmpty()) {
                         if (!img.loadFromData(receiverAvatar)) {
-                            qDebug() << "Avatar image could not be loaded for:" << receiver_id;
+                            //qDebug() << "Avatar image could not be loaded for:" << receiver_id;
                         } else {
-                            qDebug() << "Avatar image works for:" << receiver_id;
+                            //qDebug() << "Avatar image works for:" << receiver_id;
                         }
                     } else {
-                        qDebug() << "Avatar image is empty for:" << receiver_id;
+                        //qDebug() << "Avatar image is empty for:" << receiver_id;
                     }
                     
                     m_avatars.insert(receiver_id, img);
@@ -117,7 +151,10 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
                 msg.setDestination(receiver_id);
                 msg.setDestinationNick(receiver_display_name);
                 msg.setTimestamp(QDateTime::fromSecsSinceEpoch(query.value("timestamp").toLongLong()));
-                msg.setContent(query.value("body_xml").toString());
+                QString body_xml = query.value("body_xml").toString();
+                msg.setContent(body_xml);
+                QString contentHtml = replaceSmileys(body_xml);
+                msg.setContentHtml(contentHtml);
 
                 messages.append(msg);
             }

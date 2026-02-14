@@ -23,7 +23,7 @@ public:
                 if (size) *size = img.size();
                 return img;
             } else {
-                qWarning() << "Found avatar ID but QImage is NULL:" << id;
+                //qWarning() << "Found avatar ID but QImage is NULL:" << id;
             }
         }
         // 2. Falls nicht gefunden oder Bild leer: Gib das Standard-Bild zurück

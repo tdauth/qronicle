@@ -31,19 +31,18 @@ signals:
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override {
         auto *source = static_cast<HistoryModel*>(sourceModel());
+        bool matches = true;
         
         // Logik: Alle gesetzten Filter müssen gleichzeitig erfüllt sein (AND-Verknüpfung)
-        if (!m_filterMessage.isEmpty()) {
-            if (!source->data(source->index(source_row, 0), HistoryModel::ContentRole).toString()
-                    .contains(m_filterMessage, Qt::CaseInsensitive)) return false;
+        if (matches && !m_filterMessage.isEmpty()) {
+            matches = source->messages().at(source_row).content().contains(m_filterMessage, Qt::CaseInsensitive);
         }
 
-        if (!m_filterNick.isEmpty()) {
-            if (!source->data(source->index(source_row, 0), HistoryModel::SenderRole).toString()
-                    .contains(m_filterNick, Qt::CaseInsensitive)) return false;
+        if (matches && !m_filterNick.isEmpty()) {
+            matches = source->messages().at(source_row).source().contains(m_filterNick, Qt::CaseInsensitive);
         }
 
-        return true;
+        return matches;
     }
     
 private:

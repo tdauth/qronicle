@@ -90,7 +90,19 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
         }
         
         msg.setTimestamp(QDateTime::fromMSecsSinceEpoch(obj.value("timestamp_ms").toVariant().toLongLong()));
-        msg.setContent(QString::fromUtf8(obj.value("content").toString().toLatin1()));
+        QString content = QString::fromUtf8(obj.value("content").toString().toLatin1());
+        msg.setContent(content);
+        
+        QString contentHtml = content;
+        
+            // URLs into HTML
+        if (contentHtml.contains("http://") || contentHtml.contains("https://")) {
+            static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
+            contentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");
+        }
+        
+        msg.setContentHtml(contentHtml);
+        
         messages.append(msg);
     }
 

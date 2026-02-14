@@ -1,5 +1,3 @@
-#include <QRegularExpression>
-
 #include "message.hpp"
 
 namespace chronicle {
@@ -41,18 +39,14 @@ QString Message::destinationNick() const {
 
 void Message::setContent(const QString &content) {
     m_content = content;
-    m_contentHtml = content.toHtmlEscaped();
-
-    // 1. Nur bearbeiten, wenn überhaupt ein Link-Protokoll vorkommt
-    if (content.contains("http://") || content.contains("https://")) {
-        static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
-
-        m_contentHtml = m_contentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");
-    }
 }
 
 QString Message::content() const {
     return m_content;
+}
+
+void Message::setContentHtml(const QString &contentHtml) {
+    m_contentHtml = contentHtml;
 }
 
 QString Message::contentHtml() const {

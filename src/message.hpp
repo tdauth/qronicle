@@ -22,6 +22,7 @@ class Message {
         QString destinationNick() const;
         void setContent(const QString &content);
         QString content() const;
+        void setContentHtml(const QString &contentHtml);
         QString contentHtml() const;
         void setTimestamp(const QDateTime &timestamp);
         QDateTime timestamp() const;

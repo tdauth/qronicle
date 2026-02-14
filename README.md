@@ -16,6 +16,11 @@ Qt-based GUI program to visualize, import and export history from different mess
 
 See [build.sh](./build.sh).
 
+## Custom Avatars
+
+You can place any number of images into `~/.config/Chronicle/avatars`.
+These will be used as avatars if the file name without extension matches the user ID.
+
 ## Messenger History Formats
 
 ### Kopete
@@ -171,3 +176,7 @@ WhatsApp allows exporting chats which leads to directories with all sent and rec
 19.12.19, 21:27 - Peter: Nächste Woche!
 19.12.19, 21:27 - Peter: ‎STK-20240525-WA0000.webp (Datei angehängt)
 ```
+
+## Credits
+
+- [skype-emoticons](https://github.com/refactorsaurusrex/skype-emoticons)

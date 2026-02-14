@@ -60,6 +60,10 @@ public:
             {ProtocolRole, "protocol"}
         };
     }
+    
+    Messenger::Messages messages() const {
+        return m_messages;
+    }
 
 private:
     Messenger::Messages m_messages;
