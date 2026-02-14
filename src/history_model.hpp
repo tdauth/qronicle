@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_CHAT_MESSAGE_MODEL_HPP
-#define CHRONICLE_CHAT_MESSAGE_MODEL_HPP
+#ifndef CHRONICLE_HISTORY_MODEL_HPP
+#define CHRONICLE_HISTORY_MODEL_HPP
 
 #include <QAbstractListModel>
 
@@ -7,7 +7,7 @@
 
 namespace chronicle {
 
-class ChatMessageModel : public QAbstractListModel {
+class HistoryModel : public QAbstractListModel {
     Q_OBJECT
 public:
     enum Roles {
@@ -15,12 +15,14 @@ public:
         TimestampRole,
         SenderRole,
         SenderNickRole,
+        SenderAvatarRole,
         TargetRole,
         TargetNickRole,
+        TargetAvatarRole,
         ProtocolRole
     };
 
-    explicit ChatMessageModel(Messenger::Messages &&msgs, QObject* parent = nullptr)
+    explicit HistoryModel(Messenger::Messages &&msgs, QObject* parent = nullptr)
         : QAbstractListModel(parent), m_messages(std::move(msgs)) {}
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override {
@@ -35,8 +37,10 @@ public:
             case ContentRole: return msg.contentHtml();
             case SenderRole:    return msg.source();
             case SenderNickRole:    return msg.sourceNick();
+            case SenderAvatarRole: return msg.source();
             case TargetRole:    return msg.destination();
             case TargetNickRole:    return msg.destinationNick();
+            case TargetAvatarRole: return msg.destination();
             case ProtocolRole:  return msg.protocol();
             case TimestampRole: return msg.timestamp();
             default: return {};
@@ -49,8 +53,10 @@ public:
             {TimestampRole, "time"},
             {SenderRole, "sourceId"},
             {SenderNickRole, "sourceNick"},
+            {SenderAvatarRole, "sourceAvatar"},
             {TargetRole, "targetId"},
             {TargetNickRole, "targetNick"},
+            {TargetAvatarRole, "targetAvatar"},
             {ProtocolRole, "protocol"}
         };
     }

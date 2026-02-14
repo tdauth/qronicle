@@ -2,6 +2,7 @@
 #define CHRONICLE_MESSAGE_HPP
 
 #include <QString>
+#include <QByteArray>
 #include <QDateTime>
 
 namespace chronicle {

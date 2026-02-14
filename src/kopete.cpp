@@ -3,7 +3,9 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QDomDocument>
+#include <QString>
 #include <QStringView>
+#include <QUtf8StringView>
 #include <QStandardPaths>
 
 #include "kopete.hpp"
@@ -23,9 +25,19 @@ QDateTime getTimestamp(int year, int month, QString time) {
     
     return QDateTime(date, QTime::fromString(timeStr, "HH:mm:ss"));
 }
+
+QString decodeMessage(const QString &message) {
+    return message.contains(QChar::ReplacementCharacter) 
+                ? QString::fromLatin1(message.toLatin1()) 
+                : message;
+}
+
+QString Kopete::id() const {
+    return "kopete";
+}
     
 Messenger::Messages Kopete::loadFile(const QString &filePath) {
-    Messenger::Messages messages;
+    Messages messages;
     
     // get info from file and dir names
     QFileInfo fileInfo(filePath);
@@ -116,7 +128,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
             
             message.setDestinationNick(participantNicknames.value(message.destination()));
             message.setTimestamp(getTimestamp(year, month, msgElem.attribute("time")));
-            message.setContent(msgElem.text());
+            message.setContent(decodeMessage(msgElem.text()));
             messages.push_back(message);
         }
     }
@@ -125,13 +137,13 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
 }
 
 Messenger::Messages Kopete::loadDirectory(const QString &dir) {
-    Messenger::Messages allMessages;
+    Messages allMessages;
     QDirIterator it(dir, QStringList() << "*.xml", QDir::Files, QDirIterator::Subdirectories);
 
     while (it.hasNext()) {
         QString filePath = it.next();
         qDebug() << "Loading Kopete file" << filePath;
-        Messenger::Messages fileMessages = loadFile(filePath);
+        Messages fileMessages = loadFile(filePath);
         
         if (!fileMessages.empty()) {
             allMessages.reserve(allMessages.size() + fileMessages.size());
@@ -146,10 +158,10 @@ Messenger::Messages Kopete::loadDirectory(const QString &dir) {
 
 QStringList Kopete::defaultDirectories() {
     return {
-        QDir::homePath() + "/.local/share/kopete/logs",
-        QDir::homePath() + "/.kde/share/apps/kopete/logs",
-        QDir::homePath() + "/.kde4/share/apps/kopete/logs",
-        QDir::homePath() + "/.kde3/share/apps/kopete/logs"
+        QDir::homePath() + "/.local/share/kopete",
+        QDir::homePath() + "/.kde/share/apps/kopete",
+        QDir::homePath() + "/.kde4/share/apps/kopete",
+        QDir::homePath() + "/.kde3/share/apps/kopete"
     };
 }
 

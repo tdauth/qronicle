@@ -3,10 +3,10 @@
 #include "message.hpp"
 
 namespace chronicle {
-    
+
 Message::Message() {
 }
-        
+
 void Message::setSource(const QString &source) {
     m_source = source;
 }
@@ -42,11 +42,11 @@ QString Message::destinationNick() const {
 void Message::setContent(const QString &content) {
     m_content = content;
     m_contentHtml = content.toHtmlEscaped();
-    
+
     // 1. Nur bearbeiten, wenn überhaupt ein Link-Protokoll vorkommt
     if (content.contains("http://") || content.contains("https://")) {
         static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
-        
+
         m_contentHtml = m_contentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");
     }
 }
@@ -82,6 +82,5 @@ void Message::setStatus(const QString &status) {
 QString Message::status() const {
     return m_status;
 }
-    
     
 }

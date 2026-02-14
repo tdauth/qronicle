@@ -2,4 +2,5 @@
 cd ./build
 ./chronicle \
     --kopete ../personal/kopete \
-    --facebook ../personal/your_facebook_activity
+    --facebook ../personal/facebook \
+    --skype ../personal/skype

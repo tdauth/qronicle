@@ -9,16 +9,20 @@
 #include "facebook.hpp"
 
 namespace chronicle {
+    
+QString Facebook::id() const {
+    return "facebook";
+}
 
 Messenger::Messages Facebook::loadFile(const QString &filePath) {
-    Messenger::Messages messages;
+    Messages messages;
     
     // get info from file and dir names
     QFileInfo fileInfo(filePath);
    
     QString partner = QObject::tr("Unknown");
     QDir parentDir = fileInfo.dir(); 
-    QString owner = parentDir.dirName();
+    QString contact = parentDir.dirName();
     QString protocol = "facebook";
     
     QFile file(filePath);
@@ -72,15 +76,17 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
         }
         
         if (senderName == title) {
-            msg.setSource(senderName);
+            // in
+            msg.setSource(contact);
             msg.setSourceNick(senderName);
             msg.setDestination(otherParticipant);
             msg.setDestinationNick(otherParticipant);
         } else {
-            msg.setSource(otherParticipant);
-            msg.setSourceNick(otherParticipant);
-            msg.setDestination(senderName);
-            msg.setDestinationNick(senderName);
+            // out
+            msg.setSource(senderName);
+            msg.setSourceNick(senderName);
+            msg.setDestination(contact);
+            msg.setDestinationNick(otherParticipant);
         }
         
         msg.setTimestamp(QDateTime::fromMSecsSinceEpoch(obj.value("timestamp_ms").toVariant().toLongLong()));
@@ -92,7 +98,7 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
 }
 
 Messenger::Messages Facebook::loadDirectory(const QString &dir) {
-    Messenger::Messages allMessages;
+    Messages allMessages;
     QDirIterator it(dir, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
 
     while (it.hasNext()) {
@@ -106,7 +112,7 @@ Messenger::Messages Facebook::loadDirectory(const QString &dir) {
 
             while (jsonIt.hasNext()) {
                 QString filePath = jsonIt.next();
-                Messenger::Messages fileMessages = loadFile(filePath);
+                Messages fileMessages = loadFile(filePath);
                 if (!fileMessages.empty()) {
                     allMessages.append(fileMessages);
                 }

@@ -1,12 +1,13 @@
-#ifndef CHRONICLE_FACEBOOK_HPP
-#define CHRONICLE_FACEBOOK_HPP
+#ifndef CHRONICLE_SKYPE_HPP
+#define CHRONICLE_SKYPE_HPP
 
 #include "messenger.hpp"
 
 namespace chronicle {
     
-class Facebook : public Messenger {
+class Skype : public Messenger {
     public:
+        virtual QString id() const override;
         virtual Messages loadFile(const QString &filePath) override;
         virtual Messages loadDirectory(const QString &dirPath) override;
         virtual QStringList defaultDirectories() override;
