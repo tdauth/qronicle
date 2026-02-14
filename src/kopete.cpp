@@ -7,10 +7,13 @@
 #include <QStringView>
 #include <QUtf8StringView>
 #include <QStandardPaths>
+#include <QRegularExpression>
 
 #include "kopete.hpp"
 
 namespace chronicle {
+
+namespace {
     
 QDateTime getTimestamp(int year, int month, QString time) {
     QStringList parts = time.split(' ');
@@ -30,6 +33,20 @@ QString decodeMessage(const QString &message) {
     return message.contains(QChar::ReplacementCharacter) 
                 ? QString::fromLatin1(message.toLatin1()) 
                 : message;
+}
+
+QString formatHtml(const QString &msg) {
+    QString newContentHtml = msg;
+                
+    // URLs into HTML
+    if (newContentHtml.contains("http://") || newContentHtml.contains("https://")) {
+        static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
+        newContentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");
+    }
+
+    return newContentHtml;
+}
+    
 }
 
 QString Kopete::id() const {
@@ -130,7 +147,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
             message.setTimestamp(getTimestamp(year, month, msgElem.attribute("time")));
             QString content = decodeMessage(msgElem.text());
             message.setContent(content);
-            message.setContent(content);
+            message.setContentHtml(formatHtml(content));
             messages.push_back(message);
         }
     }

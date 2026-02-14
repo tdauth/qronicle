@@ -95,7 +95,7 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
         
         QString contentHtml = content;
         
-            // URLs into HTML
+        // URLs into HTML
         if (contentHtml.contains("http://") || contentHtml.contains("https://")) {
             static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
             contentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");

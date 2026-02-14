@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QStandardPaths>
+#include <QSettings>
 
 #include "history_model.hpp"
 #include "history_search_proxy.hpp"
@@ -14,6 +15,7 @@
 #include "kopete.hpp"
 #include "facebook.hpp"
 #include "skype.hpp"
+#include "whatsapp.hpp"
 
 using namespace chronicle;
 
@@ -53,6 +55,16 @@ int main(int argc, char *argv[]) {
     app.setApplicationVersion("1.0");
     app.setWindowIcon(QIcon(":/icons/chronicle")); 
     
+    // Teste den Haupt-Präfix
+    QDirIterator it(":/icons", QDirIterator::Subdirectories);
+    qDebug() << "--- Alle geladenen Icons: ---";
+    while (it.hasNext()) {
+        QString icon = it.next();
+        if (!icon.contains("breez")) {
+            qDebug() << icon;
+        }
+    }
+    
     // 2. Parser aufsetzen
     QCommandLineParser parser;
     parser.setApplicationDescription(QObject::tr("Chronicle"));
@@ -63,6 +75,7 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<Kopete>();
     messengers << std::make_shared<Facebook>();
     messengers << std::make_shared<Skype>();
+    messengers << std::make_shared<WhatsApp>();
     
     QMap<std::shared_ptr<Messenger>, QCommandLineOption*> optionMap;
 
@@ -83,6 +96,10 @@ int main(int argc, char *argv[]) {
         
         if (parser.isSet(*option)) {
             QStringList paths = parser.values(*option);
+            QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+            QString appPath = QDir(configPath).filePath(messenger->id());
+            
+            paths << appPath;
             paths << messenger->defaultDirectories();
             
             for (const QString &path : paths) {
@@ -96,6 +113,29 @@ int main(int argc, char *argv[]) {
     std::sort(allMessages.begin(), allMessages.end(), [](const Message &a, const Message &b) {
         return a.timestamp() < b.timestamp();
     });
+    
+    QSettings settings("Chronicle", "Chronicle");
+    settings.beginGroup("Aliases");
+    QMap<QString, QString> aliases;
+    // childKeys() liefert alle Namen/Nummern (die "Keys" in der INI)
+    QStringList keys = settings.childKeys(); 
+
+    for (const QString &key : keys) {
+        aliases.insert(key, settings.value(key).toString());
+    }
+    settings.endGroup();
+    
+    qDebug() << "Aliases" << aliases;
+    
+    for (Message &msg : allMessages) {
+        if (aliases.contains(msg.source())) {
+            msg.setSource(aliases.value(msg.source()));
+        }
+
+        if (aliases.contains(msg.destination())) {
+            msg.setDestination(aliases.value(msg.destination()));
+        }
+    }
     
     qDebug() << "All messages" << allMessages.size();
     qDebug() << "All avatars" << allAvatars.size();

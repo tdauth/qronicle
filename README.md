@@ -10,16 +10,38 @@ Qt-based GUI program to visualize, import and export history from different mess
 | <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ⏳ | ⏳ |
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ⏳ | ⏳ |
-| <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ |
+| <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ |
+| <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ⏳ | ⏳ |
 
 ## Manual Build Ubuntu
 
 See [build.sh](./build.sh).
 
-## Custom Avatars
+## Customize
+
+### Custom Names
+
+Define aliases in `~/.config/Chronicle/Chronicle.conf`:
+
+```txt
+[Aliases]
+123456=My old account
+```
+
+### Custom Avatars
 
 You can place any number of images into `~/.config/Chronicle/avatars`.
 These will be used as avatars if the file name without extension matches the user ID.
+
+### Custom Folders
+
+You can place any chat history of different app into `~/.config/Chronicle/<app name>`:
+
+- `~/.config/Chronicle/kopete`.
+- `~/.config/Chronicle/skype`.
+- `~/.config/Chronicle/whatsapp`.
+
+to be found automatically.
 
 ## Messenger History Formats
 
@@ -177,6 +199,18 @@ WhatsApp allows exporting chats which leads to directories with all sent and rec
 19.12.19, 21:27 - Peter: ‎STK-20240525-WA0000.webp (Datei angehängt)
 ```
 
+### Knuddels
+
+- You can export your chats "Chat exportieren" which creates a file `chat_history_<your nickname>_<other nick name>_<year><month><day>_<hour><minute><second>.txt`
+
+```txt
+(Hans - 12.02.2026 19:29:19): (hello)
+(Peter - 12.02.2026 13:00:10): hey
+```
+
+The app provides smileys in form of `(hello)`.
+
 ## Credits
 
+- [oxygen-icons](https://download.kde.org/stable/oxygen-icons/)
 - [skype-emoticons](https://github.com/refactorsaurusrex/skype-emoticons)

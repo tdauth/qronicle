@@ -26,6 +26,7 @@ qt_add_executable(chronicle
     resources.qrc
     src/main.cpp
     src/history_model.hpp
+    src/history_search_proxy.cpp
     src/history_search_proxy.hpp
     src/message.hpp
     src/message.cpp
@@ -36,6 +37,8 @@ qt_add_executable(chronicle
     src/facebook.cpp
     src/skype.hpp
     src/skype.cpp
+    src/whatsapp.hpp
+    src/whatsapp.cpp
 )
 
 qt_add_qml_module(chronicle

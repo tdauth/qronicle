@@ -3,4 +3,5 @@ cd ./build
 ./chronicle \
     --kopete ../personal/kopete \
     --facebook ../personal/facebook \
-    --skype ../personal/skype
+    --skype ../personal/skype \
+    --whatsapp ../personal/whatsapp

@@ -7,6 +7,11 @@ ApplicationWindow {
     visible: true
     width: 1000
     height: 700
+    
+    // Füge diese Aliase oben hinzu:
+    property alias msgField: messageSearch
+    property alias nickField: nickSearch
+    property alias protField: protocolSearch
 
     // Design-Konstanten
     readonly property color colorBgChat: "#e5ddd5"
@@ -29,19 +34,62 @@ ApplicationWindow {
                 // Suchfeld für Nachrichtentext
                 TextField {
                     id: messageSearch
+                    // Das Feld zeigt IMMER das an, was im Model steht
+                    text: chatModel.filterMessage 
                     placeholderText: qsTr("Message...")
                     Layout.fillWidth: true
-                    onTextChanged: msgTimer.restart()
-                    Timer { id: msgTimer; interval: 500; onTriggered: chatModel.filterMessage = messageSearch.text }
-                }
+                    
+                    // Wenn der User tippt, wird das Model aktualisiert
+                    onTextChanged: {
+                        if (activeFocus) { // Nur wenn der User tippt, nicht beim automatischen Reset
+                            msgTimer.restart()
+                        }
+                    }
 
+                    Timer {
+                        id: msgTimer
+                        interval: 500
+                        onTriggered: chatModel.filterMessage = messageSearch.text
+                    }
+                }
                 // Suchfeld für Nickname
                 TextField {
                     id: nickSearch
+                    // Bindung an das Model: Wird automatisch leer, wenn C++ das Signal sendet
+                    text: chatModel.filterNick
                     placeholderText: qsTr("Sender...")
                     Layout.preferredWidth: 150
-                    onTextChanged: nickTimer.restart()
-                    Timer { id: nickTimer; interval: 500; onTriggered: chatModel.filterNick = nickSearch.text }
+                    
+                    // WICHTIG: activeFocus verhindert Endlosschleifen beim automatischen Leeren
+                    onTextChanged: {
+                        if (activeFocus) {
+                            nickTimer.restart()
+                        }
+                    }
+                    Timer { 
+                        id: nickTimer
+                        interval: 500
+                        onTriggered: chatModel.filterNick = nickSearch.text 
+                    }
+                }
+
+                // Suchfeld für Protocol
+                TextField {
+                    id: protocolSearch
+                    text: chatModel.filterProtocol
+                    placeholderText: qsTr("Protocol...")
+                    Layout.preferredWidth: 150
+                    
+                    onTextChanged: {
+                        if (activeFocus) {
+                            protocolTimer.restart()
+                        }
+                    }
+                    Timer { 
+                        id: protocolTimer
+                        interval: 500
+                        onTriggered: chatModel.filterProtocol = protocolSearch.text 
+                    }
                 }
             }
 
@@ -84,6 +132,7 @@ ApplicationWindow {
                 }
 
                 delegate: Column {
+                    id: messageDelegate
                     width: chatListView.width - 30
                     spacing: 4
                     
@@ -117,6 +166,16 @@ ApplicationWindow {
                             color: "#ffffff"
                             radius: 6
                             border.color: "#ddd"
+                            
+                            MouseArea {
+                                anchors.fill: parent
+                                acceptedButtons: Qt.RightButton
+                                onClicked: (mouse) => {
+                                    if (mouse.button === Qt.RightButton) {
+                                        contextMenu.popup();
+                                    }
+                                }
+                            }
                             
 
                             Column {
@@ -249,6 +308,29 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 source: model.targetAvatar ? "image://avatars/" + model.targetAvatar : ""
+                            }
+                        }
+                    }
+
+                    Menu {
+                        id: contextMenu
+                        MenuItem {
+                            text: qsTr("Jump to this message (clear filters)")
+                            onTriggered: {
+                                // 1. C++ aufrufen (Filter leeren, Ziel-Index holen)
+                                let targetIdx = chatModel.getUnfilteredIndex(index)
+                                
+                                if (targetIdx !== -1) {
+                                    // 2. Die ListView über die 'view'-Eigenschaft des Delegates finden
+                                    // 'messageDelegate' ist die ID deiner Column im Delegate
+                                    let listView = messageDelegate.ListView.view
+                                    
+                                    if (listView) {
+                                        // 3. Scrollen und Index setzen
+                                        listView.positionViewAtIndex(targetIdx, ListView.Center)
+                                        listView.currentIndex = targetIdx
+                                    }
+                                }
                             }
                         }
                     }

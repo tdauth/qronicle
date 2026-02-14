@@ -9,16 +9,15 @@
 
 namespace chronicle {
     
-QByteArray loadAvatarFromDb(int contactId) {
-    QSqlQuery query;
-    // Angenommen, die Tabelle heißt 'Contacts' und die Spalte 'avatar_image'
-    query.prepare("SELECT avatar_image FROM Contacts WHERE id = :id");
-    query.bindValue(":id", contactId);
-
-    if (query.exec() && query.next()) {
-        return query.value(0).toByteArray();
+namespace {
+    
+QByteArray loadAvatarFromDb(const QByteArray &data) {
+    int start = data.indexOf("\xFF\xD8"); // Suche nach dem JPEG-Start
+    if (start != -1) {
+        return data.mid(start);
     }
-    return QByteArray(); // Rückgabe eines leeren Bildes bei Fehler
+    
+    return data;
 }
 
 QString replaceSmileys(const QString &text) {
@@ -33,26 +32,28 @@ QString replaceSmileys(const QString &text) {
         matches.append(i.next());
     }
 
-    // 2. Rückwärts abarbeiten, um Positionsfehler zu vermeiden
     for (int j = matches.count() - 1; j >= 0; --j) {
         QRegularExpressionMatch match = matches.at(j);
         QString type = match.captured(1);
         QString originalText = match.captured(2);
     
-        QString checkPath = QString(":/icons/smileys/skype/%1").arg(type);
+        QString checkPath = QString(":/icons/skype/%1").arg(type);
 
         if (QFile::exists(checkPath)) {
-            QString imgTag = QString("<img src=\"qrc:/icons/smileys/skype/%1\" width=\"20\" height=\"20\" align=\"middle\">")
+            QString imgTag = QString("<img src=\"qrc:/icons/skype/%1\" width=\"20\" height=\"20\" align=\"middle\">")
                             .arg(type);
             
             result.replace(match.capturedStart(0), match.capturedLength(0), imgTag);
         } else {
             // Fallback auf Text
             result.replace(match.capturedStart(0), match.capturedLength(0), originalText);
+            //qWarning() << "Skype icon does not exist:" << checkPath;
         }
     }
     
     return result;
+}
+
 }
     
 QString Skype::id() const {
@@ -108,35 +109,34 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
                 QString receiver_display_name = query.value("receiver_display_name").toString();
                 
                 if (!m_avatars.contains(sender_id)) {
-                    //qDebug() << "Avatar for" << sender_id;
-                    QByteArray senderAvatar = query.value("sender_avatar").toByteArray();
+                    QByteArray senderAvatar = loadAvatarFromDb(query.value("sender_avatar").toByteArray());
                     QImage img;
                     
                     if (!senderAvatar.isEmpty()) {
                         if (!img.loadFromData(senderAvatar)) {
-                            //qDebug() << "Avatar image could not be loaded for:" << sender_id;
+                            qDebug() << "Skype avatar image could not be loaded for:" << sender_id;
                         } else {
-                            //qDebug() << "Avatar image works for:" << sender_id;
+                            qDebug() << "Skype avatar image works for:" << sender_id;
                         }
                     } else {
-                        //qDebug() << "Avatar image is empty for:" << sender_id;
+                        qDebug() << "Skype avatar image is empty for:" << sender_id;
                     }
                     
                     m_avatars.insert(sender_id, img);
                 }
                 
                 if (!m_avatars.contains(receiver_id)) {
-                    QByteArray receiverAvatar = query.value("receiver_avatar").toByteArray();
+                    QByteArray receiverAvatar = loadAvatarFromDb(query.value("receiver_avatar").toByteArray());
                     QImage img;
                     
                     if (!receiverAvatar.isEmpty()) {
                         if (!img.loadFromData(receiverAvatar)) {
-                            //qDebug() << "Avatar image could not be loaded for:" << receiver_id;
+                            qDebug() << "Skype avatar image could not be loaded for:" << receiver_id;
                         } else {
-                            //qDebug() << "Avatar image works for:" << receiver_id;
+                            qDebug() << "Skype avatar image works for:" << receiver_id;
                         }
                     } else {
-                        //qDebug() << "Avatar image is empty for:" << receiver_id;
+                        qDebug() << "Skype avatar image is empty for:" << receiver_id;
                     }
                     
                     m_avatars.insert(receiver_id, img);
