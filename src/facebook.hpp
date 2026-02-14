@@ -9,7 +9,7 @@ class Facebook : public Messenger {
     public:
         virtual QString id() const override;
         virtual Messages loadFile(const QString &filePath) override;
-        virtual Messages loadDirectory(const QString &dirPath) override;
+        virtual Messages loadDirectories(const QStringList &dirPaths) override;
         virtual QStringList defaultDirectories() override;
 };
 

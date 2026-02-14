@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS
     Core
+    Concurrent
     Gui
     Widgets
     Qml
@@ -26,13 +27,16 @@ qt_add_executable(chronicle
     resources.qrc
     src/main.cpp
     src/history_model.hpp
-    src/history_search_proxy.cpp
     src/history_search_proxy.hpp
+    src/history_search_proxy.cpp
     src/message.hpp
     src/message.cpp
     src/messenger.hpp
+    src/messenger.cpp
     src/kopete.hpp
     src/kopete.cpp
+    src/trillian.hpp
+    src/trillian.cpp
     src/facebook.hpp
     src/facebook.cpp
     src/skype.hpp
@@ -50,6 +54,7 @@ qt_add_qml_module(chronicle
 
 target_link_libraries(chronicle PRIVATE
     Qt6::Core
+    Qt6::Concurrent
     Qt6::Gui
     Qt6::Widgets
     Qt6::Qml

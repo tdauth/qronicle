@@ -18,7 +18,7 @@ class Messenger {
         
         virtual QString id() const = 0;
         virtual Messages loadFile(const QString &filePath) = 0;
-        virtual Messages loadDirectory(const QString &dirPath) = 0;
+        virtual Messages loadDirectories(const QStringList &dirPaths) = 0;
         virtual QStringList defaultDirectories() = 0;
         
         Avatars avatars() const {
@@ -27,6 +27,8 @@ class Messenger {
         
     protected:
         Avatars m_avatars;
+        
+        QString formatHtml(const QString &msg);
     
 };
 

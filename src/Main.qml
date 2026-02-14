@@ -256,8 +256,25 @@ ApplicationWindow {
                                             selectionColor: "#3498db"
                                             persistentSelection: true
                                         }
+                                        
+                                        // MouseArea wird benötigt, damit der Tooltip merkt, wann die Maus drüber ist
+                                        MouseArea {
+                                            id: iconMouseArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            
+                                            // ToolTip hier definieren, um den Layout-Loop im Parent zu vermeiden
+                                            ToolTip {
+                                                visible: iconMouseArea.containsMouse
+                                                text: protocol
+                                                delay: 500
+                                                timeout: 5000
+                                                // Breeze Fix: Explizite Breite verhindern Binding Loops
+                                                contentWidth: implicitContentWidth 
+                                            }
+                                        }
                                     }
-                                                            }
+                                }
                                 
                                 // Trennlinie
                                 Rectangle {

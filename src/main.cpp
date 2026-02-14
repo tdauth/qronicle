@@ -8,11 +8,14 @@
 #include <QDirIterator>
 #include <QStandardPaths>
 #include <QSettings>
+#include <QtConcurrent>
+#include <QFuture>
 
 #include "history_model.hpp"
 #include "history_search_proxy.hpp"
 #include "avatar_provider.hpp"
 #include "kopete.hpp"
+#include "trillian.hpp"
 #include "facebook.hpp"
 #include "skype.hpp"
 #include "whatsapp.hpp"
@@ -73,6 +76,7 @@ int main(int argc, char *argv[]) {
     
     QList<std::shared_ptr<Messenger>> messengers;
     messengers << std::make_shared<Kopete>();
+    messengers << std::make_shared<Trillian>();
     messengers << std::make_shared<Facebook>();
     messengers << std::make_shared<Skype>();
     messengers << std::make_shared<WhatsApp>();
@@ -89,6 +93,10 @@ int main(int argc, char *argv[]) {
     
     Messenger::Messages allMessages;
     Messenger::Avatars allAvatars;
+    QList<Messenger::Messages> results;
+    QList<QFuture<Messenger::Messages>> futures;
+    const QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    qDebug() << "Config path" << configPath;
     
     for (auto it = optionMap.begin(); it != optionMap.end(); ++it) {
         auto messenger = it.key();
@@ -96,23 +104,46 @@ int main(int argc, char *argv[]) {
         
         if (parser.isSet(*option)) {
             QStringList paths = parser.values(*option);
-            QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
             QString appPath = QDir(configPath).filePath(messenger->id());
             
             paths << appPath;
             paths << messenger->defaultDirectories();
             
-            for (const QString &path : paths) {
-                qDebug() << "Loading" << messenger->id() << "from" << path;
-                allMessages.append(messenger->loadDirectory(path));
-                allAvatars.insert(messenger->avatars());
-            }
+            qDebug() << "Queueing" << messenger->id() << "with" << paths.size() << "paths";
+
+            // Wir starten das Laden pro Messenger in einem eigenen Thread
+            futures << QtConcurrent::run([messenger, paths]() {
+                return messenger->loadDirectories(paths);
+            });
+        }
+    }
+
+    // Ergebnisse einsammeln (Warten auf alle Messenger)
+    for (auto &future : futures) {
+        allMessages.append(future.result());
+    }
+
+    // Avatare einsammeln (nachdem die Threads fertig sind)
+    for (auto it = optionMap.begin(); it != optionMap.end(); ++it) {
+        if (parser.isSet(*(it.value()))) {
+            allAvatars.insert(it.key()->avatars());
         }
     }
     
-    std::sort(allMessages.begin(), allMessages.end(), [](const Message &a, const Message &b) {
-        return a.timestamp() < b.timestamp();
-    });
+    qDebug() << "All messages" << allMessages.size();
+    qDebug() << "All avatars" << allAvatars.size();
+    
+    QList<Message> distinctMessages;
+    QSet<Message> seen;
+
+    for (const Message &msg : allMessages) {
+        if (!seen.contains(msg)) {
+            seen.insert(msg);
+            distinctMessages.append(msg);
+        }
+    }
+    
+    qDebug() << "Distinct messages" << distinctMessages.size();
     
     QSettings settings("Chronicle", "Chronicle");
     settings.beginGroup("Aliases");
@@ -127,7 +158,7 @@ int main(int argc, char *argv[]) {
     
     qDebug() << "Aliases" << aliases;
     
-    for (Message &msg : allMessages) {
+    for (Message &msg : distinctMessages) {
         if (aliases.contains(msg.source())) {
             msg.setSource(aliases.value(msg.source()));
         }
@@ -137,18 +168,16 @@ int main(int argc, char *argv[]) {
         }
     }
     
-    qDebug() << "All messages" << allMessages.size();
-    qDebug() << "All avatars" << allAvatars.size();
-    
-    QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    qDebug() << "Config path" << configPath;
+    std::sort(distinctMessages.begin(), distinctMessages.end(), [](const Message &a, const Message &b) {
+        return a.timestamp() < b.timestamp();
+    });
 
     
     allAvatars.insert(loadCustomAvatars());
     
     qDebug() << "All avatars with custom" << allAvatars.size();
     
-    auto* baseModel = new HistoryModel(std::move(allMessages));
+    auto* baseModel = new HistoryModel(std::move(distinctMessages));
     auto *proxyModel = new HistorySearchProxy(&app);
     proxyModel->setSourceModel(baseModel);
     proxyModel->setFilterRole(-1); // Search for all.

@@ -1,11 +1,11 @@
-#ifndef CHRONICLE_KOPETE_HPP
-#define CHRONICLE_KOPETE_HPP
+#ifndef CHRONICLE_TRILLIAN_HPP
+#define CHRONICLE_TRILLIAN_HPP
 
 #include "messenger.hpp"
 
 namespace chronicle {
     
-class Kopete : public Messenger {
+class Trillian : public Messenger {
     public:
         virtual QString id() const override;
         virtual Messages loadFile(const QString &filePath) override;

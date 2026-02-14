@@ -12,6 +12,7 @@
         <file alias="whatsapp">assets/icons/whatsapp.svg</file>
         <file alias="icq">assets/icons/icq.svg</file>
         <file alias="trillian">assets/icons/trillian.png</file>
+        <file alias="wlmprotocol">assets/icons/msn_messenger.png</file>
         <file alias="knuddels">assets/icons/knuddels.jpg</file>
     </qresource>
     

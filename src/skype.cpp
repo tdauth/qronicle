@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QtSql>
 #include <QDateTime>
+#include <QtConcurrent>
 
 #include "skype.hpp"
 
@@ -66,7 +67,9 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
     QFileInfo dbInfo(filePath);
     QString mySkypeId = dbInfo.dir().dirName();
 
-    const QString connectionName = "SkypeConnection";
+    const QString connectionName = QString("skype_con_%1_%2")
+        .arg(quintptr(QThread::currentThreadId()))
+        .arg(qHash(filePath)); // Einfacher globaler Aufruf von qHash
     
     {
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
@@ -170,29 +173,41 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
     return messages;
 }
 
-Messenger::Messages Skype::loadDirectory(const QString &dir) {
-    Messages allMessages;
-    qDebug() << "Skype dir:" << dir;
-    QDirIterator it(dir, QStringList() << "main.db", QDir::Files, QDirIterator::Subdirectories);
+Messenger::Messages Skype::loadDirectories(const QStringList &dirPaths) {
+    QStringList filePaths;
 
-    while (it.hasNext()) {
-        QString filePath = it.next();
-        QFileInfo info(filePath);
-        QString skypeId = info.dir().dirName();
-        
-        if (skypeId == "Data" || skypeId == "Content")  {
-            continue;
-        }
+    // 1. Alle Pfade sammeln und filtern
+    for (const QString &dirPath : dirPaths) {
+        QDirIterator it(dirPath, QStringList() << "main.db", QDir::Files, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            QString path = it.next();
+            QFileInfo info(path);
+            QString skypeId = info.dir().dirName();
 
-        qDebug() << "Loading skype file:" << filePath << "for ID:" << skypeId;
-        
-        Messages fileMessages = loadFile(filePath);
-        if (!fileMessages.empty()) {
-            allMessages.append(fileMessages);
+            // Deine Filter-Logik
+            if (skypeId == "Data" || skypeId == "Content") {
+                continue;
+            }
+            filePaths << path;
         }
     }
-    
-    return allMessages;
+
+    if (filePaths.isEmpty()) return {};
+
+    qDebug() << "Loading" << filePaths.size() << "Skype databases in parallel...";
+
+    // 2. Parallelisiertes Laden und Reduzieren
+    return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
+        filePaths,
+        [this](const QString &filePath) {
+            qDebug() << "Processing Skype DB:" << filePath;
+            return loadFile(filePath); // Wichtig: loadFile muss thread-sicher sein!
+        },
+        [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
+            result.append(intermediate);
+        },
+        QtConcurrent::UnorderedReduce
+    );
 }
 
 QStringList Skype::defaultDirectories() {

@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QtConcurrent>
 
 #include "facebook.hpp"
 
@@ -109,30 +110,40 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
     return messages;
 }
 
-Messenger::Messages Facebook::loadDirectory(const QString &dir) {
-    Messages allMessages;
-    QDirIterator it(dir, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+Messenger::Messages Facebook::loadDirectories(const QStringList &dirPaths) {
+    QStringList jsonFiles;
 
-    while (it.hasNext()) {
-        QString currentDirPath = it.next();
-        QFileInfo dirInfo(currentDirPath);
+    // 1. Alle relevanten JSON-Dateien sammeln
+    for (const QString &dir : dirPaths) {
+        QDirIterator it(dir, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
         
-        if (dirInfo.fileName() == "messages") {
-            qDebug() << "Found messages folder:" << currentDirPath;
-
-            QDirIterator jsonIt(currentDirPath, QStringList() << "*.json", QDir::Files, QDirIterator::Subdirectories);
-
-            while (jsonIt.hasNext()) {
-                QString filePath = jsonIt.next();
-                Messages fileMessages = loadFile(filePath);
-                if (!fileMessages.empty()) {
-                    allMessages.append(fileMessages);
+        while (it.hasNext()) {
+            QString currentDirPath = it.next();
+            // Nur Ordner namens "messages" scannen
+            if (QFileInfo(currentDirPath).fileName() == "messages") {
+                QDirIterator jsonIt(currentDirPath, QStringList() << "*.json", QDir::Files, QDirIterator::Subdirectories);
+                while (jsonIt.hasNext()) {
+                    jsonFiles << jsonIt.next();
                 }
             }
         }
     }
 
-    return allMessages;
+    if (jsonFiles.isEmpty()) return {};
+
+    qDebug() << "Parsing" << jsonFiles.size() << "Facebook JSON files in parallel...";
+
+    // 2. Parallelisiertes Laden und Zusammenführen
+    return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
+        jsonFiles,
+        [this](const QString &filePath) {
+            return loadFile(filePath); 
+        },
+        [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
+            result.append(intermediate);
+        },
+        QtConcurrent::UnorderedReduce
+    );
 }
 
 QStringList Facebook::defaultDirectories() {

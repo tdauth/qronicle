@@ -41,8 +41,23 @@ class Message {
         QDateTime m_timestamp; // Präziser Zeitpunkt
         QString m_protocol;    // z.B. "ICQ", "Jabber"
         QString m_status; // z. B. "Gelesen"
-    
 };
+
+inline bool operator==(const Message &m1, const Message &m2) {
+    // Bleibe bei Sekunden
+    return m1.timestamp().toSecsSinceEpoch() == m2.timestamp().toSecsSinceEpoch() &&
+           m1.source() == m2.source() &&
+           m1.destination() == m2.destination() &&
+           m1.content() == m2.content();
+}
+
+inline size_t qHash(const Message &key, size_t seed = 0) {
+    // ÄNDERUNG: Nutze hier AUCH toSecsSinceEpoch()
+    return ::qHash(key.content(), seed) ^ 
+           ::qHash(key.source(), seed) ^ 
+           ::qHash(key.destination(), seed) ^ 
+           ::qHash(key.timestamp().toSecsSinceEpoch(), seed); 
+}
 
 }
 

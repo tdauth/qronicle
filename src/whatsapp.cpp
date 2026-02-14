@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QtSql>
 #include <QDateTime>
+#include <QtConcurrent>
 
 #include "whatsapp.hpp"
 
@@ -11,15 +12,9 @@ namespace chronicle {
     
 namespace {
     
-QString formatHtml(const QString &filePath, const QString &msg) {
+QString formatAttachments(const QString &filePath, const QString &msg) {
     QString newContentHtml = msg;
                 
-    // URLs into HTML
-    if (newContentHtml.contains("http://") || newContentHtml.contains("https://")) {
-        static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
-        newContentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");
-    }
-    
     // 1. Verzeichnis der aktuellen Datei ermitteln
     QString dirPath = QFileInfo(filePath).absolutePath(); 
 
@@ -48,68 +43,84 @@ QString WhatsApp::id() const {
 }
 
 Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
-    Messages messages;
-    
     QFile file(filePath);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&file);
-        
-        QSet<QString> participants;
-        
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            static QRegularExpression re("^(\\d{2}\\.\\d{2}\\.\\d{2}, \\d{2}:\\d{2}) - ([^:]+): (.*)$");
+    if (!file.open(QIODevice::ReadOnly)) return {};
 
-            QRegularExpressionMatch match = re.match(line);
+    Messages messages;
+    // Vorab-Reservierung schätzt die Anzahl der Nachrichten (Dateigröße / ca. 100 Zeichen pro Nachricht)
+    messages.reserve(file.size() / 100);
 
-            if (match.hasMatch()) {
-                // Neue Nachricht gefunden
-                QString timestamp = match.captured(1);
-                QString name      = match.captured(2);
-                QString message   = match.captured(3);
-                
-                participants.insert(name); 
+    // Gesamte Datei in den Speicher lesen ist bei Logs meist schneller als zeilenweise
+    // Falls Datei > 100MB, bleibe bei QTextStream, sonst:
+    QTextStream in(&file);
+    in.setEncoding(QStringConverter::Utf8);
 
-                Message msg;
-                msg.setProtocol("whatsapp");
-                msg.setSource(name);
-                msg.setSourceNick(name);
-                
-                QDateTime dt = QDateTime::fromString(timestamp, "dd.MM.yy, HH:mm");
-                
-                // Falls das Jahr < 100 ist (z.B. 19), addiere 2000 Jahre
-                if (dt.date().year() < 2000) {
-                    dt = dt.addYears(100);
-                }
-                
-                msg.setTimestamp(dt);
-                msg.setContent(message);
-                msg.setContentHtml(formatHtml(filePath, message));
-                
-                messages.append(msg);
-            } else if (!messages.isEmpty()) {
-                // Keine Übereinstimmung -> Gehört zur vorherigen Nachricht
-                // Wir holen die letzte Nachricht per Referenz und hängen den Text an
-                Message &lastMsg = messages.last();
-                lastMsg.setContent(lastMsg.content() + "\n" + line);
-                lastMsg.setContentHtml(lastMsg.contentHtml() + "\n" + formatHtml(filePath, line));
-            } else {
-                qWarning() << "Unexpected WhatsApp line with 0 lines:" << line << "in file" << filePath;
+    QSet<QString> participants;
+    // Regex einmalig außerhalb der Schleife kompilieren (schon erledigt durch static)
+    static QRegularExpression re("^(\\d{2}\\.\\d{2}\\.\\d{2}, \\d{2}:\\d{2}) - ([^:]+): (.*)$");
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line.isEmpty()) continue;
+
+        QRegularExpressionMatch match = re.match(line);
+
+        if (match.hasMatch()) {
+            Message msg;
+            QString name = match.captured(2);
+            
+            // Vermeide unnötige String-Operationen, falls Name schon bekannt
+            if (!participants.contains(name)) {
+                participants.insert(name);
             }
+
+            msg.setProtocol("whatsapp");
+            msg.setSource(name);
+            msg.setSourceNick(name);
+            
+            // Effizientes Datumsparshing
+            QDateTime dt = QDateTime::fromString(match.captured(1), "dd.MM.yy, HH:mm");
+            if (dt.date().year() < 2000) dt = dt.addYears(100);
+            
+            msg.setTimestamp(dt);
+            
+            QString content = match.captured(3);
+            msg.setContent(content);
+            // ACHTUNG: formatHtml/formatAttachments sind oft teuer. 
+            // Wenn möglich, erst beim Anzeigen (Lazy Loading) generieren!
+            msg.setContentHtml(formatHtml(formatAttachments(filePath, content)));
+            
+            messages.append(std::move(msg));
+        } else if (!messages.isEmpty()) {
+            // Performance: Letzte Nachricht direkt bearbeiten
+            Message &lastMsg = messages.last();
+            
+            // String-Builder (+=) ist in Qt optimiert, aber viele Appends kosten.
+            QString newContent = lastMsg.content();
+            newContent.append(u'\n').append(line);
+            lastMsg.setContent(newContent);
+            
+            QString newHtml = lastMsg.contentHtml();
+            newHtml.append(u'\n').append(formatHtml(formatAttachments(filePath, line)));
+            lastMsg.setContentHtml(newHtml);
         }
-        
+    }
+
+    // Destination-Logik optimieren
+    if (participants.size() == 2) {
+        QString p1 = *participants.begin();
+        QString p2 = *(++participants.begin());
+
+        for (Message &msg : messages) {
+            const QString& other = (msg.source() == p1) ? p2 : p1;
+            msg.setDestination(other);
+            msg.setDestinationNick(other);
+        }
+    } else {
+        // Fallback für Gruppen oder unbekannte Teilnehmer
         for (Message &msg : messages) {
             if (msg.destination().isEmpty()) {
-                QSet<QString> potentialDest = participants;
-                potentialDest.remove(msg.source());
-
-                if (!potentialDest.isEmpty()) {
-                    QString other = *potentialDest.begin(); 
-                    msg.setDestination(other);
-                    msg.setDestinationNick(other);
-                } else {
-                    msg.setDestination("unknown");
-                }
+                msg.setDestination("group/unknown");
             }
         }
     }
@@ -117,23 +128,45 @@ Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
     return messages;
 }
 
-Messenger::Messages WhatsApp::loadDirectory(const QString &dir) {
-    Messages allMessages;
-    qDebug() << "WhatsApp dir:" << dir;
-    QDirIterator it(dir, QStringList() << "*.txt", QDir::Files, QDirIterator::Subdirectories);
+// Hilfsfunktion zum Zusammenführen der Ergebnisse (Reduce-Schritt)
+void mergeMessages(Messenger::Messages &result, const Messenger::Messages &intermediate) {
+    result.append(intermediate);
+}
 
-    while (it.hasNext()) {
-        QString filePath = it.next();
+Messenger::Messages WhatsApp::loadDirectories(const QStringList &dirPaths) {
+    QStringList allFilePaths;
 
-        qDebug() << "Loading WhatsApp file:" << filePath;
-        
-        Messages fileMessages = loadFile(filePath);
-        if (!fileMessages.empty()) {
-            allMessages.append(fileMessages);
+    // 1. Alle Dateipfade aus allen Verzeichnissen sammeln
+    for (const QString &dir : dirPaths) {
+        QDirIterator it(dir, QStringList() << "*.txt", QDir::Files, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            allFilePaths << it.next();
         }
     }
+
+    if (allFilePaths.isEmpty()) {
+        return {};
+    }
+
+    qDebug() << "Loading" << allFilePaths.size() << "WhatsApp files in parallel from" << dirPaths.size() << "directories...";
+
+    // 2. Parallelisiertes Laden (bleibt fast gleich, nutzt aber die gesammelte Liste)
+    Messenger::Messages allMessages = QtConcurrent::blockingMappedReduced<Messenger::Messages>(
+        allFilePaths,
+        [this](const QString &path) { 
+            return loadFile(path); 
+        },
+        [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
+            result.append(intermediate);
+        },
+        QtConcurrent::UnorderedReduce // Optimierung: Reihenfolge beim Zusammenführen egal
+    );
+
+    // 3. Hier wäre der ideale Platz für das Deduplizieren (Distinct machen)
+    // Da Dateien aus verschiedenen Verzeichnissen oft Überschneidungen haben
+    QSet<Message> distinctSet = QSet<Message>(allMessages.begin(), allMessages.end());
     
-    return allMessages;
+    return distinctSet.values();
 }
 
 QStringList WhatsApp::defaultDirectories() {

@@ -2,12 +2,13 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
-#include <QDomDocument>
+#include <QXmlStreamReader>
 #include <QString>
 #include <QStringView>
 #include <QUtf8StringView>
 #include <QStandardPaths>
 #include <QRegularExpression>
+#include <QtConcurrent>
 
 #include "kopete.hpp"
 
@@ -34,18 +35,6 @@ QString decodeMessage(const QString &message) {
                 ? QString::fromLatin1(message.toLatin1()) 
                 : message;
 }
-
-QString formatHtml(const QString &msg) {
-    QString newContentHtml = msg;
-                
-    // URLs into HTML
-    if (newContentHtml.contains("http://") || newContentHtml.contains("https://")) {
-        static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
-        newContentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");
-    }
-
-    return newContentHtml;
-}
     
 }
 
@@ -55,6 +44,11 @@ QString Kopete::id() const {
     
 Messenger::Messages Kopete::loadFile(const QString &filePath) {
     Messages messages;
+    
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return messages;
+    }
     
     // get info from file and dir names
     QFileInfo fileInfo(filePath);
@@ -76,103 +70,110 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
     QDir parentDir = fileInfo.dir(); 
     QString owner = parentDir.dirName();
     QString protocol = QObject::tr("Unknown");
+    
     if (parentDir.cdUp()) {
         protocol = parentDir.dirName();
     }
 
-    // Parse XML
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "Cannot open" << filePath;
-        return messages;
-    }
-    
-    QTextStream stream(&file);
-    stream.setEncoding(QStringConverter::Utf8);
-
-    QDomDocument doc;
-    if (!doc.setContent(stream.readAll())) {
-        qWarning() << "Cannot read DOM" << filePath;
-        return messages;
-    }
-    
-    file.close();
-
-    QDomElement root = doc.documentElement();
-    
-    if (root.tagName() != "kopete-history") {
-        qWarning() << "Unexpected root element:" << root.tagName();
-    }
-    
-    QDomElement head = root.firstChildElement("head");
-
-    if (!head.isNull()) {
-        QDomElement dateElement = head.firstChildElement("date");
-        
-        if (!dateElement.isNull()) {
-            QString monthStr = dateElement.attribute("month");
-            QString yearStr = dateElement.attribute("year");
-
-            month = monthStr.toInt();
-            year = yearStr.toInt();
-        }
-    }
-    
-    QDomNodeList msg = root.childNodes();
-    
-    messages.reserve(msg.size());
+    QXmlStreamReader reader(&file);
     QMap<QString, QString> participantNicknames;
 
-    for (int i = 0; i < msg.size(); ++i) {
-        QDomElement msgElem = msg.at(i).toElement();
-        
-        if (msgElem.tagName() == "msg") {
-            Message message;
-            message.setProtocol(protocol);
-            message.setSourceNick(msgElem.attribute("nick"));
-            
-            if (msgElem.attribute("in") == "1") {
-                message.setSource(partner);
-                message.setDestination(owner);
-            } else {
-                message.setSource(owner);
-                message.setDestination(partner);
+    while (!reader.atEnd() && !reader.hasError()) {
+        QXmlStreamReader::TokenType token = reader.readNext();
+
+        if (token == QXmlStreamReader::StartElement) {
+            QStringView tagName = reader.name();
+
+            if (tagName == u"date") {
+                // Jahr/Monat aus dem Header überschreiben, falls vorhanden
+                auto attrs = reader.attributes();
+                if (attrs.hasAttribute(u"year")) year = attrs.value(u"year").toInt();
+                if (attrs.hasAttribute(u"month")) month = attrs.value(u"month").toInt();
+            } 
+            else if (tagName == u"msg") {
+                Message message;
+                auto attrs = reader.attributes();
+                
+                message.setProtocol(protocol);
+                QString nick = attrs.value(u"nick").toString();
+                message.setSourceNick(nick);
+
+                if (attrs.value(u"in") == u"1") {
+                    message.setSource(partner);
+                    message.setDestination(owner);
+                } else {
+                    message.setSource(owner);
+                    message.setDestination(partner);
+                }
+
+                // Nickname-Cache
+                if (!participantNicknames.contains(message.source())) {
+                    participantNicknames.insert(message.source(), nick);
+                }
+                message.setDestinationNick(participantNicknames.value(message.destination()));
+                
+                QString timeAttr = attrs.value(u"time").toString();
+
+                if (timeAttr.isEmpty()) {
+                    // FALLBACK: Wenn kein Zeitstempel da ist, nimm das Datum aus dem Header
+                    // oder die aktuelle Zeit, damit die Nachricht nicht im Jahr -4713 landet.
+                    message.setTimestamp(QDateTime(QDate(year > 0 ? year : 2000, month > 0 ? month : 1, 1), QTime(0,0)));
+                } else {
+                    // Versuche den Zeitstempel normal zu parsen
+                    message.setTimestamp(getTimestamp(year, month, timeAttr));
+                }
+
+                QString content = decodeMessage(reader.readElementText());
+                message.setContent(content);
+                
+                message.setContentHtml(formatHtml(content));
+
+                messages.push_back(std::move(message));
             }
-            
-            if (!participantNicknames.contains(message.source())) {
-                participantNicknames.insert(message.source(), message.sourceNick());
-            }
-            
-            message.setDestinationNick(participantNicknames.value(message.destination()));
-            message.setTimestamp(getTimestamp(year, month, msgElem.attribute("time")));
-            QString content = decodeMessage(msgElem.text());
-            message.setContent(content);
-            message.setContentHtml(formatHtml(content));
-            messages.push_back(message);
         }
+    }
+
+    if (reader.hasError()) {
+        qWarning() << "XML Error in" << filePath << ":" << reader.errorString();
     }
 
     return messages;
 }
 
-Messenger::Messages Kopete::loadDirectory(const QString &dir) {
-    Messages allMessages;
-    QDirIterator it(dir, QStringList() << "*.xml", QDir::Files, QDirIterator::Subdirectories);
+Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
+    QStringList filePaths;
 
-    while (it.hasNext()) {
-        QString filePath = it.next();
-        qDebug() << "Loading Kopete file" << filePath;
-        Messages fileMessages = loadFile(filePath);
-        
-        if (!fileMessages.empty()) {
-            allMessages.reserve(allMessages.size() + fileMessages.size());
-            for(auto &&msg : fileMessages) {
-                allMessages.append(std::move(msg));
-            }
+    // 1. Alle Verzeichnisse nach XML-Dateien durchsuchen
+    for (const QString &dir : dirPaths) {
+        QDirIterator it(dir, QStringList() << "*.xml", QDir::Files, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            filePaths << it.next();
         }
     }
 
-    return allMessages;
+    if (filePaths.isEmpty()) {
+        qWarning() << "Keine Kopete XML Dateien in den angegebenen Verzeichnissen gefunden!";
+        return {};
+    }
+
+    qDebug() << "Loading" << filePaths.size() << "Kopete files in parallel...";
+
+    // 2. Parallel laden und direkt reduzieren (zusammenführen)
+    // blockingMappedReduced ist eleganter als blockingMapped + manuelle Schleife
+    return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
+        filePaths, 
+        [this](const QString &path) {
+            // qDebug() << "Loading Kopete XML file" << path;
+            return loadFile(path); 
+        },
+        // Reduce-Funktion: Schiebt die Ergebnisse thread-sicher zusammen
+        [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
+            // Falls du die Gesamtgröße kennst, könntest du hier result.reserve machen,
+            // aber Qt macht das intern bei append für QList/QVector meist schon effizient.
+            result.append(intermediate);
+        },
+        QtConcurrent::UnorderedReduce // Performance-Boost: Reihenfolge egal
+    );
 }
 
 QStringList Kopete::defaultDirectories() {
