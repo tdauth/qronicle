@@ -1,0 +1,124 @@
+#include <QFile>
+#include <QDir>
+#include <QDirIterator>
+#include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
+#include "facebook.hpp"
+
+namespace chronicle {
+
+Messenger::Messages Facebook::loadFile(const QString &filePath) {
+    Messenger::Messages messages;
+    
+    // get info from file and dir names
+    QFileInfo fileInfo(filePath);
+   
+    QString partner = QObject::tr("Unknown");
+    QDir parentDir = fileInfo.dir(); 
+    QString owner = parentDir.dirName();
+    QString protocol = "facebook";
+    
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Konnte Datei nicht öffnen:" << filePath;
+        return messages;
+    }
+
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
+    file.close();
+
+    if (doc.isNull()) {
+        qWarning() << "JSON Fehler in" << filePath << ":" << error.errorString();
+        return messages;
+    }
+    
+    QJsonObject rootObj = doc.object();
+    
+    QJsonArray participantsArray = rootObj.value("participants").toArray();
+
+    QStringList participantNames;
+
+    for (const QJsonValue &value : participantsArray) {
+        QJsonObject participantObj = value.toObject();
+        QString name = QString::fromUtf8(participantObj.value("name").toString().toLatin1());
+        
+        if (!name.isEmpty()) {
+            participantNames.append(name);
+        }
+    }
+    
+    QString title = QString::fromUtf8(rootObj.value("title").toString(QObject::tr("Unknown")).toLatin1());
+
+    QJsonArray messagesArray = rootObj.value("messages").toArray();
+    
+    for (const QJsonValue &value : messagesArray) {
+        QJsonObject obj = value.toObject();
+        
+        Message msg;
+        msg.setProtocol(protocol);
+        QString senderName = QString::fromUtf8(obj.value("sender_name").toString(QObject::tr("Unknown")).toLatin1());
+        
+        QString otherParticipant;
+
+        for (const QString &name : participantNames) {
+            if (name != senderName) {
+                otherParticipant = name;
+                break;
+            }
+        }
+        
+        if (senderName == title) {
+            msg.setSource(senderName);
+            msg.setSourceNick(senderName);
+            msg.setDestination(otherParticipant);
+            msg.setDestinationNick(otherParticipant);
+        } else {
+            msg.setSource(otherParticipant);
+            msg.setSourceNick(otherParticipant);
+            msg.setDestination(senderName);
+            msg.setDestinationNick(senderName);
+        }
+        
+        msg.setTimestamp(QDateTime::fromMSecsSinceEpoch(obj.value("timestamp_ms").toVariant().toLongLong()));
+        msg.setContent(QString::fromUtf8(obj.value("content").toString().toLatin1()));
+        messages.append(msg);
+    }
+
+    return messages;
+}
+
+Messenger::Messages Facebook::loadDirectory(const QString &dir) {
+    Messenger::Messages allMessages;
+    QDirIterator it(dir, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+
+    while (it.hasNext()) {
+        QString currentDirPath = it.next();
+        QFileInfo dirInfo(currentDirPath);
+        
+        if (dirInfo.fileName() == "messages") {
+            qDebug() << "Found messages folder:" << currentDirPath;
+
+            QDirIterator jsonIt(currentDirPath, QStringList() << "*.json", QDir::Files, QDirIterator::Subdirectories);
+
+            while (jsonIt.hasNext()) {
+                QString filePath = jsonIt.next();
+                Messenger::Messages fileMessages = loadFile(filePath);
+                if (!fileMessages.empty()) {
+                    allMessages.append(fileMessages);
+                }
+            }
+        }
+    }
+
+    return allMessages;
+}
+
+QStringList Facebook::defaultDirectories() {
+    return {};
+}
+
+}

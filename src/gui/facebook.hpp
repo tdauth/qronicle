@@ -1,0 +1,17 @@
+#ifndef CHRONICLE_FACEBOOK_HPP
+#define CHRONICLE_FACEBOOK_HPP
+
+#include "messenger.hpp"
+
+namespace chronicle {
+    
+class Facebook : public Messenger {
+    public:
+        virtual Messages loadFile(const QString &filePath) override;
+        virtual Messages loadDirectory(const QString &dirPath) override;
+        virtual QStringList defaultDirectories() override;
+};
+
+}
+
+#endif
