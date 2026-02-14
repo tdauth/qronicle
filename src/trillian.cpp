@@ -54,7 +54,15 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
         return messages;
     }
     
-    QXmlStreamReader reader(&file);
+    // Die gesamte Datei einlesen
+    QByteArray data = file.readAll();
+
+    QXmlStreamReader reader;
+    // Wir "faken" ein Root-Element
+    reader.addData("<root>"); 
+    reader.addData(data);
+    reader.addData("</root>");
+
     QMap<QString, QString> participantNicknames;
     
     QString protocol;
@@ -62,28 +70,14 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
     QString other;
 
     while (!reader.atEnd()) {
-        QXmlStreamReader::TokenType token = reader.readNext();
+        reader.readNext();
 
-        if (reader.hasError()) {
-            if (reader.error() == QXmlStreamReader::NotWellFormedError) {
-                // Dies ist der "Überzähliger Inhalt" Fehler.
-                // Wir löschen den Fehlerstatus und machen einfach weiter!
-                reader.clear(); 
-                continue; 
-            } else if (reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) {
-                // Datei bricht abrupt ab -> nimm die bisherigen Nachrichten und fertig.
-                break; 
-            } else {
-                qWarning() << "Kritischer XML Fehler in" << filePath << ":" << reader.errorString();
-                break;
-            }
-        }
-
-        if (token == QXmlStreamReader::StartElement) {
+        if (reader.isStartElement()) {
             QStringView tagName = reader.name();
             
             if (tagName == u"session") {
                 auto attrs = reader.attributes();
+            
                 if (attrs.value(u"type").toString() == "start") {
                     owner = attrs.value(u"from").toString();
                     other = attrs.value(u"to").toString();
@@ -122,10 +116,6 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 messages.push_back(std::move(message));
             }
         }
-    }
-
-    if (reader.hasError()) {
-        qWarning() << "XML Error in" << filePath << ":" << reader.errorString();
     }
 
     return messages;
