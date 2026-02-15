@@ -30,6 +30,52 @@ ApplicationWindow {
             RowLayout {
                 spacing: 10
                 anchors.fill: parent
+                
+                // Die obere Zeile (ToolBar)
+                ToolButton {
+                    id: menuButton
+                    text: "☰"
+                    onClicked: mainMenu.open()
+
+                    // Das eigentliche Dropdown-Menü
+                    Menu {
+                        id: mainMenu
+                        y: menuButton.height // Erscheint direkt unter dem Button
+                        
+                        MenuItem {
+                            text: qsTr("Settings")
+                            onTriggered: console.log("Settings clicked")
+                        }
+                        
+                        MenuSeparator { } // Ein horizontaler Trennstrich
+
+                        MenuItem {
+                            text: qsTr("Exit program")
+                            onTriggered: Qt.quit()
+                        }
+                    }
+                }
+                
+                // Suchfeld für FilePath
+                TextField {
+                    id: filePathSearch
+                    // Bindung an das Model: Wird automatisch leer, wenn C++ das Signal sendet
+                    text: chatModel.filterFilePath
+                    placeholderText: qsTr("File Path...")
+                    Layout.preferredWidth: 150
+                    
+                    // WICHTIG: activeFocus verhindert Endlosschleifen beim automatischen Leeren
+                    onTextChanged: {
+                        if (activeFocus) {
+                            filePathTimer.restart()
+                        }
+                    }
+                    Timer { 
+                        id: filePathTimer
+                        interval: 500
+                        onTriggered: chatModel.filterFilePath = filePathSearch.text 
+                    }
+                }
 
                 // Suchfeld für Nachrichtentext
                 TextField {
@@ -52,7 +98,8 @@ ApplicationWindow {
                         onTriggered: chatModel.filterMessage = messageSearch.text
                     }
                 }
-                // Suchfeld für Nickname
+                
+                // Suchfeld für Sender
                 TextField {
                     id: nickSearch
                     // Bindung an das Model: Wird automatisch leer, wenn C++ das Signal sendet
@@ -70,6 +117,46 @@ ApplicationWindow {
                         id: nickTimer
                         interval: 500
                         onTriggered: chatModel.filterNick = nickSearch.text 
+                    }
+                }
+                
+                // Suchfeld für Target
+                TextField {
+                    id: targetSearch
+                    // Bindung an das Model: Wird automatisch leer, wenn C++ das Signal sendet
+                    text: chatModel.filterTarget
+                    placeholderText: qsTr("Receiver...")
+                    Layout.preferredWidth: 150
+                    
+                    // WICHTIG: activeFocus verhindert Endlosschleifen beim automatischen Leeren
+                    onTextChanged: {
+                        if (activeFocus) {
+                            targetTimer.restart()
+                        }
+                    }
+                    Timer { 
+                        id: targetTimer
+                        interval: 500
+                        onTriggered: chatModel.filterTarget = targetSearch.text 
+                    }
+                }
+                
+                // Suchfeld für Messenger
+                TextField {
+                    id: messengerSearch
+                    text: chatModel.filterMessenger
+                    placeholderText: qsTr("Messenger...")
+                    Layout.preferredWidth: 150
+                    
+                    onTextChanged: {
+                        if (activeFocus) {
+                            messengerTimer.restart()
+                        }
+                    }
+                    Timer { 
+                        id: messengerTimer
+                        interval: 500
+                        onTriggered: chatModel.filterMessenger = messengerSearch.text 
                     }
                 }
 
@@ -226,51 +313,85 @@ ApplicationWindow {
                                         selectionColor: "#3498db"
                                         persistentSelection: true
                                     }
-                                    // Das Protokoll-Icon/Label rechts
-                                    Item {
-                                        Layout.preferredWidth: 16
-                                        Layout.preferredHeight: 16
+                                    // Container für die Icons (Messenger & Protocol)
+                                    Row {
                                         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                                        spacing: 6
 
-                                        // Das Icon
-                                        Image {
-                                            id: protocolIcon
-                                            anchors.fill: parent
-                                            // Logik: Suche im Ordner "icons" nach "facebook.png", "skype.png" etc.
-                                            source: `qrc:/icons/${protocol.toLowerCase()}`
-                                            fillMode: Image.PreserveAspectFit
-                                            
-                                            // Falls das Icon nicht gefunden wird, zeigen wir den Text-Fallback
-                                            onStatusChanged: if (status === Image.Error) visible = false
+                                        // --- MESSENGER ICON ---
+                                        Item {
+                                            width: 16
+                                            height: 16
+                                            // Nur anzeigen, wenn messenger gesetzt ist und sich vom Protokoll unterscheidet
+                                            visible: typeof messenger !== "undefined" && messenger !== "" && 
+                                                    messenger.toLowerCase() !== protocol.toLowerCase()
+
+                                            Image {
+                                                id: messengerIcon
+                                                anchors.fill: parent
+                                                source: `qrc:/icons/${messenger}`
+                                                fillMode: Image.PreserveAspectFit
+                                                onStatusChanged: if (status === Image.Error) visible = false
+                                            }
+
+                                            TextEdit {
+                                                anchors.centerIn: parent
+                                                text: `[${messenger}]`
+                                                visible: messengerIcon.status === Image.Error
+                                                font.pointSize: 7
+                                                color: "#888"
+                                                readOnly: true
+                                                selectByMouse: true
+                                            }
+
+                                            MouseArea {
+                                                id: messengerMouseArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                ToolTip {
+                                                    visible: messengerMouseArea.containsMouse
+                                                    text: qsTr("Messenger: %1").arg(messenger)
+                                                    delay: 500
+                                                    // FIX: Binding Loop verhindern durch explizite Zuweisung
+                                                    contentWidth: implicitContentWidth 
+                                                }
+                                            }
                                         }
 
-                                        // Fallback: Text, falls kein Icon da ist
-                                        TextEdit {
-                                            anchors.centerIn: parent
-                                            text: `[${protocol}]`
-                                            visible: protocolIcon.status === Image.Error
-                                            font.pointSize: 7
-                                            color: "#888"
-                                            readOnly: true
-                                            selectByMouse: true
-                                            selectionColor: "#3498db"
-                                            persistentSelection: true
-                                        }
-                                        
-                                        // MouseArea wird benötigt, damit der Tooltip merkt, wann die Maus drüber ist
-                                        MouseArea {
-                                            id: iconMouseArea
-                                            anchors.fill: parent
-                                            hoverEnabled: true
+                                        // --- PROTOCOL ICON ---
+                                        Item {
+                                            width: 16
+                                            height: 16
+
+                                            Image {
+                                                id: protocolIcon
+                                                anchors.fill: parent
+                                                source: `qrc:/icons/${protocol}`
+                                                fillMode: Image.PreserveAspectFit
+                                                onStatusChanged: if (status === Image.Error) visible = false
+                                            }
+
+                                            TextEdit {
+                                                anchors.centerIn: parent
+                                                text: `[${protocol}]`
+                                                visible: protocolIcon.status === Image.Error
+                                                font.pointSize: 7
+                                                color: "#888"
+                                                readOnly: true
+                                                selectByMouse: true
+                                            }
                                             
-                                            // ToolTip hier definieren, um den Layout-Loop im Parent zu vermeiden
-                                            ToolTip {
-                                                visible: iconMouseArea.containsMouse
-                                                text: protocol
-                                                delay: 500
-                                                timeout: 5000
-                                                // Breeze Fix: Explizite Breite verhindern Binding Loops
-                                                contentWidth: implicitContentWidth 
+                                            MouseArea {
+                                                id: protocolMouseArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                ToolTip {
+                                                    visible: protocolMouseArea.containsMouse
+                                                    text: qsTr("Protocol: %1").arg(protocol)
+                                                    delay: 500
+                                                    // FIX: Binding Loop verhindern durch explizite Zuweisung
+                                                    contentWidth: implicitContentWidth
+                                                }
                                             }
                                         }
                                     }

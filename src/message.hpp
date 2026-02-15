@@ -12,6 +12,8 @@ class Message {
     public:
         Message();
         
+        void setFilePath(const QString &filePath);
+        QString filePath() const;
         void setSource(const QString &source);
         QString source() const;
         void setSourceNick(const QString &sourceNick);
@@ -26,12 +28,15 @@ class Message {
         QString contentHtml() const;
         void setTimestamp(const QDateTime &timestamp);
         QDateTime timestamp() const;
+        void setMessenger(const QString &messenger);
+        QString messenger() const;
         void setProtocol(const QString &protocol);
         QString protocol() const;
         void setStatus(const QString &status);
         QString status() const;
     
     private:
+        QString m_filePath;
         QString m_source;      // Wer hat gesendet (z. B. ICQ-Nummer)
         QString m_sourceNick; // Nickname von source
         QString m_destination; // Wer hat empfangen
@@ -39,10 +44,12 @@ class Message {
         QString m_content;     // Die Nachricht selbst
         QString m_contentHtml; // URLs automatisch formatiert
         QDateTime m_timestamp; // Präziser Zeitpunkt
+        QString m_messenger;    // z.B. "Kopete", "Skype"
         QString m_protocol;    // z.B. "ICQ", "Jabber"
         QString m_status; // z. B. "Gelesen"
 };
 
+// Ignore filePath, sourceNick, destinationNick, contentHtml, messenger and status.
 inline bool operator==(const Message &m1, const Message &m2) {
     // Bleibe bei Sekunden
     return m1.timestamp().toSecsSinceEpoch() == m2.timestamp().toSecsSinceEpoch() &&
@@ -52,7 +59,6 @@ inline bool operator==(const Message &m1, const Message &m2) {
 }
 
 inline size_t qHash(const Message &key, size_t seed = 0) {
-    // ÄNDERUNG: Nutze hier AUCH toSecsSinceEpoch()
     return ::qHash(key.content(), seed) ^ 
            ::qHash(key.source(), seed) ^ 
            ::qHash(key.destination(), seed) ^ 

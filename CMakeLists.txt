@@ -14,6 +14,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Quick
     QuickLayouts
     QuickControls2
+    Svg
     Xml
     Sql
 )
@@ -61,6 +62,7 @@ target_link_libraries(chronicle PRIVATE
     Qt6::Quick
     Qt6::QuickLayouts
     Qt6::QuickControls2
+    Qt6::Svg
     Qt6::Xml
     Qt6::Sql
 )

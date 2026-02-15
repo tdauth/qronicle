@@ -11,7 +11,8 @@ class HistoryModel : public QAbstractListModel {
     Q_OBJECT
 public:
     enum Roles {
-        ContentRole = Qt::UserRole + 1,
+        FilePathRole = Qt::UserRole + 1,
+        ContentRole,
         TimestampRole,
         SenderRole,
         SenderNickRole,
@@ -19,6 +20,7 @@ public:
         TargetRole,
         TargetNickRole,
         TargetAvatarRole,
+        MessengerRole,
         ProtocolRole
     };
 
@@ -34,6 +36,7 @@ public:
         const auto& msg = m_messages[index.row()];
 
         switch (role) {
+            case FilePathRole: return msg.filePath();
             case ContentRole: return msg.contentHtml();
             case SenderRole:    return msg.source();
             case SenderNickRole:    return msg.sourceNick();
@@ -41,6 +44,7 @@ public:
             case TargetRole:    return msg.destination();
             case TargetNickRole:    return msg.destinationNick();
             case TargetAvatarRole: return msg.destination();
+            case MessengerRole:  return msg.messenger();
             case ProtocolRole:  return msg.protocol();
             case TimestampRole: return msg.timestamp();
             default: return {};
@@ -49,6 +53,7 @@ public:
 
     QHash<int, QByteArray> roleNames() const override {
         return {
+            {FilePathRole, "filePath"},
             {ContentRole, "messageText"},
             {TimestampRole, "time"},
             {SenderRole, "sourceId"},
@@ -57,6 +62,7 @@ public:
             {TargetRole, "targetId"},
             {TargetNickRole, "targetNick"},
             {TargetAvatarRole, "targetAvatar"},
+            {MessengerRole, "messenger"},
             {ProtocolRole, "protocol"}
         };
     }

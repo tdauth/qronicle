@@ -24,11 +24,10 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
     QString partner = QObject::tr("Unknown");
     QDir parentDir = fileInfo.dir(); 
     QString contact = parentDir.dirName();
-    QString protocol = "facebook";
     
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "Konnte Datei nicht öffnen:" << filePath;
+        qWarning() << "Could not open Facebook Messenger file:" << filePath;
         return messages;
     }
 
@@ -37,7 +36,7 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
     file.close();
 
     if (doc.isNull()) {
-        qWarning() << "JSON Fehler in" << filePath << ":" << error.errorString();
+        qWarning() << "JSON error in" << filePath << ":" << error.errorString();
         return messages;
     }
     
@@ -64,7 +63,8 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
         QJsonObject obj = value.toObject();
         
         Message msg;
-        msg.setProtocol(protocol);
+        msg.setProtocol("Facebook Messenger");
+        msg.setMessenger("Facebook Messenger");
         QString senderName = QString::fromUtf8(obj.value("sender_name").toString(QObject::tr("Unknown")).toLatin1());
         
         QString otherParticipant;

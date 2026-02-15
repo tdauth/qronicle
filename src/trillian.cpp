@@ -90,6 +90,7 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 
                 // TODO messenger and protocol are different
                 message.setProtocol(protocol);
+                message.setMessenger("Trillian");
                 
                 QString type = attrs.value(u"type").toString();
                 bool in = type == "incoming_privateMessage";

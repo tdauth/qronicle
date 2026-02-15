@@ -74,7 +74,8 @@ Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
                 participants.insert(name);
             }
 
-            msg.setProtocol("whatsapp");
+            msg.setProtocol("WhatsApp");
+            msg.setMessenger("WhatsApp");
             msg.setSource(name);
             msg.setSourceNick(name);
             

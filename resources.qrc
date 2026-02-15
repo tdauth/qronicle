@@ -5,15 +5,16 @@
         <file alias="JabberProtocol">assets/icons/xmpp.svg</file>
         <file alias="jabberprotocol">assets/icons/xmpp.svg</file>
         <file alias="ICQProtocol">assets/icons/icq.svg</file>
-        <file alias="icqprotocol">assets/icons/icq.svg</file>
-        <file alias="kopete">assets/icons/kopete.svg</file>
-        <file alias="facebook">assets/icons/facebook.svg</file>
-        <file alias="skype">assets/icons/skype.svg</file>
-        <file alias="whatsapp">assets/icons/whatsapp.svg</file>
+        <file alias="ICQ">assets/icons/icq.svg</file>
+        <file alias="Kopete">assets/icons/kopete.svg</file>
+        <file alias="Facebook Messenger">assets/icons/facebook.svg</file>
+        <file alias="Skype">assets/icons/skype.svg</file>
+        <file alias="WhatsApp">assets/icons/whatsapp.svg</file>
         <file alias="icq">assets/icons/icq.svg</file>
-        <file alias="trillian">assets/icons/trillian.png</file>
-        <file alias="wlmprotocol">assets/icons/msn_messenger.png</file>
-        <file alias="knuddels">assets/icons/knuddels.jpg</file>
+        <file alias="Trillian">assets/icons/trillian.png</file>
+        <file alias="WlmProtocol">assets/icons/msn_messenger.png</file>
+        <file alias="Knuddels">assets/icons/knuddels.jpg</file>
+        <file alias="mail">assets/icons/mail.png</file>
     </qresource>
     
     <qresource prefix="/icons/kopete">

@@ -12,8 +12,12 @@ class HistorySearchProxy : public QSortFilterProxyModel {
     Q_OBJECT
     
     // Properties für QML
+    Q_PROPERTY(QString filterFilePath READ filterFilePath WRITE setFilterFilePath NOTIFY filterChanged)
     Q_PROPERTY(QString filterMessage READ filterMessage WRITE setFilterMessage NOTIFY filterChanged)
     Q_PROPERTY(QString filterNick READ filterNick WRITE setFilterNick NOTIFY filterChanged)
+    Q_PROPERTY(QString filterTarget READ filterTarget WRITE setFilterTarget NOTIFY filterChanged)
+    
+    Q_PROPERTY(QString filterMessenger READ filterMessenger WRITE setFilterMessenger NOTIFY filterChanged)
     Q_PROPERTY(QString filterProtocol READ filterProtocol WRITE setFilterProtocol NOTIFY filterChanged)
     
 public:
@@ -22,6 +26,18 @@ public:
     using QSortFilterProxyModel::QSortFilterProxyModel;
     
     // Getter & Setter
+    QString filterFilePath() const { return m_filterFilePath; }
+    void setFilterFilePath(const QString &f) { 
+        if (m_filterFilePath == f) {
+            return;
+        }
+        
+        m_filterFilePath = f; 
+        
+        triggerFilter(f);
+        
+    }
+    
     QString filterMessage() const { return m_filterMessage; }
     void setFilterMessage(const QString &f) { 
         if (m_filterMessage == f) {
@@ -30,88 +46,81 @@ public:
         
         m_filterMessage = f; 
         
-        if (f.isEmpty()) {
-            // Der "Turbo" für das Leeren: Blockiert Einzel-Updates
-            beginResetModel(); 
-            setFilterFixedString(""); 
-            endResetModel();
-        } else {
-            // Normales Filtern beim Tippen
-            setFilterFixedString(f); 
-        }
-        
-        emit filterChanged();
+        triggerFilter(f);
         
     }
 
     QString filterNick() const { return m_filterNick; }
     void setFilterNick(const QString &f) {
-        m_filterNick = f; 
-        
-        if (f.isEmpty()) {
-            // Der "Turbo" für das Leeren: Blockiert Einzel-Updates
-            beginResetModel(); 
-            setFilterFixedString(""); 
-            endResetModel();
-        } else {
-            // Normales Filtern beim Tippen
-            setFilterFixedString(f); 
+        if (m_filterNick == f) {
+            return;
         }
         
-        emit filterChanged(); 
+        m_filterNick = f; 
+        
+        triggerFilter(f);
+        
+    }
+    
+    QString filterTarget() const { return m_filterTarget; }
+    void setFilterTarget(const QString &f) {
+        if (m_filterTarget == f) {
+            return;
+        }
+        
+        m_filterTarget = f; 
+        
+        triggerFilter(f);
+        
+    }
+    
+    
+    QString filterMessenger() const { return m_filterMessenger; }
+    void setFilterMessenger(const QString &f) {
+        if (m_filterMessenger == f) {
+            return;
+        }
+        
+        m_filterMessenger = f;
+        
+        triggerFilter(f);
         
     }
     
     QString filterProtocol() const { return m_filterProtocol; }
     void setFilterProtocol(const QString &f) {
-        m_filterProtocol = f;
-        
-        if (f.isEmpty()) {
-            // Der "Turbo" für das Leeren: Blockiert Einzel-Updates
-            beginResetModel(); 
-            setFilterFixedString(""); 
-            endResetModel();
-        } else {
-            // Normales Filtern beim Tippen
-            setFilterFixedString(f); 
+        if (m_filterProtocol == f) {
+            return;
         }
         
-        emit filterChanged();
+        m_filterProtocol = f;
+        
+        triggerFilter(f);
         
     }
 
 signals:
+    void filterFilePathChanged();
     void filterMessageChanged();
     void filterNickChanged();
+    void filterTargetChanged();
+    void filterMessengerChanged();
     void filterProtocolChanged();
     
     void filterChanged();
     
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override {
-        auto *source = static_cast<HistoryModel*>(sourceModel());
-        bool matches = true;
-        
-        // Logik: Alle gesetzten Filter müssen gleichzeitig erfüllt sein (AND-Verknüpfung)
-        if (matches && !m_filterMessage.isEmpty()) {
-            matches = source->messages().at(source_row).content().contains(m_filterMessage, Qt::CaseInsensitive);
-        }
-
-        if (matches && !m_filterNick.isEmpty()) {
-            matches = source->messages().at(source_row).source().contains(m_filterNick, Qt::CaseInsensitive);
-        }
-        
-        if (matches && !m_filterProtocol.isEmpty()) {
-            matches = source->messages().at(source_row).protocol().contains(m_filterProtocol, Qt::CaseInsensitive);
-        }
-
-        return matches;
-    }
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     
 private:
+    QString m_filterFilePath;
     QString m_filterMessage;
     QString m_filterNick;
+    QString m_filterTarget;
+    QString m_filterMessenger;
     QString m_filterProtocol;
+    
+    void triggerFilter(const QString &f);
 };
 
 }

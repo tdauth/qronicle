@@ -74,8 +74,8 @@ int main(int argc, char *argv[]) {
     parser.addHelpOption();
     parser.addVersionOption();
     
-    QCommandLineOption optionDistinct = QCommandLineOption("distinct", QObject::tr("Ignore duplicated messages."));
-    parser.addOption(optionDistinct);
+    QCommandLineOption optionNoDistinct = QCommandLineOption("no-distinct", QObject::tr("Allows duplicated messages."));
+    parser.addOption(optionNoDistinct);
     
     QList<std::shared_ptr<Messenger>> messengers;
     messengers << std::make_shared<Kopete>();
@@ -140,13 +140,13 @@ int main(int argc, char *argv[]) {
     QSet<Message> seen;
 
     for (const Message &msg : allMessages) {
-        if (parser.isSet(optionDistinct)) {
+        if (parser.isSet(optionNoDistinct)) {
+            distinctMessages.append(msg);
+        } else {
             if (!seen.contains(msg)) {
                 seen.insert(msg);
                 distinctMessages.append(msg);
             }
-        } else {
-            distinctMessages.append(msg);
         }
     }
     

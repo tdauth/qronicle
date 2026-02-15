@@ -10,6 +10,7 @@ Qt-based GUI program to visualize, import and export history from different mess
 | <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ |
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ⏳ | ⏳ |
+| <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
 | <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ⏳ | ⏳ |
 | <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ⏳ | ⏳ |
@@ -22,7 +23,8 @@ See [build.sh](./build.sh).
 
 ### Distinct
 
-Use the option --distinct to ignore duplicated messages.
+Use the option --no-distinct to allow duplicated messages.
+By default they are ignored.
 
 ### Custom Names
 

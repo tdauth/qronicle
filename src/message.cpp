@@ -5,6 +5,14 @@ namespace chronicle {
 Message::Message() {
 }
 
+void Message::setFilePath(const QString &filePath) {
+    m_filePath = filePath;
+}
+
+QString Message::filePath() const {
+    return m_filePath;
+}
+
 void Message::setSource(const QString &source) {
     m_source = source;
 }
@@ -60,6 +68,15 @@ void Message::setTimestamp(const QDateTime &timestamp) {
 QDateTime Message::timestamp() const {
     return m_timestamp;
 }
+
+void Message::setMessenger(const QString &messenger) {
+    m_messenger = messenger;
+}
+
+QString Message::messenger() const {
+    return m_messenger;
+}
+
 
 void Message::setProtocol(const QString &protocol) {
     m_protocol = protocol;

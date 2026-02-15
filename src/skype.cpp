@@ -104,7 +104,8 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
         if (query.exec()) {
             while (query.next()) {
                 Message msg;
-                msg.setProtocol("skype");
+                msg.setProtocol("Skype");
+                msg.setMessenger("Skype");
                 
                 QString sender_id = query.value("sender_id").toString();
                 QString sender_display_name = query.value("sender_display_name").toString();
