@@ -2,14 +2,14 @@
 
 Qt-based GUI program to visualize, import and export history from different messengers:
 
-| Name | Import Messages | Avatars |
+| Name | Importing Messages | Avatars |
 | :--- | :---:         | :---: |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ⏳ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ but only .history files | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ |
-| <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ⏳ | ⏳ |
+| <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
 | <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ⏳ | ⏳ |
@@ -19,21 +19,16 @@ The name qronicle is derived from the English word chronicle.
 However, this name was already in use for different programs.
 Since this program uses Qt the name qronicle has been chosen.
 
+
+The program does not connect online to any of those messengers.
+It requires local history data in a certain format to process it.
+This is intended behavior since your messenger history might be confidential and should remain on your local machine.
+
 ## Planned Features
 
 - Improve theme support: Smileys, UI style etc. should look like in the original app.
 - Allow adding folders and single files.
 - Export: Export everything as XML/JSON into folders.
-
-## Manual Build Ubuntu
-
-See [build.sh](./build.sh).
-
-## I18N
-
-```
-/usr/lib/qt6/bin/linguist i18n/app_de.ts
-```
 
 ## Customize
 
@@ -65,6 +60,18 @@ You can place any chat history of different app into `~/.config/qronicle/<app na
 - `~/.config/qronicle/whatsapp`.
 
 to be found automatically.
+
+## Manual Build Ubuntu
+
+See [build.sh](./build.sh).
+
+## Internationalization
+
+Modify the German translation:
+
+```
+/usr/lib/qt6/bin/linguist i18n/app_de.ts
+```
 
 ## Messenger History Formats
 
