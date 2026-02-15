@@ -145,7 +145,6 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
 Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
     QStringList filePaths;
 
-    // 1. Alle Verzeichnisse nach XML-Dateien durchsuchen
     for (const QString &dir : dirPaths) {
         QDirIterator it(dir, QStringList() << "*.xml", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext()) {
@@ -160,21 +159,16 @@ Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
 
     qDebug() << "Loading" << filePaths.size() << "Kopete files in parallel...";
 
-    // 2. Parallel laden und direkt reduzieren (zusammenführen)
-    // blockingMappedReduced ist eleganter als blockingMapped + manuelle Schleife
     return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
         filePaths, 
         [this](const QString &path) {
             // qDebug() << "Loading Kopete XML file" << path;
             return loadFile(path); 
         },
-        // Reduce-Funktion: Schiebt die Ergebnisse thread-sicher zusammen
         [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
-            // Falls du die Gesamtgröße kennst, könntest du hier result.reserve machen,
-            // aber Qt macht das intern bei append für QList/QVector meist schon effizient.
             result.append(intermediate);
         },
-        QtConcurrent::UnorderedReduce // Performance-Boost: Reihenfolge egal
+        QtConcurrent::UnorderedReduce
     );
 }
 
