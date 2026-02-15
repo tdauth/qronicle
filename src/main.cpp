@@ -7,20 +7,24 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QStandardPaths>
-#include <QSettings>
 #include <QtConcurrent>
 #include <QFuture>
+#include <QTranslator>
+#include <QLibraryInfo>
+#include <QLocale>
 
 #include "history_model.hpp"
 #include "history_search_proxy.hpp"
 #include "avatar_provider.hpp"
+#include "settings_manager.hpp"
 #include "kopete.hpp"
 #include "trillian.hpp"
 #include "facebook.hpp"
 #include "skype.hpp"
 #include "whatsapp.hpp"
+#include "psi.hpp"
 
-using namespace chronicle;
+using namespace qronicle;
 
 Messenger::Avatars loadCustomAvatars() {
     Messenger::Avatars avatarCache;
@@ -54,9 +58,29 @@ Messenger::Avatars loadCustomAvatars() {
 
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
-    app.setApplicationName(QObject::tr("Chronicle"));
+    
+    QTranslator translator;
+    
+    // 1. Die Systemsprache ermitteln (z.B. "de_DE")
+    QLocale locale = QLocale::system(); 
+
+    // 2. Die .qm Datei laden
+    // "app" ist der Präfix aus deinem Dateinamen (app_de.ts -> "app")
+    // ":/i18n" ist der Standardpfad, den CMake für Übersetzungen nutzt
+    if (translator.load(locale, "app", "_", ":/i18n")) {
+        app.installTranslator(&translator);
+    }
+
+    // Optional: Auch Standard-Texte von Qt selbst übersetzen (z.B. "Cancel", "Open")
+    QTranslator qtTranslator;
+    if (qtTranslator.load(locale, "qt", "_", 
+        QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+        app.installTranslator(&qtTranslator);
+    }
+    
+    app.setApplicationName(QObject::tr("qronicle"));
     app.setApplicationVersion("1.0");
-    app.setWindowIcon(QIcon(":/icons/chronicle")); 
+    app.setWindowIcon(QIcon(":/icons/qronicle")); 
     
     // Teste den Haupt-Präfix
     QDirIterator it(":/icons", QDirIterator::Subdirectories);
@@ -70,7 +94,7 @@ int main(int argc, char *argv[]) {
     
     // 2. Parser aufsetzen
     QCommandLineParser parser;
-    parser.setApplicationDescription(QObject::tr("Chronicle"));
+    parser.setApplicationDescription(QObject::tr("qronicle"));
     parser.addHelpOption();
     parser.addVersionOption();
     
@@ -83,6 +107,7 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<Facebook>();
     messengers << std::make_shared<Skype>();
     messengers << std::make_shared<WhatsApp>();
+    messengers << std::make_shared<Psi>();
     
     QMap<std::shared_ptr<Messenger>, QCommandLineOption*> optionMap;
 
@@ -152,16 +177,13 @@ int main(int argc, char *argv[]) {
     
     qDebug() << "Distinct messages" << distinctMessages.size();
     
-    QSettings settings("Chronicle", "Chronicle");
-    settings.beginGroup("Aliases");
     QMap<QString, QString> aliases;
-    // childKeys() liefert alle Namen/Nummern (die "Keys" in der INI)
-    QStringList keys = settings.childKeys(); 
-
-    for (const QString &key : keys) {
-        aliases.insert(key, settings.value(key).toString());
+    SettingsManager settings;
+    settings.loadGroup("Aliases");
+    auto variantMap = settings.settingsMap();
+    for (auto it = variantMap.begin(); it != variantMap.end(); ++it) {
+        aliases.insert(it.key(), it.value().toString());
     }
-    settings.endGroup();
     
     qDebug() << "Aliases" << aliases;
     
@@ -195,6 +217,7 @@ int main(int argc, char *argv[]) {
     QQmlApplicationEngine engine;
     engine.addImageProvider(QLatin1String("avatars"), new AvatarProvider(std::move(allAvatars)));
     engine.rootContext()->setContextProperty("chatModel", proxyModel);
+    engine.rootContext()->setContextProperty("settingsManager", &settings);
     engine.loadFromModule("Chronicle", "Main");
     
     return app.exec();

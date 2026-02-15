@@ -5,7 +5,7 @@
 #include <QByteArray>
 #include <QDateTime>
 
-namespace chronicle {
+namespace qronicle {
     
 class Message {
     
@@ -14,6 +14,8 @@ class Message {
         
         void setFilePath(const QString &filePath);
         QString filePath() const;
+        void setLineNumber(int lineNumber);
+        int lineNumber() const;
         void setSource(const QString &source);
         QString source() const;
         void setSourceNick(const QString &sourceNick);
@@ -37,6 +39,7 @@ class Message {
     
     private:
         QString m_filePath;
+        int m_lineNumber;
         QString m_source;      // Wer hat gesendet (z. B. ICQ-Nummer)
         QString m_sourceNick; // Nickname von source
         QString m_destination; // Wer hat empfangen

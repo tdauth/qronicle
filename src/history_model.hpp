@@ -5,13 +5,14 @@
 
 #include "messenger.hpp"
 
-namespace chronicle {
+namespace qronicle {
 
 class HistoryModel : public QAbstractListModel {
     Q_OBJECT
 public:
     enum Roles {
         FilePathRole = Qt::UserRole + 1,
+        LineNumberRole,
         ContentRole,
         TimestampRole,
         SenderRole,
@@ -37,6 +38,7 @@ public:
 
         switch (role) {
             case FilePathRole: return msg.filePath();
+            case LineNumberRole: return msg.lineNumber();
             case ContentRole: return msg.contentHtml();
             case SenderRole:    return msg.source();
             case SenderNickRole:    return msg.sourceNick();
@@ -54,6 +56,7 @@ public:
     QHash<int, QByteArray> roleNames() const override {
         return {
             {FilePathRole, "filePath"},
+            {LineNumberRole, "lineNumber"},
             {ContentRole, "messageText"},
             {TimestampRole, "time"},
             {SenderRole, "sourceId"},

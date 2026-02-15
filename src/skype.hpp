@@ -3,7 +3,7 @@
 
 #include "messenger.hpp"
 
-namespace chronicle {
+namespace qronicle {
     
 class Skype : public Messenger {
     public:

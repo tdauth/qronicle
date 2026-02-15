@@ -9,7 +9,7 @@
 
 #include "message.hpp"
 
-namespace chronicle {
+namespace qronicle {
     
 class Messenger {
     public:

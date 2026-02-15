@@ -15,6 +15,21 @@ ApplicationWindow {
 
     // Design-Konstanten
     readonly property color colorBgChat: "#e5ddd5"
+    
+    Loader {
+        id: settingsLoader
+        anchors.fill: parent
+        active: false
+        source: "Settings.qml"
+        
+        // Z-Index erhöhen, damit es über dem Rest liegt
+        z: 100 
+        
+        // Optional: Falls das Hauptmenü noch sichtbar ist, 
+        // kannst du hier ein einfaches Schließen ermöglichen
+        Keys.onEscapePressed: active = false
+    }
+
 
     // Hauptcontainer (ersetzt SplitView)
     ColumnLayout {
@@ -44,7 +59,17 @@ ApplicationWindow {
                         
                         MenuItem {
                             text: qsTr("Settings")
-                            onTriggered: console.log("Settings clicked")
+                                onTriggered: {
+                                    settingsManager.loadGroup("Aliases") 
+                                    
+                                    // 2. Den Loader aktivieren
+                                    settingsLoader.active = true 
+                                }
+                        }
+                        
+                        MenuItem {
+                            text: qsTr("About")
+                            onTriggered: aboutDialog.open()
                         }
                         
                         MenuSeparator { } // Ein horizontaler Trennstrich
@@ -52,6 +77,69 @@ ApplicationWindow {
                         MenuItem {
                             text: qsTr("Exit program")
                             onTriggered: Qt.quit()
+                        }
+                    }
+                }
+                
+                // Der "Über"-Dialog
+                Dialog {
+                    id: aboutDialog
+                    title: qsTr("About")
+
+                    // Position und feste Größe
+                    anchors.centerIn: parent
+                    width: 300
+                    height: 350
+                    modal: true
+                    standardButtons: Dialog.Ok
+
+                    contentItem: Column {
+                        spacing: 15
+                        topPadding: 10
+                        bottomPadding: 20
+
+                        // Das Logo
+                        Image {
+                            id: logo
+                            source: "qrc:/icons/qronicle"
+                            width: 80
+                            height: 80
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            
+                            // Falls das Bild fehlt, wird ein Platzhalter angezeigt
+                            fillMode: Image.PreserveAspectFit
+                            smooth: true
+                            
+                            // Optional: Ein Schatten oder Rahmen um das Logo
+                            Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                                border.color: "#eeeeee"
+                                border.width: 1
+                                visible: logo.status === Image.Ready
+                            }
+                        }
+
+                        Label {
+                            text: qsTr("qronicle 1.0")
+                            font.pixelSize: 18
+                            font.bold: true
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Label {
+                            text: qsTr("Copyright © 2026 Tamino Dauth\nAlle rights reserved.")
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                            wrapMode: Text.WordWrap
+                        }
+
+                        Label {
+                            text: "<a href='https://github.com/tdauth/qronicle</a>"
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                            onLinkActivated: (link) => Qt.openUrlExternally(link)
                         }
                     }
                 }
@@ -239,6 +327,9 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 source: model.sourceAvatar ? "image://avatars/" + model.sourceAvatar : ""
+                                sourceSize.width: 40  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
+                                sourceSize.height: 40
+                                asynchronous: true    // Erlaubt das Laden im Hintergrund
                             }
                         }
 
@@ -271,7 +362,7 @@ ApplicationWindow {
                                 anchors.margins: 8
                                 spacing: 4
                                 
-                                // Zeile 1: Sender (links) & Zeit (rechts)
+                                // Zeile 1: Sender (links), Datei (mitte) & Zeit (rechts)
                                 RowLayout {
                                     width: parent.width
                                     TextEdit {
@@ -285,7 +376,79 @@ ApplicationWindow {
                                         selectByMouse: true
                                         selectionColor: "#3498db"
                                         persistentSelection: true
+                                        readOnly: true // Verhindert Bearbeitung beim Klicken auf den Link
                                     }
+                                    
+                                    // Dateilink (URL auf filePath, zeigt nur Dateinamen)
+                                    TextEdit {
+                                        id: fileText
+                                        
+                                        // WICHTIG: Erst das Format, dann der Text
+                                        textFormat: Text.RichText // Versuche RichText statt StyledText, falls es Probleme gibt
+                                        
+                                        
+                                        // Properties für sauberen Zugriff
+                                        readonly property string fullUrl: "file://" + filePath + (lineNumber > 0 ? "#" + lineNumber : "")
+                                        readonly property string fileName: filePath.split('/').pop()
+                                        
+                                        // Layout-Integration
+                                        Layout.alignment: Qt.AlignVCenter
+                                        Layout.preferredWidth: contentWidth // Nutzt die tatsächliche Textbreite
+                                        
+                                        // Styling & Inhalt
+                                        // Inline-Style für die Farbe, da linkColor in TextEdit nicht existiert
+                                        text: "<a href='" + fullUrl + "' style='color:#3498db; text-decoration:none;'>" + fileName + "</a>"
+                                        font.pointSize: 9
+                                        color: "#3498db"
+                                        
+                                        readOnly: true
+                                        selectByMouse: true
+                                        
+                                        // Link-Klick Logik
+                                        onLinkActivated: (link) => {
+                                            console.log("Opening link:", link);
+                                            Qt.openUrlExternally(link);
+                                        }
+
+                                        // Kontextmenü
+                                        Menu {
+                                            id: contextMenuCopyLink
+                                            MenuItem {
+                                                text: qsTr("Copy Link Address")
+                                                onTriggered: fileText.copyToClipboard(fileText.fullUrl)
+                                            }
+                                            MenuItem {
+                                                text: qsTr("Copy File Path")
+                                                onTriggered: fileText.copyToClipboard(filePath)
+                                            }
+                                        }
+
+                                        // Helferfunktion (Nutzt das interne Clipboard-System von TextEdit)
+                                        function copyToClipboard(txt) {
+                                            tempCopyEdit.text = txt;
+                                            tempCopyEdit.selectAll();
+                                            tempCopyEdit.copy();
+                                        }
+
+                                        // Unsichtbarer Helfer für Clipboard
+                                        TextEdit { id: tempCopyEdit; visible: false }
+
+                                        // MouseArea für Cursor & Rechtsklick
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            hoverEnabled: true 
+                                            acceptedButtons: Qt.RightButton
+                                            // Verweist auf hoveredLink des Elternelements (TextEdit)
+                                            cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
+
+                                            onClicked: (mouse) => {
+                                                if (mouse.button === Qt.RightButton) {
+                                                    contextMenuCopyLink.popup();
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     TextEdit {
                                         text: time
                                         font.pointSize: 8
@@ -294,6 +457,7 @@ ApplicationWindow {
                                         selectByMouse: true
                                         selectionColor: "#3498db"
                                         persistentSelection: true
+                                        readOnly: true
                                     }
                                 }
                                 
@@ -446,6 +610,9 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 source: model.targetAvatar ? "image://avatars/" + model.targetAvatar : ""
+                                sourceSize.width: 40  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
+                                sourceSize.height: 40
+                                asynchronous: true    // Erlaubt das Laden im Hintergrund
                             }
                         }
                     }

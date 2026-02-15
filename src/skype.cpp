@@ -8,7 +8,7 @@
 
 #include "skype.hpp"
 
-namespace chronicle {
+namespace qronicle {
     
 namespace {
     
@@ -212,7 +212,10 @@ Messenger::Messages Skype::loadDirectories(const QStringList &dirPaths) {
 }
 
 QStringList Skype::defaultDirectories() {
-    return {};
+    return {
+        QDir::homePath() + "/.Skype",
+        QDir::homePath() + "/.config/skypeforlinux"
+    };
 }
 
 }

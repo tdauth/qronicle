@@ -17,6 +17,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Svg
     Xml
     Sql
+    LinguistTools
 )
 
 qt_standard_project_setup()
@@ -30,6 +31,7 @@ qt_add_executable(chronicle
     src/history_model.hpp
     src/history_search_proxy.hpp
     src/history_search_proxy.cpp
+    src/settings_manager.hpp
     src/message.hpp
     src/message.cpp
     src/messenger.hpp
@@ -44,13 +46,20 @@ qt_add_executable(chronicle
     src/skype.cpp
     src/whatsapp.hpp
     src/whatsapp.cpp
+    src/psi.hpp
+    src/psi.cpp
 )
 
 qt_add_qml_module(chronicle
     URI Chronicle
     VERSION 1.0
-    QML_FILES "src/Main.qml"
+    QML_FILES "src/Main.qml" "src/Settings.qml"
     DEPENDENCIES QtQuick QtQuick.Layouts QtQuick.Controls
+)
+
+qt_add_translations(chronicle
+    TS_FILES "i18n/app_de.ts" "i18n/app_en.ts"
+    SOURCES ${PROJECT_SOURCES} # Alle deine .cpp und .qml Dateien
 )
 
 target_link_libraries(chronicle PRIVATE

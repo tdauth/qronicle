@@ -5,7 +5,7 @@
 
 #include "history_model.hpp"
 
-namespace chronicle {
+namespace qronicle {
 
 // Faster searches in GUI without using regexs.
 class HistorySearchProxy : public QSortFilterProxyModel {

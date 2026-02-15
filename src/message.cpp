@@ -1,6 +1,6 @@
 #include "message.hpp"
 
-namespace chronicle {
+namespace qronicle {
 
 Message::Message() {
 }
@@ -11,6 +11,14 @@ void Message::setFilePath(const QString &filePath) {
 
 QString Message::filePath() const {
     return m_filePath;
+}
+
+void Message::setLineNumber(int lineNumber) {
+    m_lineNumber = lineNumber;
+}
+
+int Message::lineNumber() const {
+    return m_lineNumber;
 }
 
 void Message::setSource(const QString &source) {

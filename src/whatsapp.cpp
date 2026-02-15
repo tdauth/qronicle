@@ -8,7 +8,7 @@
 
 #include "whatsapp.hpp"
 
-namespace chronicle {
+namespace qronicle {
     
 namespace {
     

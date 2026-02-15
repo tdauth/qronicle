@@ -9,7 +9,7 @@
 
 #include "facebook.hpp"
 
-namespace chronicle {
+namespace qronicle {
     
 QString Facebook::id() const {
     return "facebook";

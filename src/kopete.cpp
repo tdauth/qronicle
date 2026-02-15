@@ -12,7 +12,7 @@
 
 #include "kopete.hpp"
 
-namespace chronicle {
+namespace qronicle {
 
 namespace {
     
@@ -94,6 +94,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
                 Message message;
                 auto attrs = reader.attributes();
                 
+                message.setFilePath(filePath);
                 message.setProtocol(protocol);
                 message.setMessenger("Kopete");
                 QString nick = attrs.value(u"nick").toString();

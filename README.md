@@ -1,8 +1,8 @@
-# Chronicle
+# qronicle
 
 Qt-based GUI program to visualize, import and export history from different messengers:
 
-| Name | Basic Support | Avatars |
+| Name | Import Messages | Avatars |
 | :--- | :---:         | :---: |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
@@ -15,9 +15,25 @@ Qt-based GUI program to visualize, import and export history from different mess
 | <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ⏳ | ⏳ |
 | <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ⏳ | ⏳ |
 
+The name qronicle is derived from the English word chronicle.
+However, this name was already in use for different programs.
+Since this program uses Qt the name qronicle has been chosen.
+
+## Planned Features
+
+- Improve theme support: Smileys, UI style etc. should look like in the original app.
+- Allow adding folders and single files.
+- Export: Export everything as XML/JSON into folders.
+
 ## Manual Build Ubuntu
 
 See [build.sh](./build.sh).
+
+## I18N
+
+```
+/usr/lib/qt6/bin/linguist i18n/app_de.ts
+```
 
 ## Customize
 
@@ -28,7 +44,7 @@ By default they are ignored.
 
 ### Custom Names
 
-Define aliases in `~/.config/Chronicle/Chronicle.conf`:
+Define aliases in `~/.config/qronicle/qronicle.conf`:
 
 ```txt
 [Aliases]
@@ -37,16 +53,16 @@ Define aliases in `~/.config/Chronicle/Chronicle.conf`:
 
 ### Custom Avatars
 
-You can place any number of images into `~/.config/Chronicle/avatars`.
+You can place any number of images into `~/.config/qronicle/avatars`.
 These will be used as avatars if the file name without extension matches the user ID.
 
 ### Custom Folders
 
-You can place any chat history of different app into `~/.config/Chronicle/<app name>`:
+You can place any chat history of different app into `~/.config/qronicle/<app name>`:
 
-- `~/.config/Chronicle/kopete`.
-- `~/.config/Chronicle/skype`.
-- `~/.config/Chronicle/whatsapp`.
+- `~/.config/qronicle/kopete`.
+- `~/.config/qronicle/skype`.
+- `~/.config/qronicle/whatsapp`.
 
 to be found automatically.
 
@@ -204,6 +220,53 @@ WhatsApp allows exporting chats which leads to directories with all sent and rec
 19.12.19, 18:57 - Hans: 🌹
 19.12.19, 21:27 - Peter: Nächste Woche!
 19.12.19, 21:27 - Peter: ‎STK-20240525-WA0000.webp (Datei angehängt)
+```
+
+### Psi
+
+History is stored in `~/.psi/profiles/default/history/`.
+There can be either .history and .xml files.
+
+.history example:
+
+```txt
+|2009-01-26T18:34:25|1|to|N---|Hallo!
+|2009-01-26T18:42:25|1|from|N---|Nächste Woche!
+```
+
+The value `N---` for the nickname is a placeholder since the vCard info is not loaded here.
+
+XML example:
+
+```xml
+<history>
+    <message time="2026-02-15T10:30:00Z" is_incoming="true">
+        <body>Hallo, wie läuft die Entwicklung von Qronicle?</body>
+    </message>
+    <message time="2026-02-15T10:31:05Z" is_incoming="false">
+        <body>Nächste Woche!</body>
+    </message>
+</history>
+```
+
+Important information about contacts and the account are stored in:
+
+- `~/.psi/profiles/default/vcard/*.xml`: Contact information including birth date and avatars using the standard [XEP-0054: vcard-temp](https://xmpp.org/extensions/xep-0054.html).
+- `~/.psi/profiles/default/accounts.xml`: Account name.
+
+vcard XML file:
+
+```xml
+<vCard version="2.0" prodid="-//HandGen//NONSGML vGen v1.0//EN" xmlns="vcard-temp" >
+    <FN>Hans Müller</FN>
+    <NICKNAME>hans</NICKNAME>
+    <PHOTO>
+        <TYPE>image/jpeg</TYPE>
+        <BINVAL>Base64 encoded raw image data</BINVAL>
+    </PHOTO>
+    <BDAY>1989-03-29</BDAY>
+    <URL>website</URL>
+</vCard>
 ```
 
 ### aMSN

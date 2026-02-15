@@ -12,7 +12,7 @@
 
 #include "trillian.hpp"
 
-namespace chronicle {
+namespace qronicle {
 
 namespace {
     
@@ -112,7 +112,7 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 QString content = decodeMessage(attrs.value(u"text").toString());
                 message.setContent(content);
                 
-                message.setContentHtml(formatHtml(content));
+                message.setContentHtml(content); // Do not format HTML. It seems that Trillian already has HTML links.
 
                 messages.push_back(std::move(message));
             }
@@ -159,7 +159,9 @@ Messenger::Messages Trillian::loadDirectories(const QStringList &dirPaths) {
 }
 
 QStringList Trillian::defaultDirectories() {
-    return {};
+    return {
+        QDir::homePath() + "/.config/trillian"
+    };
 }
 
 }

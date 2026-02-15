@@ -1,6 +1,6 @@
 #include "history_search_proxy.hpp"
 
-namespace chronicle {
+namespace qronicle {
 
 int HistorySearchProxy::getUnfilteredIndex(int currentProxyRow){
     QModelIndex sourceIndex = this->mapToSource(this->index(currentProxyRow, 0));
