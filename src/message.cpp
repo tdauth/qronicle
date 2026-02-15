@@ -13,11 +13,11 @@ QString Message::filePath() const {
     return m_filePath;
 }
 
-void Message::setLineNumber(int lineNumber) {
+void Message::setLineNumber(qint64 lineNumber) {
     m_lineNumber = lineNumber;
 }
 
-int Message::lineNumber() const {
+qint64 Message::lineNumber() const {
     return m_lineNumber;
 }
 

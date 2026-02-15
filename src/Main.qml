@@ -15,21 +15,6 @@ ApplicationWindow {
 
     // Design-Konstanten
     readonly property color colorBgChat: "#e5ddd5"
-    
-    Loader {
-        id: settingsLoader
-        anchors.fill: parent
-        active: false
-        source: "Settings.qml"
-        
-        // Z-Index erhöhen, damit es über dem Rest liegt
-        z: 100 
-        
-        // Optional: Falls das Hauptmenü noch sichtbar ist, 
-        // kannst du hier ein einfaches Schließen ermöglichen
-        Keys.onEscapePressed: active = false
-    }
-
 
     // Hauptcontainer (ersetzt SplitView)
     ColumnLayout {
@@ -58,16 +43,6 @@ ApplicationWindow {
                         y: menuButton.height // Erscheint direkt unter dem Button
                         
                         MenuItem {
-                            text: qsTr("Settings")
-                                onTriggered: {
-                                    settingsManager.loadGroup("Aliases") 
-                                    
-                                    // 2. Den Loader aktivieren
-                                    settingsLoader.active = true 
-                                }
-                        }
-                        
-                        MenuItem {
                             text: qsTr("About")
                             onTriggered: aboutDialog.open()
                         }
@@ -75,7 +50,7 @@ ApplicationWindow {
                         MenuSeparator { } // Ein horizontaler Trennstrich
 
                         MenuItem {
-                            text: qsTr("Exit program")
+                            text: qsTr("Exit")
                             onTriggered: Qt.quit()
                         }
                     }
@@ -293,6 +268,37 @@ ApplicationWindow {
                 reuseItems: true 
                 cacheBuffer: 3000
                 
+                property bool initialScrollDone: false
+
+                onCountChanged: {
+                    if (!initialScrollDone && chatModel.totalCount > 0) {
+                        initialScrollDone = true
+                        
+                        // 1. Erster Versuch: Zum aktuell bekannten Ende
+                        chatListView.positionViewAtIndex(count - 1, ListView.End)
+                        
+                        // 2. Erzwungener Versuch: Nach einer kurzen Verzögerung zum ECHTEN Ende
+                        // Das gibt der SQLite-Engine Zeit, das 'fetchMore' intern zu verarbeiten
+                        var scrollTimer = Qt.createQmlObject('import QtQuick; Timer { interval: 100; repeat: false }', chatListView)
+                        scrollTimer.triggered.connect(function() {
+                            // Wir springen zum absoluten Maximum aus deiner SQL-Abfrage
+                            chatListView.positionViewAtIndex(chatModel.totalCount - 1, ListView.End)
+                            scrollTimer.destroy()
+                        })
+                        scrollTimer.start()
+                    }
+                }
+
+                Keys.onPressed: (event) => {
+                    if (event.key === Qt.Key_Home) {
+                        positionViewAtBeginning()
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_End) {
+                        positionViewAtEnd()
+                        event.accepted = true
+                    }
+                }
+                
                 // Der Scrollbalken
                 ScrollBar.vertical: ScrollBar {
                     id: vBar
@@ -309,6 +315,8 @@ ApplicationWindow {
                 delegate: Column {
                     id: messageDelegate
                     width: chatListView.width - 30
+                    // Nutze implicitHeight der Column + Margins für die Höhe
+                    height: messageDelegate.implicitHeight + 20 
                     spacing: 4
                     
                     Row { // Äußere Reihe für Avatar + Sprechblase
@@ -512,12 +520,29 @@ ApplicationWindow {
                                                 id: messengerMouseArea
                                                 anchors.fill: parent
                                                 hoverEnabled: true
+                                                
                                                 ToolTip {
+                                                    id: messengerToolTip
                                                     visible: messengerMouseArea.containsMouse
                                                     text: qsTr("Messenger: %1").arg(messenger)
                                                     delay: 500
-                                                    // FIX: Binding Loop verhindern durch explizite Zuweisung
-                                                    contentWidth: implicitContentWidth 
+
+                                                    // FIX: Wir entkoppeln die Breite vom Content-Item
+                                                    // Wir setzen eine feste Breite basierend auf der benötigten Textbreite + Padding
+                                                    width: contentItem.implicitWidth + leftPadding + rightPadding
+
+                                                    contentItem: Text {
+                                                        // KEINE Bindung zurück an den ToolTip hier drin!
+                                                        text: messengerToolTip.text
+                                                        font: messengerToolTip.font
+                                                        color: "#333"
+                                                    }
+
+                                                    background: Rectangle {
+                                                        color: "#ffffff"
+                                                        border.color: "#bbbbbb"
+                                                        radius: 2
+                                                    }
                                                 }
                                             }
                                         }
@@ -549,12 +574,33 @@ ApplicationWindow {
                                                 id: protocolMouseArea
                                                 anchors.fill: parent
                                                 hoverEnabled: true
+                                            
                                                 ToolTip {
+                                                    id: protocolToolTip
                                                     visible: protocolMouseArea.containsMouse
                                                     text: qsTr("Protocol: %1").arg(protocol)
                                                     delay: 500
-                                                    // FIX: Binding Loop verhindern durch explizite Zuweisung
-                                                    contentWidth: implicitContentWidth
+
+                                                    // FIX: Die Breite explizit von innen nach außen festlegen
+                                                    width: protocolText.implicitWidth + leftPadding + rightPadding
+                                                    
+                                                    leftPadding: 8
+                                                    rightPadding: 8
+                                                    topPadding: 4
+                                                    bottomPadding: 4
+
+                                                    contentItem: Text {
+                                                        id: protocolText
+                                                        text: protocolToolTip.text
+                                                        font: protocolToolTip.font
+                                                        color: "#333"
+                                                    }
+
+                                                    background: Rectangle {
+                                                        color: "#ffffff"
+                                                        border.color: "#bbbbbb"
+                                                        radius: 2
+                                                    }
                                                 }
                                             }
                                         }
@@ -599,7 +645,8 @@ ApplicationWindow {
                         
                         // 3. EMPFÄNGER AVATAR (Rechts)
                         Rectangle {
-                            width: 36; height: 36
+                            width: 36
+                            height: 36
                             radius: 18
                             color: "#eee"
                             clip: true
@@ -640,8 +687,50 @@ ApplicationWindow {
                         }
                     }
                 }
-                
-                onCountChanged: chatListView.positionViewAtEnd()
+            }
+        }
+        
+        // Footer shows count and date range of all messages.
+        Rectangle {
+            Layout.fillWidth: true
+            height: 25
+            color: "#f0f0f0"
+            border.color: "#ccc"
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+
+                // Linke Seite: Anzahl
+                Label {
+                    text: qsTr("Messages: %1 / %2").arg(chatModel.filteredCount).arg(chatModel.totalCount)
+                    font.pixelSize: 11
+                    color: "#666"
+                }
+
+                Item { Layout.fillWidth: true } // Platzhalter schiebt Rest nach rechts
+
+                // Mitte: Zeitspanne (Neu)
+                Label {
+                    // Zeigt z.B. "Period: 01.01.2023 - 15.02.2026"
+                    text: qsTr("Period: %1").arg(chatModel.dateRange)
+                    font.pixelSize: 11
+                    color: "#666"
+                    visible: chatModel.totalCount > 0
+                }
+
+                Item { Layout.fillWidth: true } // Zweiter Platzhalter für Zentrierung
+
+                // Rechte Seite: Status
+                Label {
+                    text: chatModel.filteredCount === chatModel.totalCount ? 
+                        qsTr("All data loaded") : 
+                        qsTr("Filtered")
+                    font.pixelSize: 11
+                    font.italic: true
+                    color: "#999"
+                }
             }
         }
     }

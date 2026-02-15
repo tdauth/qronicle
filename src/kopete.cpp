@@ -94,7 +94,8 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
                 Message message;
                 auto attrs = reader.attributes();
                 
-                message.setFilePath(filePath);
+                message.setFilePath(fileInfo.absoluteFilePath());
+                message.setLineNumber(reader.lineNumber());
                 message.setProtocol(protocol);
                 message.setMessenger("Kopete");
                 QString nick = attrs.value(u"nick").toString();

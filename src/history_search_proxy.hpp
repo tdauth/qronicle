@@ -20,10 +20,19 @@ class HistorySearchProxy : public QSortFilterProxyModel {
     Q_PROPERTY(QString filterMessenger READ filterMessenger WRITE setFilterMessenger NOTIFY filterChanged)
     Q_PROPERTY(QString filterProtocol READ filterProtocol WRITE setFilterProtocol NOTIFY filterChanged)
     
+    Q_PROPERTY(int totalCount READ totalCount NOTIFY filterChanged)
+    Q_PROPERTY(int filteredCount READ filteredCount NOTIFY filterChanged)
+    Q_PROPERTY(QString dateRange READ dateRange NOTIFY filterChanged)
+    
 public:
     Q_INVOKABLE int getUnfilteredIndex(int currentProxyRow);
     
     using QSortFilterProxyModel::QSortFilterProxyModel;
+    
+    int totalCount() const;
+    int filteredCount() const;
+    
+    QString dateRange() const;
     
     // Getter & Setter
     QString filterFilePath() const { return m_filterFilePath; }

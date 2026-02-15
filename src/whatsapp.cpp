@@ -43,10 +43,18 @@ QString WhatsApp::id() const {
 }
 
 Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly)) return {};
-
     Messages messages;
+    QFileInfo fileInfo(filePath);
+    
+    if (!fileInfo.exists()) {
+        return messages;
+    }
+    
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return messages;
+    }
+
     // Vorab-Reservierung schätzt die Anzahl der Nachrichten (Dateigröße / ca. 100 Zeichen pro Nachricht)
     messages.reserve(file.size() / 100);
 
@@ -58,53 +66,60 @@ Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
     QSet<QString> participants;
     // Regex einmalig außerhalb der Schleife kompilieren (schon erledigt durch static)
     static QRegularExpression re("^(\\d{2}\\.\\d{2}\\.\\d{2}, \\d{2}:\\d{2}) - ([^:]+): (.*)$");
+    qint64 lineNumber = 1;
 
     while (!in.atEnd()) {
         QString line = in.readLine();
-        if (line.isEmpty()) continue;
+        if (!line.isEmpty()) {
+            QRegularExpressionMatch match = re.match(line);
 
-        QRegularExpressionMatch match = re.match(line);
+            if (match.hasMatch()) {
+                Message msg;
+                QString name = match.captured(2);
+                
+                // Vermeide unnötige String-Operationen, falls Name schon bekannt
+                if (!participants.contains(name)) {
+                    participants.insert(name);
+                }
 
-        if (match.hasMatch()) {
-            Message msg;
-            QString name = match.captured(2);
-            
-            // Vermeide unnötige String-Operationen, falls Name schon bekannt
-            if (!participants.contains(name)) {
-                participants.insert(name);
+                msg.setProtocol("WhatsApp");
+                msg.setMessenger("WhatsApp");
+                msg.setFilePath(fileInfo.absoluteFilePath());
+                msg.setLineNumber(lineNumber);
+                msg.setSource(name);
+                msg.setSourceNick(name);
+                
+                // Effizientes Datumsparshing
+                QDateTime dt = QDateTime::fromString(match.captured(1), "dd.MM.yy, HH:mm");
+                if (dt.date().year() < 2000) {
+                    dt = dt.addYears(100);
+                }
+                
+                msg.setTimestamp(dt);
+                
+                QString content = match.captured(3);
+                msg.setContent(content);
+                // ACHTUNG: formatHtml/formatAttachments sind oft teuer. 
+                // Wenn möglich, erst beim Anzeigen (Lazy Loading) generieren!
+                msg.setContentHtml(formatHtml(formatAttachments(filePath, content)));
+                
+                messages.append(std::move(msg));
+            } else if (!messages.isEmpty()) {
+                // Performance: Letzte Nachricht direkt bearbeiten
+                Message &lastMsg = messages.last();
+                
+                // String-Builder (+=) ist in Qt optimiert, aber viele Appends kosten.
+                QString newContent = lastMsg.content();
+                newContent.append(u'\n').append(line);
+                lastMsg.setContent(newContent);
+                
+                QString newHtml = lastMsg.contentHtml();
+                newHtml.append(u'\n').append(formatHtml(formatAttachments(filePath, line)));
+                lastMsg.setContentHtml(newHtml);
             }
-
-            msg.setProtocol("WhatsApp");
-            msg.setMessenger("WhatsApp");
-            msg.setSource(name);
-            msg.setSourceNick(name);
-            
-            // Effizientes Datumsparshing
-            QDateTime dt = QDateTime::fromString(match.captured(1), "dd.MM.yy, HH:mm");
-            if (dt.date().year() < 2000) dt = dt.addYears(100);
-            
-            msg.setTimestamp(dt);
-            
-            QString content = match.captured(3);
-            msg.setContent(content);
-            // ACHTUNG: formatHtml/formatAttachments sind oft teuer. 
-            // Wenn möglich, erst beim Anzeigen (Lazy Loading) generieren!
-            msg.setContentHtml(formatHtml(formatAttachments(filePath, content)));
-            
-            messages.append(std::move(msg));
-        } else if (!messages.isEmpty()) {
-            // Performance: Letzte Nachricht direkt bearbeiten
-            Message &lastMsg = messages.last();
-            
-            // String-Builder (+=) ist in Qt optimiert, aber viele Appends kosten.
-            QString newContent = lastMsg.content();
-            newContent.append(u'\n').append(line);
-            lastMsg.setContent(newContent);
-            
-            QString newHtml = lastMsg.contentHtml();
-            newHtml.append(u'\n').append(formatHtml(formatAttachments(filePath, line)));
-            lastMsg.setContentHtml(newHtml);
         }
+        
+        lineNumber++;
     }
 
     // Destination-Logik optimieren

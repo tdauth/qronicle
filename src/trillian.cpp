@@ -49,6 +49,12 @@ QString Trillian::id() const {
 Messenger::Messages Trillian::loadFile(const QString &filePath) {
     Messages messages;
     
+    QFileInfo fileInfo(filePath);
+    
+    if (!fileInfo.exists()) {
+        return messages;
+    }
+    
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return messages;
@@ -91,6 +97,8 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 // TODO messenger and protocol are different
                 message.setProtocol(protocol);
                 message.setMessenger("Trillian");
+                message.setFilePath(fileInfo.absoluteFilePath());
+                message.setLineNumber(reader.lineNumber());
                 
                 QString type = attrs.value(u"type").toString();
                 bool in = type == "incoming_privateMessage";

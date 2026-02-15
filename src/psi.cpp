@@ -101,7 +101,7 @@ Messenger::Messages Psi::loadFile(const QString &filePath) {
 
             QTextStream in(&file);
             in.setEncoding(QStringConverter::Utf8); 
-            int lineNumber = 1;
+            qint64 lineNumber = 1;
 
             while (!in.atEnd()) {
                 QString line = in.readLine();

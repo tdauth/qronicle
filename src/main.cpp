@@ -13,10 +13,10 @@
 #include <QLibraryInfo>
 #include <QLocale>
 
+#include "database.hpp"
 #include "history_model.hpp"
 #include "history_search_proxy.hpp"
 #include "avatar_provider.hpp"
-#include "settings_manager.hpp"
 #include "kopete.hpp"
 #include "trillian.hpp"
 #include "facebook.hpp"
@@ -56,6 +56,23 @@ Messenger::Avatars loadCustomAvatars() {
     return avatarCache;
 }
 
+QMap<QString, QString> loadCustomAliases() {
+    QMap<QString, QString> aliases;
+    
+    QSettings settings;
+    settings.beginGroup("Aliases");
+    QStringList keys = settings.allKeys();
+    
+    for (const QString &key : keys) {
+        aliases.insert(key, settings.value(key).toString());
+    }
+    
+    settings.endGroup();
+    
+    qDebug() << "Loaded" << aliases.size() << "aliases from settings.";
+    return aliases;
+}
+
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     
@@ -82,15 +99,16 @@ int main(int argc, char *argv[]) {
     app.setApplicationVersion("1.0");
     app.setWindowIcon(QIcon(":/icons/qronicle")); 
     
-    // Teste den Haupt-Präfix
-    QDirIterator it(":/icons", QDirIterator::Subdirectories);
-    qDebug() << "--- Alle geladenen Icons: ---";
+    /*
+    QDirIterator it(":/", QDirIterator::Subdirectories);
+    qDebug() << "--- All resources: ---";
     while (it.hasNext()) {
         QString icon = it.next();
         if (!icon.contains("breez")) {
             qDebug() << icon;
         }
     }
+    */
     
     // 2. Parser aufsetzen
     QCommandLineParser parser;
@@ -119,9 +137,6 @@ int main(int argc, char *argv[]) {
     
     parser.process(app);
     
-    Messenger::Messages allMessages;
-    Messenger::Avatars allAvatars;
-    QList<Messenger::Messages> results;
     QList<QFuture<Messenger::Messages>> futures;
     const QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     qDebug() << "Config path" << configPath;
@@ -147,66 +162,35 @@ int main(int argc, char *argv[]) {
     }
 
     // Ergebnisse einsammeln (Warten auf alle Messenger)
+    Messenger::Messages allMessages;
+    
     for (auto &future : futures) {
         allMessages.append(future.result());
     }
+    
+    qDebug() << "All messages" << allMessages.size();
 
     // Avatare einsammeln (nachdem die Threads fertig sind)
+    Messenger::Avatars allAvatars;
+    
     for (auto it = optionMap.begin(); it != optionMap.end(); ++it) {
         if (parser.isSet(*(it.value()))) {
             allAvatars.insert(it.key()->avatars());
         }
     }
     
-    qDebug() << "All messages" << allMessages.size();
     qDebug() << "All avatars" << allAvatars.size();
-    
-    QList<Message> distinctMessages;
-    QSet<Message> seen;
-
-    for (const Message &msg : allMessages) {
-        if (parser.isSet(optionNoDistinct)) {
-            distinctMessages.append(msg);
-        } else {
-            if (!seen.contains(msg)) {
-                seen.insert(msg);
-                distinctMessages.append(msg);
-            }
-        }
-    }
-    
-    qDebug() << "Distinct messages" << distinctMessages.size();
-    
-    QMap<QString, QString> aliases;
-    SettingsManager settings;
-    settings.loadGroup("Aliases");
-    auto variantMap = settings.settingsMap();
-    for (auto it = variantMap.begin(); it != variantMap.end(); ++it) {
-        aliases.insert(it.key(), it.value().toString());
-    }
-    
-    qDebug() << "Aliases" << aliases;
-    
-    for (Message &msg : distinctMessages) {
-        if (aliases.contains(msg.source())) {
-            msg.setSource(aliases.value(msg.source()));
-        }
-
-        if (aliases.contains(msg.destination())) {
-            msg.setDestination(aliases.value(msg.destination()));
-        }
-    }
-    
-    std::sort(distinctMessages.begin(), distinctMessages.end(), [](const Message &a, const Message &b) {
-        return a.timestamp() < b.timestamp();
-    });
-
     
     allAvatars.insert(loadCustomAvatars());
     
     qDebug() << "All avatars with custom" << allAvatars.size();
     
-    auto* baseModel = new HistoryModel(std::move(distinctMessages));
+    Database db;
+    db.saveMessages(allMessages);
+    // apply custom aliases before displaying anything
+    db.applyAliases(loadCustomAliases());
+    
+    auto* baseModel = new HistoryModel(db.db());
     auto *proxyModel = new HistorySearchProxy(&app);
     proxyModel->setSourceModel(baseModel);
     proxyModel->setFilterRole(-1); // Search for all.
@@ -217,7 +201,6 @@ int main(int argc, char *argv[]) {
     QQmlApplicationEngine engine;
     engine.addImageProvider(QLatin1String("avatars"), new AvatarProvider(std::move(allAvatars)));
     engine.rootContext()->setContextProperty("chatModel", proxyModel);
-    engine.rootContext()->setContextProperty("settingsManager", &settings);
     engine.loadFromModule("Chronicle", "Main");
     
     return app.exec();

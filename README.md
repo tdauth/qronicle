@@ -26,10 +26,10 @@ This is intended behavior since your messenger history might be confidential and
 
 ## Planned Features
 
-- Massively improve the performance of handling a large amount of messages in the UI.
-- Improve theme support: Smileys, UI style etc. should look like in the original app.
+- Combining filters like multiple senders, multiple receivers, multiple protcools etc.
 - Allow adding folders and single files.
-- Export: Export everything as XML/JSON into folders.
+- Improve theme support: Smileys, UI style etc. should look like in the original app.
+- Export everything as XML/JSON into folders.
 
 ## Customize
 
@@ -40,7 +40,7 @@ By default they are ignored.
 
 ### Custom Names
 
-Define aliases in `~/.config/qronicle/qronicle.conf`:
+Define aliases in `~/.config/qronicle/qronicle.conf`: 
 
 ```txt
 [Aliases]

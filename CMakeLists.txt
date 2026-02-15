@@ -28,10 +28,12 @@ set(CMAKE_AUTORCC ON)
 qt_add_executable(chronicle
     resources.qrc
     src/main.cpp
+    src/database.hpp
+    src/database.cpp
     src/history_model.hpp
+    src/history_model.cpp
     src/history_search_proxy.hpp
     src/history_search_proxy.cpp
-    src/settings_manager.hpp
     src/message.hpp
     src/message.cpp
     src/messenger.hpp
@@ -53,7 +55,7 @@ qt_add_executable(chronicle
 qt_add_qml_module(chronicle
     URI Chronicle
     VERSION 1.0
-    QML_FILES "src/Main.qml" "src/Settings.qml"
+    QML_FILES "src/Main.qml"
     DEPENDENCIES QtQuick QtQuick.Layouts QtQuick.Controls
 )
 
