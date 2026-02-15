@@ -20,6 +20,10 @@ See [build.sh](./build.sh).
 
 ## Customize
 
+### Distinct
+
+Use the option --distinct to ignore duplicated messages.
+
 ### Custom Names
 
 Define aliases in `~/.config/Chronicle/Chronicle.conf`:
