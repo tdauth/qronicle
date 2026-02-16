@@ -1,6 +1,6 @@
 ./build.sh
 cd ./build
-./chronicle \
+./qronicle \
     --clear \
     --amsn ../personal/amsn \
     --skype ../personal/skype2 \

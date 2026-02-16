@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(chronicle VERSION 1.0.0 LANGUAGES CXX)
+project(qronicle VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -25,7 +25,7 @@ qt_standard_project_setup()
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-qt_add_executable(chronicle
+qt_add_executable(qronicle
     resources.qrc
     src/main.cpp
     src/database.hpp
@@ -54,19 +54,25 @@ qt_add_executable(chronicle
     src/amsn.cpp
 )
 
-qt_add_qml_module(chronicle
+qt_add_qml_module(qronicle
     URI Chronicle
     VERSION 1.0
-    QML_FILES "src/Main.qml"
-    DEPENDENCIES QtQuick QtQuick.Layouts QtQuick.Controls
+    QML_FILES
+      "src/Main.qml"
+    DEPENDENCIES
+      QtQuick
+      QtQuick.Layouts
+      QtQuick.Controls
 )
 
-qt_add_translations(chronicle
-    TS_FILES "i18n/app_de.ts" "i18n/app_en.ts"
+qt_add_translations(qronicle
+    TS_FILES
+      "i18n/app_de.ts"
+      "i18n/app_en.ts"
     SOURCES ${PROJECT_SOURCES} # Alle deine .cpp und .qml Dateien
 )
 
-target_link_libraries(chronicle PRIVATE
+target_link_libraries(qronicle PRIVATE
     Qt6::Core
     Qt6::Concurrent
     Qt6::Gui
@@ -79,5 +85,3 @@ target_link_libraries(chronicle PRIVATE
     Qt6::Xml
     Qt6::Sql
 )
-
-qt_finalize_executable(chronicle)
