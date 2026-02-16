@@ -30,8 +30,10 @@ This is intended behavior since your messenger history might be confidential and
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
 - Allow adding folders and single files.
-- Improve theme support: Smileys, UI style etc. should look like in the original app.
+- Support messenger themes: Sound effects (double clicking on messages), smileys, UI style etc. should look like in the original app. Themes should be stored in the config folder with the messenger ID as folder name and could be fully customized by the user.
 - Export everything as XML/JSON into folders.
+- A custom XML format for a fake messenger qronicle. XML is better for this than JSON since big messages with formatting and comments are allowed.
+- Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
 
 ## Customize
 

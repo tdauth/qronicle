@@ -24,6 +24,7 @@ class Amsn : public Messenger {
             QString login; // email for myself
         };
         
+        // TODO Store different address books and load the corresponding one for each log file to get the correct data.
         typedef QHash<QString, Contact> Contacts;
         Contacts m_contacts;
         
