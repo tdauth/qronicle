@@ -282,6 +282,7 @@ vcard XML file:
 
 ### aMSN
 
+- `~/.amsn` contains a account data but can also contain other accounts in sub folders called by ther email address with underscores instead of dots and without at symbol.
 - `~/.amsn/<account>/abook.xml` address book with all contacts with nick names, last login and logout etc. Your own account is stored with the attribute name="myself":
 
 ```xml
@@ -314,7 +315,25 @@ Regular contacts look like this:
 </contact>
 ```
 
-- `~/.amsn/<account>/logs` contains log files and folders like `April 2012.
+- `~/.amsn/<account>/logs` contains log files and folders like `April 2012`.
+
+Log file content:
+
+```txt
+|"LRED[Conversation started on |"LTIME123456]
+|"LGRA[|"LTIME123456 ] |"LITAHans :|"LCff00ff hi
+|"LGRA[|"LTIME123456 ] |"LITAKaus :|"LC000000 hallo
+|"LRED[You have closed the window on 30 Nov 2011 23:39:36]
+```
+
+Log file lines with file transfers:
+
+```txt
+|"LGRA|"LTIME123456 |"LGRE nickname wants to send you the file ''xxx.jpg'' (6K bytes). It will be saved in directory /home/yyy/amsn_received. Do you want to receive this file?
+|"LGRA|"LTIME123456 |"LGRE File transfer accepted
+|"LGRA|"LTIME123456 |"LGRE File transfer cancelled
+```
+
 - `~/.amsn/<account>/displaypic/cache/<contact email address>/<displaypicfile>` are avatars of contacts
 - `~/.amsn/<account>/FT/cache` contains file transfer files.
 

@@ -35,8 +35,7 @@ Messenger::Messages Amsn::loadFile(const QString &filePath) {
     QTextStream in(&file);
     in.setEncoding(QStringConverter::Utf8);
 
-    // Regex einmalig außerhalb der Schleife kompilieren (schon erledigt durch static)
-    static QRegularExpression re("\\|\"LTIME(\\d+).*\\|\"LITA(.*?)\\s?:\\|\"LC[0-9A-F]{6}\\s(.*)");
+    static QRegularExpression re(R"(\|\s*"?LGRA\[\|\s*"?LTIME(\d+)\s+\]\s*\|\s*"?LITA(.*?)\s?:\s*\|\s*"?LC([0-9A-F]{6})\s*(.*))", QRegularExpression::CaseInsensitiveOption);
     qint64 lineNumber = 1;
     auto myself = m_contacts.value("myself");
     auto myselfNick = myself.mfn;
@@ -66,11 +65,14 @@ Messenger::Messages Amsn::loadFile(const QString &filePath) {
                     msg.setSource(fileInfo.completeBaseName());
                 }
                 
-                QString message = match.captured(3);
+                QString color = match.captured(3);
+                QString message = match.captured(4);
 
                 msg.setContent(message);
-                msg.setContentHtml(message);
+                msg.setContentHtml(QString("<font color='#%1'>%2</font>").arg(color, message));
                 messages.append(std::move(msg));
+            } else {
+                qWarning() << "Ignoring aMSN log file line in file" << filePath << ":" << line;
             }
         }
         
