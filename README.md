@@ -30,19 +30,27 @@ This is intended behavior since your messenger history might be confidential and
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
 - Allow adding folders and single files.
-- Support messenger themes: Sound effects (double clicking on messages), smileys, UI style etc. should look like in the original app. Themes should be stored in the config folder with the messenger ID as folder name and could be fully customized by the user.
 - Export everything as XML/JSON into folders.
 - A custom XML format for a fake messenger qronicle. XML is better for this than JSON since big messages with formatting and comments are allowed.
 - Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
 
 ## Customize
 
+### Themes
+
+Support messenger themes: Sound effects (double clicking on messages), smileys, UI style etc. should look like in the original app.
+Themes should be stored in the config folder with the messenger ID as folder name and could be fully customized by the user.
+For example, I created `~.config/qronicle/themes/trillian/` with the sub folder `plugins` which contains sound effects and icons in the file structure of Trillian 3.1.
+It should then be automatically used.
+The same for other messengers.
+Themese cannot be part of the program itself due to copyright restrictions.
+
 ### Distinct
 
 Use the option --no-distinct to allow duplicated messages.
 By default they are ignored.
 
-### Custom Names
+### Aliases
 
 Define aliases in `~/.config/qronicle/qronicle.conf`: 
 
@@ -51,12 +59,12 @@ Define aliases in `~/.config/qronicle/qronicle.conf`:
 123456=My old account
 ```
 
-### Custom Avatars
+### Avatars
 
 You can place any number of images into `~/.config/qronicle/avatars`.
 These will be used as avatars if the file name without extension matches the user ID.
 
-### Custom Folders
+### History
 
 You can place any chat history of different app into `~/.config/qronicle/<app name>`:
 
@@ -119,6 +127,8 @@ Examples:
  <msg nick="cdauth" in="1" from="cdauth@cdauth.de" time="28 23:47:41" >Nächste Woche!</msg>
 </kopete-history>
 ```
+
+- [Sound Effects](https://invent.kde.org/network/kopete/-/tree/master/sounds?ref_type=heads)
 
 ### Facebook Messenger
 
@@ -201,6 +211,11 @@ SQLite database `~/.Skype/[YourSkypeName]/main.db`.
 ```xml
 <asset medium="ICQ" name="192880392" link="D%3A%5CArbeit%5CProgramme%5CTrillian%5Cusers%5Cdefault%5Cbuddyicons%5Cassets%5CICQ%2D240817250%2D1177074180%2Ejpg"/>
 ```
+
+- [Trillian 3.1](https://www.oldversion.com.de/software/trillian/trillian-3-1/)
+- Icons are located in `Trillian 3/stixe/icons/Default/`.
+- Sound effects are located in `Trillian 3/stixe/plugins/Tonal-Sounds/`.
+- Emotes are located in `Trillian 3/stixe/plugins/TP21Emoticons-16x16/`.
 
 ### SMS
 
