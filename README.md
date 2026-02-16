@@ -1,13 +1,13 @@
 # qronicle
 
-Qt-based GUI program to visualize, import and export history from different messengers:
+Offline Qt-based GUI program to visualize, import and export history from different messengers:
 
-| Name | Importing Messages | Avatars |
+| Name | Messages | Avatars |
 | :--- | :---:         | :---: |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ but only .history files | ✅ |
+| <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ |
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
@@ -52,7 +52,7 @@ By default they are ignored.
 
 ### Aliases
 
-Define aliases in `~/.config/qronicle/qronicle.conf`: 
+Define aliases in `~/.config/qronicle/qronicle.conf`:
 
 ```txt
 [Aliases]
@@ -167,7 +167,7 @@ Examples:
   "is_still_participant": true,
   "thread_path": "inbox/hans_10206072096154041",
   "magic_words": [
-    
+
   ]
 }
 ```
@@ -219,7 +219,7 @@ SQLite database `~/.Skype/[YourSkypeName]/main.db`.
 
 ### SMS
 
-SMS can be extracted with a tool like 
+SMS can be extracted with a tool like
 
 ```
 gammu getallsms > sms_backup.txt
@@ -236,7 +236,7 @@ Zeichenkodierung     : Standard-GSM-Alphabet (keine Kompression)
 Nummer               : "+496789"
 Status               : Gelesen
 
-Nächste Woche! 
+Nächste Woche!
 
 ```
 
@@ -252,6 +252,7 @@ WhatsApp allows exporting chats which leads to directories with all sent and rec
 
 ### Psi
 
+Currently, we support only .history files not .xml files.
 History is stored in `~/.psi/profiles/default/history/`.
 There can be either .history and .xml files.
 
