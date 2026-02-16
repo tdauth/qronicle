@@ -334,11 +334,23 @@ The app provides smileys in form of `(hello)`.
 
 - ` ~/.config/neochatrc` or `~/.cache/KDE/neochat/ ` contain some non-regular .json file written by libQuotient.
 
+### Steam
+
+- Manual export via Steam support
+- `~/.local/share/Steam/config/htmlcache/`
+- `~/snap/steam/common/.local/share/Steam/config/htmlcache/`
+- Sub folder `Local Storage/leveldb/`
+
 ### Microsoft Teams
 
 - `~/.config/Microsoft/Microsoft Teams`
 - Export via Microsoft Export Website into JSON
 - In browser Chromium profile DB `~/.config/chromium/Default/IndexedDB/https_teams.microsoft.com_0.indexeddb.leveldb/`
+
+### Discord
+
+- `~/.config/discord`
+- Chromium: `~/.config/chromium/Default/IndexedDB/https_discord.com_0.indexeddb.leveldb/`
 
 ## Credits
 
