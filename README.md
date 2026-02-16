@@ -39,6 +39,7 @@ This is intended behavior since your messenger history might be confidential and
 ### Themes
 
 Support messenger themes: Sound effects (double clicking on messages), smileys, UI style etc. should look like in the original app.
+By default, the program could look up the default folders conta
 Themes should be stored in the config folder with the messenger ID as folder name and could be fully customized by the user.
 For example, I created `~.config/qronicle/themes/trillian/` with the sub folder `plugins` which contains sound effects and icons in the file structure of Trillian 3.1.
 It should then be automatically used.
