@@ -13,6 +13,7 @@ class Database {
         Database();
         ~Database();
         
+        void removeDatabaseFile();
         void saveMessages(const Messenger::Messages &messages);
         void applyAliases(QMap<QString, QString> &&aliases);
         

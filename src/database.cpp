@@ -8,23 +8,7 @@
 namespace qronicle {
  
 Database::Database() {
-    m_db = QSqlDatabase::addDatabase("QSQLITE", "qronicle");
-    
-    QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    QDir configDir;
-    if (!configDir.exists(configPath)) {
-        configDir.mkpath(configPath);
-    }
-
-    QString fullDbPath = configPath + QDir::separator() + "qronicle.sqlite";
-    qDebug() << "Creating SQLite database" << fullDbPath;
-    m_db.setDatabaseName(fullDbPath);
-
-    if (m_db.open()) {
-        initDb();
-    } else {
-        qDebug() << "Verbindung fehlgeschlagen!";
-    }
+    initDb();
 }
 
 Database::~Database() {
@@ -34,7 +18,30 @@ Database::~Database() {
     }
 }
 
+void Database::removeDatabaseFile() {
+    if (m_db.isOpen()) {
+        m_db.close();
+    }
+    
+    QString dbPath = m_db.databaseName();
+    QString connectionName = m_db.connectionName();
+
+    m_db.close();
+    m_db = QSqlDatabase();
+    QSqlDatabase::removeDatabase(connectionName);
+
+    // Jetzt ist die Datei frei zum Löschen
+    if (QFile::remove(dbPath)) {
+        qDebug() << "Datenbankdatei erfolgreich gelöscht.";
+        
+        initDb();
+    } else {
+        qDebug() << "Löschen fehlgeschlagen. Ist die Datei noch gesperrt?";
+    }
+}
+
 void Database::saveMessages(const Messenger::Messages &messages) {
+    qDebug() << "Saving messages" << messages.size();
     if (messages.isEmpty()) {
         return;
     }
@@ -80,9 +87,9 @@ void Database::saveMessages(const Messenger::Messages &messages) {
 
     // 3. Alles auf einmal auf die Festplatte schreiben
     if (m_db.commit()) {
-        qDebug() << "Tausende Datensätze erfolgreich in Sekundenbruchteilen gespeichert!";
+        qDebug() << "Stored messages in database successfully";
     } else {
-        qDebug() << "Commit fehlgeschlagen, Änderungen werden rückgängig gemacht.";
+        qDebug() << "Commit failed, rollback!";
         m_db.rollback();
     }
 }
@@ -123,42 +130,58 @@ void Database::applyAliases(QMap<QString, QString> &&aliases) {
 }
 
 void Database::initDb() {
-    qDebug() << "Init db";
-    // 1. Datei aus den Ressourcen laden
-    QFile file(":/sql/schema.sql");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Schema-Datei nicht gefunden!";
-        return;
+    m_db = QSqlDatabase::addDatabase("QSQLITE", "qronicle");
+    
+    QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    QDir configDir;
+    if (!configDir.exists(configPath)) {
+        configDir.mkpath(configPath);
     }
 
-    QTextStream in(&file);
-    QString sqlContent = in.readAll();
-    file.close();
+    QString fullDbPath = configPath + QDir::separator() + "qronicle.sqlite";
+    qDebug() << "Creating SQLite database" << fullDbPath;
+    m_db.setDatabaseName(fullDbPath);
 
-    // 2. Befehle am Semikolon trennen
-    // Hinweis: Das ist eine einfache Methode. Komplexere Skripte mit 
-    // Triggern benötigen einen robusteren Parser.
-    QStringList queries = sqlContent.split(";", Qt::SkipEmptyParts);
-
-    QSqlQuery query(m_db);
-    m_db.transaction(); // Alles in einer Transaktion für Speed & Sicherheit
-
-    for (const QString &sql : queries) {
-        QString trimmedSql = sql.trimmed();
-        qDebug() << "Executing SQL" << trimmedSql;
-        if (trimmedSql.isEmpty()) {
-            continue;
-        }
-
-        if (!query.exec(trimmedSql)) {
-            qDebug() << "Fehler im Schema:" << query.lastError().text();
-            m_db.rollback();
+    if (m_db.open()) {
+        qDebug() << "Init db";
+        // 1. Datei aus den Ressourcen laden
+        QFile file(":/sql/schema.sql");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Schema-Datei nicht gefunden!";
             return;
         }
-    }
 
-    m_db.commit();
-    qDebug() << "Datenbank-Schema erfolgreich geladen!";
+        QTextStream in(&file);
+        QString sqlContent = in.readAll();
+        file.close();
+
+        // 2. Befehle am Semikolon trennen
+        // Hinweis: Das ist eine einfache Methode. Komplexere Skripte mit 
+        // Triggern benötigen einen robusteren Parser.
+        QStringList queries = sqlContent.split(";", Qt::SkipEmptyParts);
+
+        QSqlQuery query(m_db);
+        m_db.transaction(); // Alles in einer Transaktion für Speed & Sicherheit
+
+        for (const QString &sql : queries) {
+            QString trimmedSql = sql.trimmed();
+            qDebug() << "Executing SQL" << trimmedSql;
+            if (trimmedSql.isEmpty()) {
+                continue;
+            }
+
+            if (!query.exec(trimmedSql)) {
+                qDebug() << "Fehler im Schema:" << query.lastError().text();
+                m_db.rollback();
+                return;
+            }
+        }
+
+        m_db.commit();
+        qDebug() << "Datenbank-Schema erfolgreich geladen!";
+    } else {
+        qDebug() << "Verbindung fehlgeschlagen!";
+    }
 }
     
 }

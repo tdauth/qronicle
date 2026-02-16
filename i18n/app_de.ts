@@ -128,18 +128,23 @@ Alle rights reserved.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="98"/>
-        <location filename="../src/main.cpp" line="115"/>
+        <location filename="../src/main.cpp" line="99"/>
+        <location filename="../src/main.cpp" line="116"/>
         <source>qronicle</source>
         <translation type="unfinished">qronicle</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="119"/>
+        <location filename="../src/main.cpp" line="120"/>
+        <source>Clears the existing database before loading messages.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main.cpp" line="122"/>
         <source>Allows duplicated messages.</source>
         <translation>Erlaube mehrfache gleiche Nachrichten.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="133"/>
+        <location filename="../src/main.cpp" line="137"/>
         <source>%1 directories.</source>
         <translation>%1-Verzeichnisse.</translation>
     </message>

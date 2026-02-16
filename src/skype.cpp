@@ -194,7 +194,7 @@ Messenger::Messages Skype::loadDirectories(const QStringList &dirPaths) {
         }
     }
 
-    if (filePaths.isEmpty()) return {};
+    if (filePaths.isEmpty())  return {};
 
     qDebug() << "Loading" << filePaths.size() << "Skype databases in parallel...";
 

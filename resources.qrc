@@ -19,6 +19,7 @@
         <file alias="Psi">assets/icons/psi.png</file>
         <file alias="Trillian">assets/icons/trillian.png</file>
         <file alias="WlmProtocol">assets/icons/msn_messenger.png</file>
+        <file alias="aMSN">assets/icons/amsn.png</file>
         <file alias="Knuddels">assets/icons/knuddels.jpg</file>
         <file alias="mail">assets/icons/mail.png</file>
     </qresource>

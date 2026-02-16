@@ -12,8 +12,9 @@ Qt-based GUI program to visualize, import and export history from different mess
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
 | <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ |
-| <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ⏳ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ✅ | ✅ |
 | <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ⏳ | ⏳ |
+| <a href="https://invent.kde.org/network/neochat/-/blob/master/icons/300-apps-neochat.png?ref_type=heads"><img src="./assets/icons/neochat.png" width="22" align="center"></a>  [**NeoChat**](https://apps.kde.org/de/neochat/) | ⏳ | ⏳ |
 
 The name qronicle is derived from the English word chronicle.
 However, this name was already in use for different programs.
@@ -26,6 +27,7 @@ This is intended behavior since your messenger history might be confidential and
 
 ## Planned Features
 
+- Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
 - Allow adding folders and single files.
 - Improve theme support: Smileys, UI style etc. should look like in the original app.
@@ -79,6 +81,7 @@ Modify the German translation:
 ### Kopete
 
 - Folders `~/.local/share/kopete/logs/` or `~/.kde/share/apps/kopete/logs/`.
+- KDE 4 folder `~/.kde4/share/apps/kopete/logs/`
 - Contain directories with files `<protocol>/<account>/<from>.<year and month>.xml`.
 
 Examples:
@@ -279,7 +282,42 @@ vcard XML file:
 
 ### aMSN
 
-`~/.amsn/logs/`
+- `~/.amsn/<account>/abook.xml` address book with all contacts with nick names, last login and logout etc. Your own account is stored with the attribute name="myself":
+
+```xml
+<contact name="myself">
+	<cid>123456</cid>
+	<mfn>Hans</mfn>
+	<dp_mimetype>image/png</dp_mimetype>
+	<profile_resourceid>12345</profile_resourceid>
+	<info_lastchange>2012-05-12T17:04:28.003-07:00</info_lastchange>
+	<login>my mail address</login>
+	<mob>N</mob>
+</contact>
+```
+
+`~/.amsn/<account>/displaypic/xxxx.png` is your avatar.
+
+Regular contacts look like this:
+
+```xml
+<contact name="email address of the contact">
+	<cid>123456</cid>
+	<contactguid>UUID</contactguid>
+	<space_access>0</space_access>
+	<group>UUID</group>
+      <displaypicfile>complete base name of the avatar file in displaypic/cache</displaypicfile>
+	<last_login>11/30/2011 - 23:39:36</last_login>
+	<nick>Klaus</nick>
+	<mob>N</mob>
+	<lists>FL AL</lists>
+</contact>
+```
+
+- `~/.amsn/<account>/logs` contains log files and folders like `April 2012.
+- `~/.amsn/<account>/displaypic/cache/<contact email address>/<displaypicfile>` are avatars of contacts
+- `~/.amsn/<account>/FT/cache` contains file transfer files.
+
 
 ### Knuddels
 
@@ -291,6 +329,10 @@ vcard XML file:
 ```
 
 The app provides smileys in form of `(hello)`.
+
+### NeoChat
+
+- ` ~/.config/neochatrc` or `~/.cache/KDE/neochat/ ` contain some non-regular .json file written by libQuotient.
 
 ## Credits
 

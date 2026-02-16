@@ -50,6 +50,8 @@ qt_add_executable(chronicle
     src/whatsapp.cpp
     src/psi.hpp
     src/psi.cpp
+    src/amsn.hpp
+    src/amsn.cpp
 )
 
 qt_add_qml_module(chronicle

@@ -23,6 +23,7 @@
 #include "skype.hpp"
 #include "whatsapp.hpp"
 #include "psi.hpp"
+#include "amsn.hpp"
 
 using namespace qronicle;
 
@@ -116,6 +117,8 @@ int main(int argc, char *argv[]) {
     parser.addHelpOption();
     parser.addVersionOption();
     
+    QCommandLineOption optionClear = QCommandLineOption("clear", QObject::tr("Clears the existing database before loading messages."));
+    parser.addOption(optionClear);
     QCommandLineOption optionNoDistinct = QCommandLineOption("no-distinct", QObject::tr("Allows duplicated messages."));
     parser.addOption(optionNoDistinct);
     
@@ -126,6 +129,7 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<Skype>();
     messengers << std::make_shared<WhatsApp>();
     messengers << std::make_shared<Psi>();
+    messengers << std::make_shared<Amsn>();
     
     QMap<std::shared_ptr<Messenger>, QCommandLineOption*> optionMap;
 
@@ -150,7 +154,13 @@ int main(int argc, char *argv[]) {
             QString appPath = QDir(configPath).filePath(messenger->id());
             
             paths << appPath;
-            paths << messenger->defaultDirectories();
+            QStringList defaultDirs = messenger->defaultDirectories();
+
+            for (const QString &dir : defaultDirs) {
+                if (QDir(dir).exists()) {
+                    paths << dir;
+                }
+            }
             
             qDebug() << "Queueing" << messenger->id() << "with" << paths.size() << "paths";
 
@@ -186,6 +196,11 @@ int main(int argc, char *argv[]) {
     qDebug() << "All avatars with custom" << allAvatars.size();
     
     Database db;
+    
+    if (parser.isSet(optionClear)) {
+        db.removeDatabaseFile();
+    }
+    
     db.saveMessages(allMessages);
     // apply custom aliases before displaying anything
     db.applyAliases(loadCustomAliases());
