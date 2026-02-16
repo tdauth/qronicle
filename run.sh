@@ -7,6 +7,6 @@ cd ./build
     --kopete ../personal/kopete \
     --trillian ../personal/trillian \
     --facebook ../personal/facebook \
-    --skype ../personal/skype \
+    --skype ../personal/skype ../personal/skype2 \ \
     --whatsapp ../personal/whatsapp \
     --psi ../personal/psi
