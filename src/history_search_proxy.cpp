@@ -1,8 +1,27 @@
+#include <QGuiApplication>
+#include <QClipboard>
 #include <QSqlQuery>
 
 #include "history_search_proxy.hpp"
 
 namespace qronicle {
+
+void HistorySearchProxy::copyToClipboard(const QString &text) {
+    QGuiApplication::clipboard()->setText(text);
+}    
+    
+int HistorySearchProxy::findIndexById(QVariant targetId) {
+    qlonglong target = targetId.toLongLong();
+
+    for (int i = 0; i < rowCount(); ++i) {
+        QVariant v = data(index(i, 0), HistoryModel::MessageIdRole);
+        
+        if (v.toLongLong() == target) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 int HistorySearchProxy::getUnfilteredIndex(int currentProxyRow) {
     // Mappt den sichtbaren Index (Proxy) auf den echten Index (SQL-Model)

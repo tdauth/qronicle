@@ -25,6 +25,8 @@ class HistorySearchProxy : public QSortFilterProxyModel {
     Q_PROPERTY(QString dateRange READ dateRange NOTIFY filterChanged)
     
 public:
+    Q_INVOKABLE void copyToClipboard(const QString &text);
+    Q_INVOKABLE int findIndexById(QVariant targetId);
     Q_INVOKABLE int getUnfilteredIndex(int currentProxyRow);
     
     using QSortFilterProxyModel::QSortFilterProxyModel;

@@ -13,7 +13,8 @@ class HistoryModel : public QSqlTableModel {
     
 public:
     enum Roles {
-        FilePathRole = Qt::UserRole + 1,
+        MessageIdRole = Qt::UserRole + 1,
+        FilePathRole,
         LineNumberRole,
         ContentRole,
         TimestampRole,

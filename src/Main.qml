@@ -31,6 +31,20 @@ ApplicationWindow {
                     id: menuButton
                     text: "☰"
                     onClicked: mainMenu.open()
+                    
+                    Action {
+                        id: aboutAction
+                        text: qsTr("About")
+                        shortcut: "F1"
+                        onTriggered: aboutDialog.open()
+                    }
+                    
+                    Action {
+                        id: quitAction
+                        text: qsTr("Exit")
+                        shortcut: StandardKey.Quit
+                        onTriggered: Qt.quit()
+                    }
 
                     // Das eigentliche Dropdown-Menü
                     Menu {
@@ -38,15 +52,13 @@ ApplicationWindow {
                         y: menuButton.height // Erscheint direkt unter dem Button
                         
                         MenuItem {
-                            text: qsTr("About")
-                            onTriggered: aboutDialog.open()
+                            action: aboutAction
                         }
                         
                         MenuSeparator { } // Ein horizontaler Trennstrich
 
                         MenuItem {
-                            text: qsTr("Exit")
-                            onTriggered: Qt.quit()
+                            action: quitAction
                         }
                     }
                 }
@@ -54,6 +66,12 @@ ApplicationWindow {
                 ToolButton {
                     id: filterButton
                     text: qsTr("Filter")
+                    
+                    Shortcut {
+                        id: filterShortcut
+                        sequence: StandardKey.Find
+                        onActivated: filterButton.toggle() 
+                    }
                     
                     icon.name: "view-filter" 
                     icon.source: icon.name === "" ? "qrc:/icons/fallback-filter.svg" : ""
@@ -63,7 +81,7 @@ ApplicationWindow {
                     onClicked: filterPanel.visible = checked
                     
                     contentItem: Label {
-                        text: filterButton.text + (filterButton.checked ? " ▴" : " ▾")
+                        text: filterButton.text + (filterButton.checked ? " ▴" : " ▾") + " (" + filterShortcut.nativeText + ")"
                         font: filterButton.font
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -149,20 +167,14 @@ ApplicationWindow {
                 rowSpacing: 8
 
                 // --- Reihe 1: Reset-Button (klein) + 2 Textfelder ---
-                Button {
-                    id: resetFiltersButton
+                Action {
+                    id: resetFiltersAction
                     text: qsTr("Reset")
-                    icon.name: "edit-clear" // Nutzt Standard-Icons
+                    icon.name: "edit-clear"
+                    shortcut: "Ctrl+R" // Optional: Ein Shortcut zum Zurücksetzen
                     
-                    Layout.fillWidth: false
-                    Layout.preferredWidth: 80
-                    Layout.alignment: Qt.AlignLeft
-                    
-                    // Optik: Ein flacherer Button, der nicht so dominant ist
-                    flat: true
-                    
-                    onClicked: {
-                        // 1. Alle Properties im C++ Model leeren
+                    onTriggered: {
+                        // 1. C++ Model leeren
                         chatModel.filterNick = ""
                         chatModel.filterTarget = ""
                         chatModel.filterMessenger = ""
@@ -170,8 +182,7 @@ ApplicationWindow {
                         chatModel.filterFilePath = ""
                         chatModel.filterMessage = ""
                         
-                        // 2. Die Textfelder in der UI visuell leeren 
-                        // (Wichtig, falls die Bindung nicht bidirektional ist)
+                        // 2. UI Felder leeren
                         senderSearch.text = ""
                         receiverSearch.text = ""
                         messengerSearch.text = ""
@@ -179,6 +190,18 @@ ApplicationWindow {
                         filePathSearch.text = ""
                         messageSearch.text = ""
                     }
+                }
+
+                Button {
+                    id: resetFiltersButton
+                    action: resetFiltersAction 
+                    
+                    Layout.fillWidth: false
+                    Layout.preferredWidth: 80
+                    Layout.alignment: Qt.AlignLeft
+                    
+                    // Optik: Ein flacherer Button, der nicht so dominant ist
+                    flat: true
                 }
                 
                 TextField {
@@ -667,23 +690,33 @@ ApplicationWindow {
 
                     Menu {
                         id: contextMenu
+                        
+                        
+                        MenuItem {
+                            text: qsTr("Copy Message")
+                            onTriggered: {
+                                // 'messageText' ist der Name deiner Role aus C++
+                                chatModel.copyToClipboard(model.messageText) 
+                            }
+                        }
+                        
                         MenuItem {
                             text: qsTr("Jump to this message (clear filters)")
                             onTriggered: {
-                                // 1. C++ aufrufen (Filter leeren, Ziel-Index holen)
-                                let targetIdx = chatModel.getUnfilteredIndex(index)
-                                
-                                if (targetIdx !== -1) {
-                                    // 2. Die ListView über die 'view'-Eigenschaft des Delegates finden
-                                    // 'messageDelegate' ist die ID deiner Column im Delegate
-                                    let listView = messageDelegate.ListView.view
-                                    
-                                    if (listView) {
-                                        // 3. Scrollen und Index setzen
-                                        listView.positionViewAtIndex(targetIdx, ListView.Center)
-                                        listView.currentIndex = targetIdx
+                                let modelRef = chatModel
+                                let savedId = model.messageId
+                                console.log("Save ID " + savedId)
+                                resetFiltersAction.trigger() // Filter im C++ Model löschen
+
+                                Qt.callLater(() => {
+                                    // Erst jetzt ist der Proxy wieder "voll"
+                                    let targetIdx = modelRef.findIndexById(savedId)
+                                    console.log("Target Index " + targetIdx);
+                                    if (targetIdx !== -1) {
+                                        chatListView.positionViewAtIndex(targetIdx, ListView.Center)
+                                        chatListView.currentIndex = targetIdx
                                     }
-                                }
+                                })
                             }
                         }
                     }

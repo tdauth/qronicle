@@ -8,7 +8,7 @@ mkdir ../build
 cd ../build
 #cmake ..
 cmake -DCMAKE_BUILD_TYPE=Release ..
-cmake --build . --target chronicle_lupdate # updates the .ts files in the source directory
+cmake --build . --target qronicle_lupdate # updates the .ts files in the source directory
 cmake --build . -j $(nproc)
 
 # .DEB package for Ubuntu

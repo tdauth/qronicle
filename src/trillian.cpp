@@ -103,7 +103,8 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 QString type = attrs.value(u"type").toString();
                 bool in = type == "incoming_privateMessage";
                 
-                QString nick = attrs.value(u"from_display").toString();
+                QString rawValue = attrs.value(u"from_display").toString();
+                QString nick = decodeMessage(rawValue);
                 message.setSourceNick(nick);
 
                 message.setSource(attrs.value(u"from").toString());

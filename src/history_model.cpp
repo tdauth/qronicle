@@ -17,8 +17,9 @@ QVariant HistoryModel::data(const QModelIndex& index, int role) const {
     // Mapping deiner Custom Roles auf die Spalten der Datenbank
     const QSqlRecord rec = record(index.row());
     switch (role) {
+        case MessageIdRole:   return rec.value("id").toLongLong();
         case FilePathRole:   return rec.value("filePath");
-        case LineNumberRole: return rec.value("lineNumber");
+        case LineNumberRole: return rec.value("lineNumber").toLongLong();
         case ContentRole:    return rec.value("messageHtml"); // Nutze messageHtml für Content
         case SenderRole:     return rec.value("sender");
         case SenderNickRole: return rec.value("senderNick");
@@ -35,6 +36,7 @@ QVariant HistoryModel::data(const QModelIndex& index, int role) const {
 
 QHash<int, QByteArray> HistoryModel::roleNames() const {
     return {
+        {MessageIdRole, "messageId"},
         {FilePathRole, "filePath"},
         {LineNumberRole, "lineNumber"},
         {ContentRole, "messageText"},
