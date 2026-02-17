@@ -157,7 +157,7 @@ void Database::initDb() {
         // 1. Datei aus den Ressourcen laden
         QFile file(":/sql/schema.sql");
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << "Schema-Datei nicht gefunden!";
+            qDebug() << "Missing schema file!";
             return;
         }
 
@@ -188,9 +188,9 @@ void Database::initDb() {
         }
 
         m_db.commit();
-        qDebug() << "Datenbank-Schema erfolgreich geladen!";
+        qDebug() << "Successfully loaded database schema!";
     } else {
-        qDebug() << "Verbindung fehlgeschlagen!";
+        qDebug() << "Database connection failed!";
     }
 }
     
