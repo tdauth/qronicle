@@ -35,6 +35,7 @@ This is intended behavior since your messenger history might be confidential and
 - A custom XML format for a fake messenger qronicle. XML is better for this than JSON since big messages with formatting and comments are allowed.
 - Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
 - Update logo based on [Kish tablet](https://en.wikipedia.org/wiki/Kish_tablet) which is considered one of the oldest known writing objects in human history.
+- Add menu with all supported messengers showing some help text with detailed information on how to import it.
 
 ## Customize
 
