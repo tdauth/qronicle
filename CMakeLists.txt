@@ -109,10 +109,10 @@ set(CPACK_GENERATOR "DEB")
 
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS
-    "libqt6sql6-sqlite, "
-    "qml6-module-qtquick-layouts, "
-    "qml6-module-qtquick-controls, "
-    "qml6-module-qtquick-templates, "
+    "libqt6sql6-sqlite"
+    "qml6-module-qtquick-layouts"
+    "qml6-module-qtquick-controls"
+    "qml6-module-qtquick-templates"
     "libqt6svg6"
 )
 
