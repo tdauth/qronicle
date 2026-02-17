@@ -25,3 +25,4 @@ cmake --build . -j $(nproc)
 
 # .DEB package for Ubuntu
 cpack
+sudo dpkg -i qronicle-1.0.0-Linux.deb

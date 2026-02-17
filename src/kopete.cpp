@@ -151,7 +151,7 @@ Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
     }
 
     if (filePaths.isEmpty()) {
-        qWarning() << "DId not find any Kopete XML files in the given directories!";
+        qWarning() << "Did not find any Kopete XML files in the given directories!";
         return {};
     }
 

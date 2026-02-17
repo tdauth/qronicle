@@ -8,14 +8,14 @@ namespace qronicle {
 
 void HistorySearchProxy::copyToClipboard(const QString &text) {
     QGuiApplication::clipboard()->setText(text);
-}    
-    
+}
+
 int HistorySearchProxy::findIndexById(QVariant targetId) {
     qlonglong target = targetId.toLongLong();
 
     for (int i = 0; i < rowCount(); ++i) {
         QVariant v = data(index(i, 0), HistoryModel::MessageIdRole);
-        
+
         if (v.toLongLong() == target) {
             return i;
         }
@@ -28,6 +28,15 @@ int HistorySearchProxy::getUnfilteredIndex(int currentProxyRow) {
     QModelIndex proxyIdx = index(currentProxyRow, 0);
     QModelIndex sourceIdx = mapToSource(proxyIdx);
     return sourceIdx.row();
+}
+
+QStringList HistorySearchProxy::getAllNickNames() {
+    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+    if (sqlModel == nullptr) {
+        return QStringList();
+    }
+
+    return sqlModel->getAllNickNames();
 }
 
 int HistorySearchProxy::totalCount() const {
@@ -68,14 +77,14 @@ QString HistorySearchProxy::dateRange() const {
     QString whereClause = filter.isEmpty() ? "" : "WHERE " + filter;
 
     // Wir holen MIN und MAX direkt per SQL
-    QSqlQuery query(QString("SELECT MIN(created_at), MAX(created_at) FROM messages %1").arg(whereClause), 
+    QSqlQuery query(QString("SELECT MIN(created_at), MAX(created_at) FROM messages %1").arg(whereClause),
                     sqlModel->database());
-    
+
     if (query.next() && !query.value(0).isNull()) {
         // 1. Aus SQLite (ISO-String) in QDateTime wandeln
         QDateTime start = QDateTime::fromString(query.value(0).toString(), Qt::ISODate);
         QDateTime end = QDateTime::fromString(query.value(1).toString(), Qt::ISODate);
-        
+
         // 2. QLocale nutzen (formatiert automatisch nach Landessprache des Nutzers)
         QLocale locale;
         QString startStr = locale.toString(start.toLocalTime(), QLocale::ShortFormat);
@@ -95,16 +104,16 @@ void HistorySearchProxy::triggerFilter(const QString &f) {
     if (sqlModel) {
         // 2. Die schwere Arbeit an SQLite übergeben
         sqlModel->applyFilters(
-            m_filterFilePath, 
-            m_filterMessage, 
-            m_filterNick, 
+            m_filterFilePath,
+            m_filterMessage,
+            m_filterNick,
             m_filterTarget,
             m_filterMessenger,
             m_filterProtocol
         );
     }
-    
-    // Invalidate ist hier nicht mehr für die Zeilenprüfung nötig, 
+
+    // Invalidate ist hier nicht mehr für die Zeilenprüfung nötig,
     // aber wir emittieren das Signal für die UI.
     emit filterChanged();
 }
@@ -113,7 +122,7 @@ void HistorySearchProxy::triggerFilter(const QString &f) {
 bool HistorySearchProxy::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
     // Da das SQL-Model nur noch Zeilen liefert, die dem Filter entsprechen,
     // lassen wir hier einfach alles durch (true).
-    return true; 
+    return true;
 }
 
 }

@@ -108,7 +108,7 @@ Messenger::Messages Amsn::loadDirectories(const QStringList &dirPaths) {
     }
 
     if (filePaths.isEmpty()) {
-        qWarning() << "No aMSN .log files found-";
+        qDebug() << "No aMSN .log files found in given directories!";
         return {};
     }
 

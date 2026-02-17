@@ -15,7 +15,7 @@ ApplicationWindow {
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
-        
+
         // --- 1. Die ToolBar (Feste Höhe) ---
         Rectangle {
             Layout.fillWidth: true
@@ -25,20 +25,20 @@ ApplicationWindow {
             RowLayout {
                 spacing: 10
                 anchors.fill: parent
-                
+
                 // Die obere Zeile (ToolBar)
                 ToolButton {
                     id: menuButton
                     text: "☰"
                     onClicked: mainMenu.open()
-                    
+
                     Action {
                         id: aboutAction
                         text: qsTr("About")
                         shortcut: "F1"
                         onTriggered: aboutDialog.open()
                     }
-                    
+
                     Action {
                         id: quitAction
                         text: qsTr("Exit")
@@ -50,11 +50,11 @@ ApplicationWindow {
                     Menu {
                         id: mainMenu
                         y: menuButton.height // Erscheint direkt unter dem Button
-                        
+
                         MenuItem {
                             action: aboutAction
                         }
-                        
+
                         MenuSeparator { } // Ein horizontaler Trennstrich
 
                         MenuItem {
@@ -62,24 +62,24 @@ ApplicationWindow {
                         }
                     }
                 }
-                
+
                 ToolButton {
                     id: filterButton
                     text: qsTr("Filter")
-                    
+
                     Shortcut {
                         id: filterShortcut
                         sequence: StandardKey.Find
-                        onActivated: filterButton.toggle() 
+                        onActivated: filterButton.toggle()
                     }
-                    
-                    icon.name: "view-filter" 
+
+                    icon.name: "view-filter"
                     icon.source: icon.name === "" ? "qrc:/icons/fallback-filter.svg" : ""
-                    
+
                     checkable: true
                     checked: false // Standardmäßig aus
                     onClicked: filterPanel.visible = checked
-                    
+
                     contentItem: Label {
                         text: filterButton.text + (filterButton.checked ? " ▴" : " ▾") + " (" + filterShortcut.nativeText + ")"
                         font: filterButton.font
@@ -87,9 +87,9 @@ ApplicationWindow {
                         verticalAlignment: Text.AlignVCenter
                     }
                 }
-                
+
                 Item { Layout.fillWidth: true } // Spacer
-                
+
                 Dialog {
                     id: aboutDialog
                     title: qsTr("About")
@@ -111,10 +111,10 @@ ApplicationWindow {
                             width: 80
                             height: 80
                             anchors.horizontalCenter: parent.horizontalCenter
-                            
+
                             fillMode: Image.PreserveAspectFit
                             smooth: true
-                            
+
                             Rectangle {
                                 anchors.fill: parent
                                 color: "transparent"
@@ -149,7 +149,7 @@ ApplicationWindow {
                 }
             }
         }
-            
+
         // 2. Das Filter-Panel (wird durch den ToolButton gesteuert)
         Rectangle {
             id: filterPanel
@@ -157,7 +157,7 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.preferredHeight: filterGrid.implicitHeight + 20
             color: Qt.darker("#f5f5f5", 1.02) // Dezenter Kontrast
-            
+
             GridLayout {
                 id: filterGrid
                 anchors.fill: parent
@@ -172,7 +172,7 @@ ApplicationWindow {
                     text: qsTr("Reset")
                     icon.name: "edit-clear"
                     shortcut: "Ctrl+R" // Optional: Ein Shortcut zum Zurücksetzen
-                    
+
                     onTriggered: {
                         // 1. C++ Model leeren
                         chatModel.filterNick = ""
@@ -181,7 +181,7 @@ ApplicationWindow {
                         chatModel.filterProtocol = ""
                         chatModel.filterFilePath = ""
                         chatModel.filterMessage = ""
-                        
+
                         // 2. UI Felder leeren
                         senderSearch.text = ""
                         receiverSearch.text = ""
@@ -194,22 +194,40 @@ ApplicationWindow {
 
                 Button {
                     id: resetFiltersButton
-                    action: resetFiltersAction 
-                    
+                    action: resetFiltersAction
+
                     Layout.fillWidth: false
-                    Layout.preferredWidth: 80
+                    Layout.preferredWidth: 120
                     Layout.alignment: Qt.AlignLeft
-                    
-                    // Optik: Ein flacherer Button, der nicht so dominant ist
+
                     flat: true
                 }
-                
+
                 TextField {
                     id: senderSearch
                     placeholderText: qsTr("Sender...")
                     text: chatModel.filterNick
                     Layout.fillWidth: true
-                    onTextChanged: if (activeFocus) nickTimer.restart()
+
+                    property var allNickNames: []
+                    property var filteredNickNames: []
+
+                    onActiveFocusChanged: {
+                        if (activeFocus) {
+                            allNickNames = chatModel.getAllNickNames()
+                            filteredNickNames = allNickNames
+                        }
+                    }
+
+                    onTextChanged: {
+                        if (activeFocus) {
+                            nickTimer.restart()
+                            filteredNickNames = allNickNames.filter(nick =>
+                                nick.toLowerCase().indexOf(senderSearch.text.toLowerCase()) !== -1
+                            )
+                        }
+                    }
+
                     Timer { id: nickTimer; interval: 500; onTriggered: chatModel.filterNick = parent.text }
                 }
 
@@ -231,7 +249,7 @@ ApplicationWindow {
                     onTextChanged: if (activeFocus) messengerTimer.restart()
                     Timer { id: messengerTimer; interval: 500; onTriggered: chatModel.filterMessenger = parent.text }
                 }
-                
+
                 TextField {
                     id: protocolSearch
                     placeholderText: qsTr("Protocol...")
@@ -283,18 +301,18 @@ ApplicationWindow {
                 model: chatModel
                 spacing: 12
                 clip: true
-                reuseItems: true 
+                reuseItems: true
                 cacheBuffer: 3000
-                
+
                 property bool initialScrollDone: false
 
                 onCountChanged: {
                     if (!initialScrollDone && chatModel.totalCount > 0) {
                         initialScrollDone = true
-                        
+
                         // 1. Erster Versuch: Zum aktuell bekannten Ende
                         chatListView.positionViewAtIndex(count - 1, ListView.End)
-                        
+
                         // 2. Erzwungener Versuch: Nach einer kurzen Verzögerung zum ECHTEN Ende
                         // Das gibt der SQLite-Engine Zeit, das 'fetchMore' intern zu verarbeiten
                         var scrollTimer = Qt.createQmlObject('import QtQuick; Timer { interval: 100; repeat: false }', chatListView)
@@ -316,15 +334,15 @@ ApplicationWindow {
                         event.accepted = true
                     }
                 }
-                
+
                 // Der Scrollbalken
                 ScrollBar.vertical: ScrollBar {
                     id: vBar
                     policy: ScrollBar.AlwaysOn // Erzwingt die dauerhafte Sichtbarkeit
                     active: true               // Sorgt dafür, dass er nicht halbtransparent wird
-                    
+
                     // Optional: Optisches Tuning, damit er nicht über dem Text liegt
-                    parent: chatListView.parent 
+                    parent: chatListView.parent
                     anchors.top: chatListView.top
                     anchors.bottom: chatListView.bottom
                     anchors.right: chatListView.right
@@ -334,9 +352,9 @@ ApplicationWindow {
                     id: messageDelegate
                     width: chatListView.width - 30
                     // Nutze implicitHeight der Column + Margins für die Höhe
-                    height: messageDelegate.implicitHeight + 20 
+                    height: messageDelegate.implicitHeight + 20
                     spacing: 4
-                    
+
                     Row { // Äußere Reihe für Avatar + Sprechblase
                         spacing: 8
                         width: parent.width
@@ -362,15 +380,15 @@ ApplicationWindow {
                         // Die Sprechblase
                         Rectangle {
                             // Berechnet die Breite dynamisch: Gesamtbreite minus sichtbare Avatare
-                            width: parent.width 
-                                - (model.sourceAvatar ? 44 : 0) 
+                            width: parent.width
+                                - (model.sourceAvatar ? 44 : 0)
                                 - (model.targetAvatar ? 44 : 0)
-                            
+
                             height: innerCol.implicitHeight + 16
                             color: "#ffffff"
                             radius: 6
                             border.color: "#ddd"
-                            
+
                             MouseArea {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.RightButton
@@ -380,14 +398,14 @@ ApplicationWindow {
                                     }
                                 }
                             }
-                            
+
 
                             Column {
                                 id: innerCol
                                 anchors.fill: parent
                                 anchors.margins: 8
                                 spacing: 4
-                                
+
                                 // Zeile 1: Sender (links), Datei (mitte) & Zeit (rechts)
                                 RowLayout {
                                     width: parent.width
@@ -404,32 +422,32 @@ ApplicationWindow {
                                         persistentSelection: true
                                         readOnly: true // Verhindert Bearbeitung beim Klicken auf den Link
                                     }
-                                    
+
                                     // Dateilink (URL auf filePath, zeigt nur Dateinamen)
                                     TextEdit {
                                         id: fileText
-                                        
+
                                         // WICHTIG: Erst das Format, dann der Text
                                         textFormat: Text.RichText // Versuche RichText statt StyledText, falls es Probleme gibt
-                                        
-                                        
+
+
                                         // Properties für sauberen Zugriff
                                         readonly property string fullUrl: "file://" + filePath + (lineNumber > 0 ? "#" + lineNumber : "")
                                         readonly property string fileName: filePath.split('/').pop()
-                                        
+
                                         // Layout-Integration
                                         Layout.alignment: Qt.AlignVCenter
                                         Layout.preferredWidth: contentWidth // Nutzt die tatsächliche Textbreite
-                                        
+
                                         // Styling & Inhalt
                                         // Inline-Style für die Farbe, da linkColor in TextEdit nicht existiert
                                         text: "<a href='" + fullUrl + "' style='color:#3498db; text-decoration:none;'>" + fileName + "</a>"
                                         font.pointSize: 9
                                         color: "#3498db"
-                                        
+
                                         readOnly: true
                                         selectByMouse: true
-                                        
+
                                         // Link-Klick Logik
                                         onLinkActivated: (link) => {
                                             console.log("Opening link:", link);
@@ -462,7 +480,7 @@ ApplicationWindow {
                                         // MouseArea für Cursor & Rechtsklick
                                         MouseArea {
                                             anchors.fill: parent
-                                            hoverEnabled: true 
+                                            hoverEnabled: true
                                             acceptedButtons: Qt.RightButton
                                             // Verweist auf hoveredLink des Elternelements (TextEdit)
                                             cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
@@ -486,7 +504,7 @@ ApplicationWindow {
                                         readOnly: true
                                     }
                                 }
-                                
+
                                 // Zeile 2: Empfänger (links) & Protokoll (rechts)
                                 RowLayout {
                                     width: parent.width
@@ -513,7 +531,7 @@ ApplicationWindow {
                                             width: 16
                                             height: 16
                                             // Nur anzeigen, wenn messenger gesetzt ist und sich vom Protokoll unterscheidet
-                                            visible: typeof messenger !== "undefined" && messenger !== "" && 
+                                            visible: typeof messenger !== "undefined" && messenger !== "" &&
                                                     messenger.toLowerCase() !== protocol.toLowerCase()
 
                                             Image {
@@ -538,16 +556,16 @@ ApplicationWindow {
                                                 id: messengerMouseArea
                                                 anchors.fill: parent
                                                 hoverEnabled: true
-                                                
+
                                                 Popup {
                                                     id: messengerPopup
                                                     // Sichtbarkeit steuern
                                                     visible: messengerMouseArea.containsMouse
-                                                    
+
                                                     // Verhindert, dass das Popup den Fokus stiehlt oder schließt
                                                     focus: false
                                                     closePolicy: Popup.NoAutoClose
-                                                    
+
                                                     // Positionierung: Etwas unterhalb der Maus oder des Elements
                                                     y: parent.height + 5
                                                     x: 0
@@ -592,21 +610,21 @@ ApplicationWindow {
                                                 readOnly: true
                                                 selectByMouse: true
                                             }
-                                            
+
                                             MouseArea {
                                                 id: protocolMouseArea
                                                 anchors.fill: parent
                                                 hoverEnabled: true
-                                                
+
                                                 Popup {
                                                     id: protocolPopup
                                                     // Sichtbarkeit steuern
                                                     visible: protocolMouseArea.containsMouse
-                                                    
+
                                                     // Verhindert, dass das Popup den Fokus stiehlt oder schließt
                                                     focus: false
                                                     closePolicy: Popup.NoAutoClose
-                                                    
+
                                                     // Positionierung: Etwas unterhalb der Maus oder des Elements
                                                     y: parent.height + 5
                                                     x: 0
@@ -630,7 +648,7 @@ ApplicationWindow {
                                         }
                                     }
                                 }
-                                
+
                                 // Trennlinie
                                 Rectangle {
                                     width: parent.width
@@ -640,7 +658,7 @@ ApplicationWindow {
                                     Layout.topMargin: 2
                                     Layout.bottomMargin: 2
                                 }
-                                
+
                                 // Nachrichtentext
                                 TextEdit {
                                     id: msgContent
@@ -653,11 +671,11 @@ ApplicationWindow {
                                     selectByMouse: true
                                     selectionColor: "#3498db"
                                     persistentSelection: true
-                                    
+
                                     onLinkActivated: (link) => {
                                         Qt.openUrlExternally(link)
                                     }
-                                    
+
                                     MouseArea {
                                         anchors.fill: parent
                                         acceptedButtons: Qt.NoButton
@@ -666,7 +684,7 @@ ApplicationWindow {
                                 }
                             }
                         }
-                        
+
                         // 3. EMPFÄNGER AVATAR (Rechts)
                         Rectangle {
                             width: 36
@@ -690,16 +708,16 @@ ApplicationWindow {
 
                     Menu {
                         id: contextMenu
-                        
-                        
+
+
                         MenuItem {
                             text: qsTr("Copy Message")
                             onTriggered: {
                                 // 'messageText' ist der Name deiner Role aus C++
-                                chatModel.copyToClipboard(model.messageText) 
+                                chatModel.copyToClipboard(model.messageText)
                             }
                         }
-                        
+
                         MenuItem {
                             text: qsTr("Jump to this message (clear filters)")
                             onTriggered: {
@@ -723,7 +741,7 @@ ApplicationWindow {
                 }
             }
         }
-        
+
         // Footer shows count and date range of all messages.
         Rectangle {
             Layout.fillWidth: true
@@ -758,8 +776,8 @@ ApplicationWindow {
 
                 // Right Side: Status
                 Label {
-                    text: chatModel.filteredCount === chatModel.totalCount ? 
-                        qsTr("All data loaded") : 
+                    text: chatModel.filteredCount === chatModel.totalCount ?
+                        qsTr("All data loaded") :
                         qsTr("Filtered")
                     font.pixelSize: 11
                     font.italic: true

@@ -45,7 +45,7 @@ Alle Rechte vorbehalten.</translation>
         <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="246"/>
+        <location filename="../src/Main.qml" line="264"/>
         <source>File Path...</source>
         <translation>Dateipfad ...</translation>
     </message>
@@ -54,93 +54,93 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Nachricht ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="209"/>
+        <location filename="../src/Main.qml" line="208"/>
         <source>Sender...</source>
         <translation>Sender ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="218"/>
+        <location filename="../src/Main.qml" line="236"/>
         <source>Receiver...</source>
         <translation>Empfänger ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="228"/>
+        <location filename="../src/Main.qml" line="246"/>
         <source>Messenger...</source>
         <translation>Messenger ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="237"/>
+        <location filename="../src/Main.qml" line="255"/>
         <source>Protocol...</source>
         <translation>Protokoll ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="256"/>
+        <location filename="../src/Main.qml" line="274"/>
         <source>Search Message Content...</source>
         <translation>Nachrichteninhalt suchen ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="395"/>
+        <location filename="../src/Main.qml" line="413"/>
         <source>From: %1 (%2)</source>
         <translation>Von: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="396"/>
-        <location filename="../src/Main.qml" line="495"/>
+        <location filename="../src/Main.qml" line="414"/>
+        <location filename="../src/Main.qml" line="513"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="443"/>
+        <location filename="../src/Main.qml" line="461"/>
         <source>Copy Link Address</source>
         <translation>Link-Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="447"/>
+        <location filename="../src/Main.qml" line="465"/>
         <source>Copy File Path</source>
         <translation>Dateipfad kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="494"/>
+        <location filename="../src/Main.qml" line="512"/>
         <source>To: %1 (%2)</source>
         <translation>An: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="564"/>
+        <location filename="../src/Main.qml" line="582"/>
         <source>Messenger: %1</source>
         <translation>Messenger: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="623"/>
+        <location filename="../src/Main.qml" line="641"/>
         <source>Protocol: %1</source>
         <translation>Protokoll: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="696"/>
+        <location filename="../src/Main.qml" line="714"/>
         <source>Copy Message</source>
         <translation>Nachricht kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="704"/>
+        <location filename="../src/Main.qml" line="722"/>
         <source>Jump to this message (clear filters)</source>
         <translation>Zu dieser Nachricht springen (Filter leeren)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="741"/>
+        <location filename="../src/Main.qml" line="759"/>
         <source>Messages: %1 / %2</source>
         <translation>Nachrichten: %1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="751"/>
+        <location filename="../src/Main.qml" line="769"/>
         <source>Period: %1</source>
         <translation>Zeitraum: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="762"/>
+        <location filename="../src/Main.qml" line="780"/>
         <source>All data loaded</source>
         <translation>Alle Daten geladen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="763"/>
+        <location filename="../src/Main.qml" line="781"/>
         <source>Filtered</source>
         <translation>Gefiltert</translation>
     </message>
@@ -187,13 +187,13 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>qronicle::HistorySearchProxy</name>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="85"/>
+        <location filename="../src/history_search_proxy.cpp" line="94"/>
         <source>%1 - %2</source>
         <comment>Date range from - to</comment>
         <translation>%1 - %2</translation>
     </message>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="89"/>
+        <location filename="../src/history_search_proxy.cpp" line="98"/>
         <source>-</source>
         <comment>No date available</comment>
         <translation>-</translation>

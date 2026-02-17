@@ -1,3 +1,5 @@
+#include <QSqlQuery>
+
 #include "history_model.hpp"
 
 namespace qronicle {
@@ -52,7 +54,7 @@ QHash<int, QByteArray> HistoryModel::roleNames() const {
     };
 }
 
-void HistoryModel::applyFilters(const QString &filePath, const QString &message, 
+void HistoryModel::applyFilters(const QString &filePath, const QString &message,
                             const QString &nick, const QString &target,
                             const QString &messenger, const QString &protocol) {
     QStringList filters;
@@ -66,8 +68,18 @@ void HistoryModel::applyFilters(const QString &filePath, const QString &message,
     if (!protocol.isEmpty())  filters << QString("protocol LIKE '%%1%' COLLATE NOCASE").arg(protocol);
 
     // Filter setzen und Datenbank neu abfragen
-    this->setFilter(filters.join(" AND ")); 
-    this->select(); 
+    this->setFilter(filters.join(" AND "));
+    this->select();
+}
+
+QStringList HistoryModel::getAllNickNames() {
+    QStringList nicks;
+    QSqlQuery query(database());
+    query.exec("SELECT nick FROM view_all_nicks ORDER BY nick ASC;");
+    while (query.next()) {
+        nicks << query.value(0).toString();
+    }
+    return nicks;
 }
 
 }

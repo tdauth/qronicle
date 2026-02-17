@@ -10,7 +10,7 @@ namespace qronicle {
 
 class HistoryModel : public QSqlTableModel {
     Q_OBJECT
-    
+
 public:
     enum Roles {
         MessageIdRole = Qt::UserRole + 1,
@@ -31,9 +31,11 @@ public:
     explicit HistoryModel(QSqlDatabase db);
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    void applyFilters(const QString &filePath, const QString &message, 
+    void applyFilters(const QString &filePath, const QString &message,
                                const QString &nick, const QString &target,
                                const QString &messenger, const QString &protocol);
+
+    QStringList getAllNickNames();
 };
 
 }
