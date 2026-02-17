@@ -214,8 +214,8 @@ Messenger::Messages Skype::loadDirectories(const QStringList &dirPaths) {
 
 QStringList Skype::defaultDirectories() {
     return {
-        QDir::homePath() + "/.Skype",
-        QDir::homePath() + "/.config/skypeforlinux"
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Skype",
+        QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/skypeforlinux"
     };
 }
 
