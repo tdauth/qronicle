@@ -129,6 +129,7 @@ Examples:
 ### Facebook Messenger
 
 - Export and download activities from Facebook.
+- Meta export format shared by Facebook Messenger and Instagram.
 - Messages: `your_facebook_activity/messages/inbox/<contact>/<message_xx>.json`.
 - Files are in sub folders: `audio`, `files`, `gifs`, `photos` and `videos`.
 - Example `your_facebook_activity/messages/inbox/hans_10206072096154041/message_1.json`:
@@ -167,6 +168,14 @@ Examples:
   ]
 }
 ```
+
+### Instagram
+
+- <https://www.instagram.com/download/request> to export all your messages.
+- Formats: JSON or HTML
+- Format seems to be the same as for Facebook Messenger.
+- Folder `your_instagram_activity/messages/inbox/` contains folders with the other account names `<account name_id>`
+- Besides, they contain sub folders `videos`, `photos` and `audio`.
 
 ### Skype
 
@@ -245,60 +254,6 @@ WhatsApp allows exporting chats which leads to directories with all sent and rec
 19.12.19, 21:27 - Peter: Nächste Woche!
 19.12.19, 21:27 - Peter: ‎STK-20240525-WA0000.webp (Datei angehängt)
 ```
-
-### Instagram
-
-- <https://www.instagram.com/download/request> to export all your messages.
-- Formats: JSON or HTML
-- Folder `your_instagram_activity/messages/inbox/` contains folders with the other account names `<account name_id>`
-- These folders contain `message_1.json`:
-
-```json
-{
-  "participants": [
-    {
-      "name": "Hans"
-    },
-    {
-      "name": "Peter"
-    }
-  ],
-  "messages": [
-    {
-      "sender_name": "Peter",
-      "timestamp_ms": 1762181093195,
-      "content": "Hey f\u00c3\u00bcr dich",
-      "is_geoblocked_for_viewer": false,
-      "is_unsent_image_by_messenger_kid_parent": false
-    },
-    {
-      "sender_name": "Peter",
-      "timestamp_ms": 1743164942986,
-      "content": "url schau mal",
-      "share": {
-        "link": "url",
-        "share_text": "Website: urlDownloads: url bla bla..."
-      },
-      "is_geoblocked_for_viewer": false,
-      "is_unsent_image_by_messenger_kid_parent": false
-    },
-    {
-      "sender_name": "Hans",
-      "timestamp_ms": 1740313151090,
-      "photos": [
-        {
-          "uri": "your_instagram_activity/messages/inbox/peter_12345/photos/12345.jpg",
-          "creation_timestamp": 1740313150
-        }
-      ],
-      "is_geoblocked_for_viewer": false,
-      "is_unsent_image_by_messenger_kid_parent": false
-    }
-  ]
-}
-```
-
-- Besides, they contain sub folders `videos`, `photos` and `audio`.
 
 ### Psi
 

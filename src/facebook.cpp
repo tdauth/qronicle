@@ -15,6 +15,10 @@ QString Facebook::id() const {
     return "facebook";
 }
 
+QString Facebook::messengerName() const {
+    return "Facebook Messenger";
+}
+
 Messenger::Messages Facebook::loadFile(const QString &filePath) {
     Messages messages;
 
@@ -63,8 +67,8 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
         QJsonObject obj = value.toObject();
 
         Message msg;
-        msg.setProtocol("Facebook Messenger");
-        msg.setMessenger("Facebook Messenger");
+        msg.setProtocol(messengerName());
+        msg.setMessenger(messengerName());
         QString senderName = QString::fromUtf8(obj.value("sender_name").toString(QObject::tr("Unknown")).toLatin1());
 
         QString otherParticipant;

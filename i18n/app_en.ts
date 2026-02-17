@@ -135,27 +135,27 @@ Alle rights reserved.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="93"/>
-        <location filename="../src/main.cpp" line="98"/>
+        <location filename="../src/main.cpp" line="94"/>
+        <location filename="../src/main.cpp" line="99"/>
         <source>qronicle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="102"/>
+        <location filename="../src/main.cpp" line="103"/>
         <source>Clears the existing database before loading messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="118"/>
+        <location filename="../src/main.cpp" line="120"/>
         <source>%1 directories.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/kopete.cpp" line="59"/>
         <location filename="../src/kopete.cpp" line="72"/>
-        <location filename="../src/facebook.cpp" line="24"/>
-        <location filename="../src/facebook.cpp" line="58"/>
-        <location filename="../src/facebook.cpp" line="68"/>
+        <location filename="../src/facebook.cpp" line="28"/>
+        <location filename="../src/facebook.cpp" line="62"/>
+        <location filename="../src/facebook.cpp" line="72"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>

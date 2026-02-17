@@ -11,6 +11,9 @@ class Facebook : public Messenger {
         virtual Messages loadFile(const QString &filePath) override;
         virtual Messages loadDirectories(const QStringList &dirPaths) override;
         virtual QStringList defaultDirectories() override;
+        
+    protected:
+        virtual QString messengerName() const;
 };
 
 }
