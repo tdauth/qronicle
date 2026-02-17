@@ -76,6 +76,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
     }
 
     QXmlStreamReader reader(&file);
+    // Nickname-Cache
     QMap<QString, QString> participantNicknames;
 
     while (!reader.atEnd() && !reader.hasError()) {
@@ -89,8 +90,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
                 auto attrs = reader.attributes();
                 if (attrs.hasAttribute(u"year")) year = attrs.value(u"year").toInt();
                 if (attrs.hasAttribute(u"month")) month = attrs.value(u"month").toInt();
-            } 
-            else if (tagName == u"msg") {
+            } else if (tagName == u"msg") {
                 Message message;
                 auto attrs = reader.attributes();
                 
@@ -98,20 +98,17 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
                 message.setLineNumber(reader.lineNumber());
                 message.setProtocol(protocol);
                 message.setMessenger("Kopete");
-                QString nick = attrs.value(u"nick").toString();
-                message.setSourceNick(nick);
+                message.setSource(attrs.value(u"from").toString());
+                message.setSourceNick(attrs.value(u"nick").toString());
 
                 if (attrs.value(u"in") == u"1") {
-                    message.setSource(partner);
                     message.setDestination(owner);
                 } else {
-                    message.setSource(owner);
                     message.setDestination(partner);
                 }
 
-                // Nickname-Cache
                 if (!participantNicknames.contains(message.source())) {
-                    participantNicknames.insert(message.source(), nick);
+                    participantNicknames.insert(message.source(), message.sourceNick());
                 }
                 message.setDestinationNick(participantNicknames.value(message.destination()));
                 
@@ -154,11 +151,11 @@ Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
     }
 
     if (filePaths.isEmpty()) {
-        qWarning() << "Keine Kopete XML Dateien in den angegebenen Verzeichnissen gefunden!";
+        qWarning() << "DId not find any Kopete XML files in the given directories!";
         return {};
     }
 
-    qDebug() << "Loading" << filePaths.size() << "Kopete files in parallel...";
+    qDebug() << "Loading" << filePaths.size() << "Kopete files concurrently...";
 
     return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
         filePaths, 
