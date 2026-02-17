@@ -28,6 +28,9 @@ class Messenger {
     protected:
         Avatars m_avatars;
         
+        /**
+         * Replaces all URLs with HTML a tags.
+         */
         QString formatHtml(const QString &msg);
     
 };
