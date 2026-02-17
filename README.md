@@ -31,6 +31,9 @@ Since this program uses Qt the name qronicle has been chosen.
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
 - Fill filter text inputs with auto completion by adding SQLite views for all available messengers, nicknames etc.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
+- Allow filtering for timestamp from to with UI date selectors from QML.
+- UI should support page up and down to scroll up and down the messages.
+- UI should support Pos 1 and End to jump to the beginning/end of messages.
 - Allow adding folders and single files. Folders could contain sub folders with messenger ids like my personal folder and import everything automatically.
 - Export everything as XML/JSON into folders.
 - A custom XML format for a fake messenger qronicle. XML is better for this than JSON since big messages with formatting and comments are allowed.
