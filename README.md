@@ -28,6 +28,7 @@ This is intended behavior since your messenger history might be confidential and
 ## Planned Features
 
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
+- Fill filter text inputs with auto completion by adding SQLite views for all available messengers, nicknames etc.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
 - Allow adding folders and single files. Folders could contain sub folders with messenger ids like my personal folder and import everything automatically.
 - Export everything as XML/JSON into folders.
