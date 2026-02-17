@@ -21,7 +21,6 @@ The name qronicle is derived from the English word chronicle.
 However, this name was already in use for different programs.
 Since this program uses Qt the name qronicle has been chosen.
 
-
 The program does not connect online to any of those messengers.
 It requires local history data in a certain format to process it.
 This is intended behavior since your messenger history might be confidential and should remain on your local machine.
@@ -34,6 +33,7 @@ This is intended behavior since your messenger history might be confidential and
 - Export everything as XML/JSON into folders.
 - A custom XML format for a fake messenger qronicle. XML is better for this than JSON since big messages with formatting and comments are allowed.
 - Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
+- Update logo based on [Kish tablet](https://en.wikipedia.org/wiki/Kish_tablet) which is considered one of the oldest known writing objects in human history.
 
 ## Customize
 
