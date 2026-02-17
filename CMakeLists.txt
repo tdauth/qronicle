@@ -56,8 +56,8 @@ qt_add_executable(qronicle
     src/knuddels.cpp
 )
 
-qt_add_qml_module(qronicle_qml
-    URI qronicle
+qt_add_qml_module(qronicle
+    URI qronicle_qml
     VERSION 1.0
     QML_FILES
       "src/Main.qml"
@@ -75,7 +75,6 @@ qt_add_translations(qronicle
 )
 
 target_link_libraries(qronicle PRIVATE
-    qronicle_qml
     Qt6::Core
     Qt6::Concurrent
     Qt6::Gui

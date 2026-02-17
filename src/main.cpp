@@ -94,17 +94,6 @@ int main(int argc, char *argv[]) {
     app.setApplicationVersion("1.0");
     app.setWindowIcon(QIcon(":/icons/qronicle")); 
     
-    /*
-    QDirIterator it(":/", QDirIterator::Subdirectories);
-    qDebug() << "--- All resources: ---";
-    while (it.hasNext()) {
-        QString icon = it.next();
-        if (!icon.contains("breez")) {
-            qDebug() << icon;
-        }
-    }
-    */
-    
     QCommandLineParser parser;
     parser.setApplicationDescription(QObject::tr("qronicle"));
     parser.addHelpOption();
@@ -204,11 +193,20 @@ int main(int argc, char *argv[]) {
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     proxyModel->setRecursiveFilteringEnabled(false);
     proxyModel->setDynamicSortFilter(false);
+    
+    qDebug() << "--- Registered files QRC ---";
+    QDirIterator it(":", QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        QString path = it.next();
+        if (path.endsWith(".qml") && !path.contains("breez")) {
+            qDebug() << path;
+        }
+    }
 
     QQmlApplicationEngine engine;
     engine.addImageProvider(QLatin1String("avatars"), new AvatarProvider(std::move(allAvatars)));
     engine.rootContext()->setContextProperty("chatModel", proxyModel);
-    engine.load(QUrl(QStringLiteral("qrc:/qt/qml/qronicle/src/Main.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/Main.qml")));
     
     return app.exec();
 }
