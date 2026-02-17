@@ -24,13 +24,14 @@
 #include "whatsapp.hpp"
 #include "psi.hpp"
 #include "amsn.hpp"
+#include "knuddels.hpp"
 
 using namespace qronicle;
 
 Messenger::Avatars loadCustomAvatars() {
     Messenger::Avatars avatarCache;
 
-    // 1. Pfad ermitteln (z.B. ~/.config/Chronicle/avatars)
+    // 1. Pfad ermitteln (z.B. ~/.config/qronicle/avatars)
     QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     QString avatarPath = QDir(configPath).filePath("avatars");
     
@@ -78,18 +79,11 @@ int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     
     QTranslator translator;
-    
-    // 1. Die Systemsprache ermitteln (z.B. "de_DE")
     QLocale locale = QLocale::system(); 
-
-    // 2. Die .qm Datei laden
-    // "app" ist der Präfix aus deinem Dateinamen (app_de.ts -> "app")
-    // ":/i18n" ist der Standardpfad, den CMake für Übersetzungen nutzt
     if (translator.load(locale, "app", "_", ":/i18n")) {
         app.installTranslator(&translator);
     }
 
-    // Optional: Auch Standard-Texte von Qt selbst übersetzen (z.B. "Cancel", "Open")
     QTranslator qtTranslator;
     if (qtTranslator.load(locale, "qt", "_", 
         QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
@@ -111,7 +105,6 @@ int main(int argc, char *argv[]) {
     }
     */
     
-    // 2. Parser aufsetzen
     QCommandLineParser parser;
     parser.setApplicationDescription(QObject::tr("qronicle"));
     parser.addHelpOption();
@@ -119,8 +112,6 @@ int main(int argc, char *argv[]) {
     
     QCommandLineOption optionClear = QCommandLineOption("clear", QObject::tr("Clears the existing database before loading messages."));
     parser.addOption(optionClear);
-    QCommandLineOption optionNoDistinct = QCommandLineOption("no-distinct", QObject::tr("Allows duplicated messages."));
-    parser.addOption(optionNoDistinct);
     
     QList<std::shared_ptr<Messenger>> messengers;
     messengers << std::make_shared<Kopete>();
@@ -130,6 +121,7 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<WhatsApp>();
     messengers << std::make_shared<Psi>();
     messengers << std::make_shared<Amsn>();
+    messengers << std::make_shared<Knuddels>();
     
     QMap<std::shared_ptr<Messenger>, QCommandLineOption*> optionMap;
 
@@ -171,7 +163,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Ergebnisse einsammeln (Warten auf alle Messenger)
     Messenger::Messages allMessages;
     
     for (auto &future : futures) {
@@ -180,7 +171,6 @@ int main(int argc, char *argv[]) {
     
     qDebug() << "All messages" << allMessages.size();
 
-    // Avatare einsammeln (nachdem die Threads fertig sind)
     Messenger::Avatars allAvatars;
     
     for (auto it = optionMap.begin(); it != optionMap.end(); ++it) {
@@ -202,8 +192,10 @@ int main(int argc, char *argv[]) {
     }
     
     db.saveMessages(allMessages);
+    qDebug() << "Before applying alliases.";
     // apply custom aliases before displaying anything
     db.applyAliases(loadCustomAliases());
+    qDebug() << "After applying alliases.";
     
     auto* baseModel = new HistoryModel(db.db());
     auto *proxyModel = new HistorySearchProxy(&app);
@@ -216,7 +208,7 @@ int main(int argc, char *argv[]) {
     QQmlApplicationEngine engine;
     engine.addImageProvider(QLatin1String("avatars"), new AvatarProvider(std::move(allAvatars)));
     engine.rootContext()->setContextProperty("chatModel", proxyModel);
-    engine.loadFromModule("Chronicle", "Main");
+    engine.load(QUrl(QStringLiteral("qrc:/qt/qml/qronicle/src/Main.qml")));
     
     return app.exec();
 }

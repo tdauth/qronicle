@@ -52,10 +52,12 @@ qt_add_executable(qronicle
     src/psi.cpp
     src/amsn.hpp
     src/amsn.cpp
+    src/knuddels.hpp
+    src/knuddels.cpp
 )
 
-qt_add_qml_module(qronicle
-    URI Chronicle
+qt_add_qml_module(qronicle_qml
+    URI qronicle
     VERSION 1.0
     QML_FILES
       "src/Main.qml"
@@ -73,6 +75,7 @@ qt_add_translations(qronicle
 )
 
 target_link_libraries(qronicle PRIVATE
+    qronicle_qml
     Qt6::Core
     Qt6::Concurrent
     Qt6::Gui
@@ -85,3 +88,36 @@ target_link_libraries(qronicle PRIVATE
     Qt6::Xml
     Qt6::Sql
 )
+
+install(TARGETS qronicle RUNTIME DESTINATION bin)
+
+install(FILES
+  assets/icons/qronicle.png
+  DESTINATION share/icons/hicolor/scalable/apps
+)
+install(FILES
+  qronicle.desktop
+  DESTINATION share/applications
+)
+
+set(CPACK_PACKAGE_NAME "qronicle")
+set(CPACK_PACKAGE_VENDOR "Tamino Dauth")
+set(CPACK_PACKAGE_CONTACT "taminojdauth@gmail.com")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Offline Qt-based messenger history visualizer")
+
+set(CPACK_GENERATOR "DEB")
+
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS
+    "libqt6sql6-sqlite, "
+    "qml6-module-qtquick-layouts, "
+    "qml6-module-qtquick-controls, "
+    "qml6-module-qtquick-templates, "
+    "libqt6svg6"
+)
+
+set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+
+include(CPack)

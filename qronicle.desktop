@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=qronicle
+Comment=Offline Qt-based messenger history visualizer
+Exec=qronicle
+Icon=qronicle
+Terminal=false
+Categories=Utility;Qt;

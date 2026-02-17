@@ -28,7 +28,7 @@ QVariant HistoryModel::data(const QModelIndex& index, int role) const {
         case TargetAvatarRole: return rec.value("receiver");
         case MessengerRole:  return rec.value("messenger");
         case ProtocolRole:   return rec.value("protocol");
-        case TimestampRole:  return rec.value("created_at");
+        case TimestampRole:  return rec.value("created_at").toDateTime();
         default: return {};
     }
 }

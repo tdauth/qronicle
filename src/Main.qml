@@ -7,11 +7,6 @@ ApplicationWindow {
     visible: true
     width: 1000
     height: 700
-    
-    // Füge diese Aliase oben hinzu:
-    property alias msgField: messageSearch
-    property alias nickField: nickSearch
-    property alias protField: protocolSearch
 
     // Design-Konstanten
     readonly property color colorBgChat: "#e5ddd5"
@@ -21,10 +16,10 @@ ApplicationWindow {
         anchors.fill: parent
         spacing: 0
         
-        // --- 1. GANZ OBEN: Suchbereich ---
+        // --- 1. Die ToolBar (Feste Höhe) ---
         Rectangle {
             Layout.fillWidth: true
-            height: 50
+            Layout.preferredHeight: 50
             color: "#f8f9fa" // Leichtes Grau vom Rest abgesetzt
 
             RowLayout {
@@ -56,12 +51,31 @@ ApplicationWindow {
                     }
                 }
                 
-                // Der "Über"-Dialog
+                ToolButton {
+                    id: filterButton
+                    text: qsTr("Filter")
+                    
+                    icon.name: "view-filter" 
+                    icon.source: icon.name === "" ? "qrc:/icons/fallback-filter.svg" : ""
+                    
+                    checkable: true
+                    checked: false // Standardmäßig aus
+                    onClicked: filterPanel.visible = checked
+                    
+                    contentItem: Label {
+                        text: filterButton.text + (filterButton.checked ? " ▴" : " ▾")
+                        font: filterButton.font
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+                
+                Item { Layout.fillWidth: true } // Spacer
+                
                 Dialog {
                     id: aboutDialog
                     title: qsTr("About")
 
-                    // Position und feste Größe
                     anchors.centerIn: parent
                     width: 300
                     height: 350
@@ -73,7 +87,6 @@ ApplicationWindow {
                         topPadding: 10
                         bottomPadding: 20
 
-                        // Das Logo
                         Image {
                             id: logo
                             source: "qrc:/icons/qronicle"
@@ -81,11 +94,9 @@ ApplicationWindow {
                             height: 80
                             anchors.horizontalCenter: parent.horizontalCenter
                             
-                            // Falls das Bild fehlt, wird ein Platzhalter angezeigt
                             fillMode: Image.PreserveAspectFit
                             smooth: true
                             
-                            // Optional: Ein Schatten oder Rahmen um das Logo
                             Rectangle {
                                 anchors.fill: parent
                                 color: "transparent"
@@ -118,136 +129,120 @@ ApplicationWindow {
                         }
                     }
                 }
-                
-                // Suchfeld für FilePath
-                TextField {
-                    id: filePathSearch
-                    // Bindung an das Model: Wird automatisch leer, wenn C++ das Signal sendet
-                    text: chatModel.filterFilePath
-                    placeholderText: qsTr("File Path...")
-                    Layout.preferredWidth: 150
+            }
+        }
+            
+        // 2. Das Filter-Panel (wird durch den ToolButton gesteuert)
+        Rectangle {
+            id: filterPanel
+            visible: filterButton.checked // Direkt an den Button-Zustand gebunden
+            Layout.fillWidth: true
+            Layout.preferredHeight: filterGrid.implicitHeight + 20
+            color: Qt.darker("#f5f5f5", 1.02) // Dezenter Kontrast
+            
+            GridLayout {
+                id: filterGrid
+                anchors.fill: parent
+                anchors.margins: 10
+                columns: 3
+                columnSpacing: 8
+                rowSpacing: 8
+
+                // --- Reihe 1: Reset-Button (klein) + 2 Textfelder ---
+                Button {
+                    id: resetFiltersButton
+                    text: qsTr("Reset")
+                    icon.name: "edit-clear" // Nutzt Standard-Icons
                     
-                    // WICHTIG: activeFocus verhindert Endlosschleifen beim automatischen Leeren
-                    onTextChanged: {
-                        if (activeFocus) {
-                            filePathTimer.restart()
-                        }
-                    }
-                    Timer { 
-                        id: filePathTimer
-                        interval: 500
-                        onTriggered: chatModel.filterFilePath = filePathSearch.text 
+                    Layout.fillWidth: false
+                    Layout.preferredWidth: 80
+                    Layout.alignment: Qt.AlignLeft
+                    
+                    // Optik: Ein flacherer Button, der nicht so dominant ist
+                    flat: true
+                    
+                    onClicked: {
+                        // 1. Alle Properties im C++ Model leeren
+                        chatModel.filterNick = ""
+                        chatModel.filterTarget = ""
+                        chatModel.filterMessenger = ""
+                        chatModel.filterProtocol = ""
+                        chatModel.filterFilePath = ""
+                        chatModel.filterMessage = ""
+                        
+                        // 2. Die Textfelder in der UI visuell leeren 
+                        // (Wichtig, falls die Bindung nicht bidirektional ist)
+                        senderSearch.text = ""
+                        receiverSearch.text = ""
+                        messengerSearch.text = ""
+                        protocolSearch.text = ""
+                        filePathSearch.text = ""
+                        messageSearch.text = ""
                     }
                 }
-
-                // Suchfeld für Nachrichtentext
-                TextField {
-                    id: messageSearch
-                    // Das Feld zeigt IMMER das an, was im Model steht
-                    text: chatModel.filterMessage 
-                    placeholderText: qsTr("Message...")
-                    Layout.fillWidth: true
-                    
-                    // Wenn der User tippt, wird das Model aktualisiert
-                    onTextChanged: {
-                        if (activeFocus) { // Nur wenn der User tippt, nicht beim automatischen Reset
-                            msgTimer.restart()
-                        }
-                    }
-
-                    Timer {
-                        id: msgTimer
-                        interval: 500
-                        onTriggered: chatModel.filterMessage = messageSearch.text
-                    }
-                }
                 
-                // Suchfeld für Sender
                 TextField {
-                    id: nickSearch
-                    // Bindung an das Model: Wird automatisch leer, wenn C++ das Signal sendet
-                    text: chatModel.filterNick
+                    id: senderSearch
                     placeholderText: qsTr("Sender...")
-                    Layout.preferredWidth: 150
-                    
-                    // WICHTIG: activeFocus verhindert Endlosschleifen beim automatischen Leeren
-                    onTextChanged: {
-                        if (activeFocus) {
-                            nickTimer.restart()
-                        }
-                    }
-                    Timer { 
-                        id: nickTimer
-                        interval: 500
-                        onTriggered: chatModel.filterNick = nickSearch.text 
-                    }
+                    text: chatModel.filterNick
+                    Layout.fillWidth: true
+                    onTextChanged: if (activeFocus) nickTimer.restart()
+                    Timer { id: nickTimer; interval: 500; onTriggered: chatModel.filterNick = parent.text }
                 }
-                
-                // Suchfeld für Target
+
                 TextField {
-                    id: targetSearch
-                    // Bindung an das Model: Wird automatisch leer, wenn C++ das Signal sendet
-                    text: chatModel.filterTarget
+                    id: receiverSearch
                     placeholderText: qsTr("Receiver...")
-                    Layout.preferredWidth: 150
-                    
-                    // WICHTIG: activeFocus verhindert Endlosschleifen beim automatischen Leeren
-                    onTextChanged: {
-                        if (activeFocus) {
-                            targetTimer.restart()
-                        }
-                    }
-                    Timer { 
-                        id: targetTimer
-                        interval: 500
-                        onTriggered: chatModel.filterTarget = targetSearch.text 
-                    }
+                    text: chatModel.filterTarget
+                    Layout.fillWidth: true
+                    onTextChanged: if (activeFocus) targetTimer.restart()
+                    Timer { id: targetTimer; interval: 500; onTriggered: chatModel.filterTarget = parent.text }
                 }
-                
-                // Suchfeld für Messenger
+
+                // --- Reihe 2: Technische Filter ---
                 TextField {
                     id: messengerSearch
-                    text: chatModel.filterMessenger
                     placeholderText: qsTr("Messenger...")
-                    Layout.preferredWidth: 150
-                    
-                    onTextChanged: {
-                        if (activeFocus) {
-                            messengerTimer.restart()
-                        }
-                    }
-                    Timer { 
-                        id: messengerTimer
-                        interval: 500
-                        onTriggered: chatModel.filterMessenger = messengerSearch.text 
-                    }
+                    text: chatModel.filterMessenger
+                    Layout.fillWidth: true
+                    onTextChanged: if (activeFocus) messengerTimer.restart()
+                    Timer { id: messengerTimer; interval: 500; onTriggered: chatModel.filterMessenger = parent.text }
                 }
-
-                // Suchfeld für Protocol
+                
                 TextField {
                     id: protocolSearch
-                    text: chatModel.filterProtocol
                     placeholderText: qsTr("Protocol...")
-                    Layout.preferredWidth: 150
-                    
-                    onTextChanged: {
-                        if (activeFocus) {
-                            protocolTimer.restart()
-                        }
-                    }
-                    Timer { 
-                        id: protocolTimer
-                        interval: 500
-                        onTriggered: chatModel.filterProtocol = protocolSearch.text 
-                    }
+                    text: chatModel.filterProtocol
+                    Layout.fillWidth: true
+                    onTextChanged: if (activeFocus) protocolTimer.restart()
+                    Timer { id: protocolTimer; interval: 500; onTriggered: chatModel.filterProtocol = parent.text }
+                }
+
+                TextField {
+                    id: filePathSearch
+                    placeholderText: qsTr("File Path...")
+                    text: chatModel.filterFilePath
+                    Layout.fillWidth: true
+                    onTextChanged: if (activeFocus) filePathTimer.restart()
+                    Timer { id: filePathTimer; interval: 500; onTriggered: chatModel.filterFilePath = parent.text }
+                }
+
+                // --- Reihe 3: Der Inhalt (Volle Breite) ---
+                TextField {
+                    id: messageSearch
+                    placeholderText: qsTr("Search Message Content...")
+                    text: chatModel.filterMessage
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 3 // Geht über alle 3 Spalten
+                    onTextChanged: if (activeFocus) msgTimer.restart()
+                    Timer { id: msgTimer; interval: 500; onTriggered: chatModel.filterMessage = parent.text }
                 }
             }
 
-            // Trennlinie zum nächsten Bereich
+            // Trennlinie unten
             Rectangle {
-                width: parent.width
-                height: 1
-                color: "#ddd"
+                width: parent.width; height: 1
+                color: "#ccc";
                 anchors.bottom: parent.bottom
             }
         }
@@ -458,7 +453,7 @@ ApplicationWindow {
                                     }
 
                                     TextEdit {
-                                        text: time
+                                        text: Qt.formatDateTime(time, Qt.DefaultLocaleShortDate)
                                         font.pointSize: 8
                                         color: "#666"
                                         Layout.alignment: Qt.AlignRight | Qt.AlignTop
@@ -521,27 +516,32 @@ ApplicationWindow {
                                                 anchors.fill: parent
                                                 hoverEnabled: true
                                                 
-                                                ToolTip {
-                                                    id: messengerToolTip
+                                                Popup {
+                                                    id: messengerPopup
+                                                    // Sichtbarkeit steuern
                                                     visible: messengerMouseArea.containsMouse
-                                                    text: qsTr("Messenger: %1").arg(messenger)
-                                                    delay: 500
-
-                                                    // FIX: Wir entkoppeln die Breite vom Content-Item
-                                                    // Wir setzen eine feste Breite basierend auf der benötigten Textbreite + Padding
-                                                    width: contentItem.implicitWidth + leftPadding + rightPadding
-
-                                                    contentItem: Text {
-                                                        // KEINE Bindung zurück an den ToolTip hier drin!
-                                                        text: messengerToolTip.text
-                                                        font: messengerToolTip.font
-                                                        color: "#333"
-                                                    }
+                                                    
+                                                    // Verhindert, dass das Popup den Fokus stiehlt oder schließt
+                                                    focus: false
+                                                    closePolicy: Popup.NoAutoClose
+                                                    
+                                                    // Positionierung: Etwas unterhalb der Maus oder des Elements
+                                                    y: parent.height + 5
+                                                    x: 0
 
                                                     background: Rectangle {
                                                         color: "#ffffff"
                                                         border.color: "#bbbbbb"
                                                         radius: 2
+                                                        // Schatten-Effekt (optional, für ToolTip-Optik)
+                                                        layer.enabled: true
+                                                    }
+
+                                                    contentItem: Label {
+                                                        text: qsTr("Messenger: %1").arg(messenger)
+                                                        font.pointSize: 8
+                                                        color: "#333"
+                                                        padding: 5
                                                     }
                                                 }
                                             }
@@ -574,32 +574,33 @@ ApplicationWindow {
                                                 id: protocolMouseArea
                                                 anchors.fill: parent
                                                 hoverEnabled: true
-                                            
-                                                ToolTip {
-                                                    id: protocolToolTip
+                                                
+                                                Popup {
+                                                    id: protocolPopup
+                                                    // Sichtbarkeit steuern
                                                     visible: protocolMouseArea.containsMouse
-                                                    text: qsTr("Protocol: %1").arg(protocol)
-                                                    delay: 500
-
-                                                    // FIX: Die Breite explizit von innen nach außen festlegen
-                                                    width: protocolText.implicitWidth + leftPadding + rightPadding
                                                     
-                                                    leftPadding: 8
-                                                    rightPadding: 8
-                                                    topPadding: 4
-                                                    bottomPadding: 4
-
-                                                    contentItem: Text {
-                                                        id: protocolText
-                                                        text: protocolToolTip.text
-                                                        font: protocolToolTip.font
-                                                        color: "#333"
-                                                    }
+                                                    // Verhindert, dass das Popup den Fokus stiehlt oder schließt
+                                                    focus: false
+                                                    closePolicy: Popup.NoAutoClose
+                                                    
+                                                    // Positionierung: Etwas unterhalb der Maus oder des Elements
+                                                    y: parent.height + 5
+                                                    x: 0
 
                                                     background: Rectangle {
                                                         color: "#ffffff"
                                                         border.color: "#bbbbbb"
                                                         radius: 2
+                                                        // Schatten-Effekt (optional, für ToolTip-Optik)
+                                                        layer.enabled: true
+                                                    }
+
+                                                    contentItem: Label {
+                                                        text: qsTr("Protocol: %1").arg(protocol)
+                                                        font.pointSize: 8
+                                                        color: "#333"
+                                                        padding: 5
                                                     }
                                                 }
                                             }
@@ -702,7 +703,7 @@ ApplicationWindow {
                 anchors.leftMargin: 10
                 anchors.rightMargin: 10
 
-                // Linke Seite: Anzahl
+                // Left Side: Count
                 Label {
                     text: qsTr("Messages: %1 / %2").arg(chatModel.filteredCount).arg(chatModel.totalCount)
                     font.pixelSize: 11
@@ -711,7 +712,7 @@ ApplicationWindow {
 
                 Item { Layout.fillWidth: true } // Platzhalter schiebt Rest nach rechts
 
-                // Mitte: Zeitspanne (Neu)
+                // Center: Time span
                 Label {
                     // Zeigt z.B. "Period: 01.01.2023 - 15.02.2026"
                     text: qsTr("Period: %1").arg(chatModel.dateRange)
@@ -722,7 +723,7 @@ ApplicationWindow {
 
                 Item { Layout.fillWidth: true } // Zweiter Platzhalter für Zentrierung
 
-                // Rechte Seite: Status
+                // Right Side: Status
                 Label {
                     text: chatModel.filteredCount === chatModel.totalCount ? 
                         qsTr("All data loaded") : 

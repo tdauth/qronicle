@@ -20,7 +20,7 @@
     <message>
         <location filename="../src/Main.qml" line="53"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="99"/>
@@ -77,12 +77,12 @@ Alle rights reserved.</source>
     <message>
         <location filename="../src/Main.qml" line="425"/>
         <source>Copy Link Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Link-Adresse kopieren</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="429"/>
         <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateipfad kopieren</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="476"/>
@@ -107,22 +107,22 @@ Alle rights reserved.</source>
     <message>
         <location filename="../src/Main.qml" line="707"/>
         <source>Messages: %1 / %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nachrichten: %1 / %2</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="717"/>
         <source>Period: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitraum: %1</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="728"/>
         <source>All data loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle daten geladen</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="729"/>
         <source>Filtered</source>
-        <translation type="unfinished"></translation>
+        <translation>Gefiltert</translation>
     </message>
 </context>
 <context>
@@ -136,7 +136,7 @@ Alle rights reserved.</source>
     <message>
         <location filename="../src/main.cpp" line="120"/>
         <source>Clears the existing database before loading messages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Löscht die bestehende Datenbank vor dem Laden von Nachrichten.</translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="122"/>
@@ -171,13 +171,13 @@ Alle rights reserved.</source>
         <location filename="../src/history_search_proxy.cpp" line="66"/>
         <source>%1 - %2</source>
         <comment>Date range from - to</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 - %2</translation>
     </message>
     <message>
         <location filename="../src/history_search_proxy.cpp" line="70"/>
         <source>-</source>
         <comment>No date available</comment>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
 </context>
 </TS>

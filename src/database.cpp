@@ -12,7 +12,6 @@ Database::Database() {
 }
 
 Database::~Database() {
-    // Im Destruktor deiner Klasse
     if (m_db.isOpen()) {
         m_db.close();
     }
@@ -30,13 +29,12 @@ void Database::removeDatabaseFile() {
     m_db = QSqlDatabase();
     QSqlDatabase::removeDatabase(connectionName);
 
-    // Jetzt ist die Datei frei zum Löschen
     if (QFile::remove(dbPath)) {
-        qDebug() << "Datenbankdatei erfolgreich gelöscht.";
+        qDebug() << "Sucessfully deleted database.";
         
         initDb();
     } else {
-        qDebug() << "Löschen fehlgeschlagen. Ist die Datei noch gesperrt?";
+        qDebug() << "Deleting database failed. Maybe database is still locked?";
     }
 }
 
@@ -47,7 +45,6 @@ void Database::saveMessages(const Messenger::Messages &messages) {
     }
 
     m_db.transaction();
-
     QSqlQuery query(m_db);
     query.prepare(R"(
         INSERT INTO messages (
@@ -55,78 +52,91 @@ void Database::saveMessages(const Messenger::Messages &messages) {
             receiver, receiverNick, message, messageHtml, 
             created_at, messenger, protocol, status
         ) VALUES (
-            :fPath, :line, :snd, :sndNick, 
-            :rcv, :rcvNick, :msg, :msgHtml, 
-            :time, :mngr, :proto, :stat
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
     )");
 
-    for (auto m : messages) {
-        query.bindValue(":fPath", m.filePath());
-        query.bindValue(":line",  m.lineNumber());
-        query.bindValue(":snd",   m.source());
-        query.bindValue(":sndNick", m.sourceNick());
-        query.bindValue(":rcv",   m.destination());
-        query.bindValue(":rcvNick", m.destinationNick());
-        query.bindValue(":msg",   m.content());
-        query.bindValue(":msgHtml", m.contentHtml());
-        
-        // Zeitstempel als ISO-String (wichtig für SQLite DATETIME)
-        query.bindValue(":time",  m.timestamp().toString(Qt::ISODate));
-        
-        query.bindValue(":mngr",  m.messenger());
-        query.bindValue(":proto", m.protocol());
-        query.bindValue(":stat",  m.status());
+    QVariantList fPaths, lines, snds, sndNicks, rcvs, rcvNicks, 
+                 msgs, msgHtmls, times, mngrs, protos, stats;
 
-        if (!query.exec()) {
-            qDebug() << "Insert fehlgeschlagen für" << m.filePath() << ":" << query.lastError().text();
-            m_db.rollback();
-            return; 
-    }
+    for (const auto &m : messages) {
+        fPaths   << m.filePath();
+        lines    << m.lineNumber();
+        snds     << m.source();
+        sndNicks << m.sourceNick();
+        rcvs     << m.destination();
+        rcvNicks << m.destinationNick();
+        msgs     << m.content();
+        msgHtmls << m.contentHtml();
+        times    << m.timestamp().toUTC().toString(Qt::ISODate); // UTC ist Standard für DBs
+        mngrs    << m.messenger();
+        protos   << m.protocol();
+        stats    << m.status();
     }
 
-    // 3. Alles auf einmal auf die Festplatte schreiben
-    if (m_db.commit()) {
-        qDebug() << "Stored messages in database successfully";
-    } else {
-        qDebug() << "Commit failed, rollback!";
+    query.addBindValue(fPaths);
+    query.addBindValue(lines);
+    query.addBindValue(snds);
+    query.addBindValue(sndNicks);
+    query.addBindValue(rcvs);
+    query.addBindValue(rcvNicks);
+    query.addBindValue(msgs);
+    query.addBindValue(msgHtmls);
+    query.addBindValue(times);
+    query.addBindValue(mngrs);
+    query.addBindValue(protos);
+    query.addBindValue(stats);
+
+    if (!query.execBatch()) {
+        qDebug() << "Batch Insert Error:" << query.lastError().text();
         m_db.rollback();
+    } else {
+        m_db.commit();
+        qDebug() << messages.size() << "messages stored.";
     }
 }
 
 void Database::applyAliases(QMap<QString, QString> &&aliases) {
-    if (aliases.isEmpty()) {
-        return;
+    if (aliases.isEmpty()) return;
+
+    m_db.transaction();
+
+    QVariantList ids;
+    QVariantList nicks;
+
+    for (auto it = aliases.begin(); it != aliases.end(); ++it) {
+        ids << it.key();
+        nicks << it.value();
     }
 
     QSqlQuery query(m_db);
-    
-    // 1. Transaktion starten (EXTREM wichtig bei 800k Zeilen!)
-    m_db.transaction();
 
-    // 2. SQL vorbereiten
-    // Wir überschreiben senderNick, wenn der sender mit der ID im Alias übereinstimmt
-    query.prepare("UPDATE messages SET senderNick = :nick WHERE sender = :id");
+    query.prepare("UPDATE messages SET senderNick = ? WHERE sender = ?");
+    query.addBindValue(nicks);
+    query.addBindValue(ids);
 
-    for (auto it = aliases.begin(); it != aliases.end(); ++it) {
-        query.bindValue(":nick", it.value());
-        query.bindValue(":id", it.key());
-        
-        if (!query.exec()) {
-            qDebug() << "Update Fehler bei ID" << it.key() << ":" << query.lastError().text();
-        }
+    if (!query.execBatch()) {
+        qDebug() << "Sender Update Batch Fehler:" << query.lastError().text();
+        m_db.rollback();
+        return;
     }
 
-    // Das gleiche für die Empfänger (Receiver)
-    query.prepare("UPDATE messages SET receiverNick = :nick WHERE receiver = :id");
-    for (auto it = aliases.begin(); it != aliases.end(); ++it) {
-        query.bindValue(":nick", it.value());
-        query.bindValue(":id", it.key());
-        query.exec();
+    query.prepare("UPDATE messages SET receiverNick = ? WHERE receiver = ?");
+    query.addBindValue(nicks);
+    query.addBindValue(ids);
+
+    if (!query.execBatch()) {
+        qDebug() << "Receiver Update Batch Fehler:" << query.lastError().text();
+        m_db.rollback();
+        return;
     }
 
-    // 3. Alles auf einmal auf die Festplatte schreiben
-    m_db.commit();
+    if (m_db.commit()) {
+        qDebug() << "Aliases successfully applied to all messages.";
+    } else {
+        qDebug() << "Commit failed during alias update!";
+        m_db.rollback();
+    }
 }
 
 void Database::initDb() {

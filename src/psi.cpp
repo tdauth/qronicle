@@ -246,8 +246,8 @@ Messenger::Messages Psi::loadDirectories(const QStringList &dirPaths) {
 
 QStringList Psi::defaultDirectories() {
     return {
-        QDir::homePath() + "/.config/psi+",
-        QDir::homePath() + "/.config/psi"
+        QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)).filePath("psi+"),
+        QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)).filePath("psi")
     };
 }
 

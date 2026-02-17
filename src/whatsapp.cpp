@@ -14,26 +14,24 @@ namespace {
     
 QString formatAttachments(const QString &filePath, const QString &msg) {
     QString newContentHtml = msg;
-                
-    // 1. Verzeichnis der aktuellen Datei ermitteln
     QString dirPath = QFileInfo(filePath).absolutePath(); 
 
-    // 2. Regex für Anhänge definieren
-    // Erkennt: BeliebigerDateiname.ext (Datei angehängt)
     static QRegularExpression fileRe("([^\\s]+) \\(Datei angehängt\\)");
     QRegularExpressionMatch fileMatch = fileRe.match(newContentHtml);
 
     if (fileMatch.hasMatch()) {
-        QString fileName = fileMatch.captured(1); // z.B. "IMG-20251031-WA0000.jpg"
+        QString fileName = fileMatch.captured(1); // "IMG-20251031-WA0000.jpg"
         
-        // URL zusammenbauen (file:// Pfad)
         QString fileUrl = QString("<a href=\"%1\">%2</a>").arg(QUrl::fromLocalFile(dirPath + "/" + fileName).toString()).arg(fileName);
         
-        // Den Text in der Nachricht ersetzen
         newContentHtml.replace(fileMatch.captured(0), fileUrl);
     }
     
     return newContentHtml;
+}
+
+inline void mergeMessages(Messenger::Messages &result, const Messenger::Messages &intermediate) {
+    result.append(intermediate);
 }
     
 }
@@ -144,15 +142,9 @@ Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
     return messages;
 }
 
-// Hilfsfunktion zum Zusammenführen der Ergebnisse (Reduce-Schritt)
-void mergeMessages(Messenger::Messages &result, const Messenger::Messages &intermediate) {
-    result.append(intermediate);
-}
-
 Messenger::Messages WhatsApp::loadDirectories(const QStringList &dirPaths) {
     QStringList allFilePaths;
 
-    // 1. Alle Dateipfade aus allen Verzeichnissen sammeln
     for (const QString &dir : dirPaths) {
         QDirIterator it(dir, QStringList() << "*.txt", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext()) {
@@ -166,8 +158,7 @@ Messenger::Messages WhatsApp::loadDirectories(const QStringList &dirPaths) {
 
     qDebug() << "Loading" << allFilePaths.size() << "WhatsApp files in parallel from" << dirPaths.size() << "directories...";
 
-    // 2. Parallelisiertes Laden (bleibt fast gleich, nutzt aber die gesammelte Liste)
-    Messenger::Messages allMessages = QtConcurrent::blockingMappedReduced<Messenger::Messages>(
+    return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
         allFilePaths,
         [this](const QString &path) { 
             return loadFile(path); 
@@ -175,14 +166,8 @@ Messenger::Messages WhatsApp::loadDirectories(const QStringList &dirPaths) {
         [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
             result.append(intermediate);
         },
-        QtConcurrent::UnorderedReduce // Optimierung: Reihenfolge beim Zusammenführen egal
+        QtConcurrent::UnorderedReduce
     );
-
-    // 3. Hier wäre der ideale Platz für das Deduplizieren (Distinct machen)
-    // Da Dateien aus verschiedenen Verzeichnissen oft Überschneidungen haben
-    QSet<Message> distinctSet = QSet<Message>(allMessages.begin(), allMessages.end());
-    
-    return distinctSet.values();
 }
 
 QStringList WhatsApp::defaultDirectories() {

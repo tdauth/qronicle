@@ -1,6 +1,6 @@
 # qronicle
 
-Offline Qt-based GUI program to visualize, import and export history from different messengers:
+Offline Qt-based messenger history visualizer:
 
 | Name | Messages | Avatars |
 | :--- | :---:         | :---: |
@@ -10,6 +10,7 @@ Offline Qt-based GUI program to visualize, import and export history from differ
 | <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ |
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
 | <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
 | <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ✅ | ✅ |
@@ -29,7 +30,7 @@ This is intended behavior since your messenger history might be confidential and
 
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
-- Allow adding folders and single files.
+- Allow adding folders and single files. Folders could contain sub folders with messenger ids like my personal folder and import everything automatically.
 - Export everything as XML/JSON into folders.
 - A custom XML format for a fake messenger qronicle. XML is better for this than JSON since big messages with formatting and comments are allowed.
 - Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
@@ -45,11 +46,6 @@ For example, I created `~.config/qronicle/themes/trillian/` with the sub folder 
 It should then be automatically used.
 The same for other messengers.
 Themese cannot be part of the program itself due to copyright restrictions.
-
-### Distinct
-
-Use the option --no-distinct to allow duplicated messages.
-By default they are ignored.
 
 ### Aliases
 
@@ -251,6 +247,60 @@ WhatsApp allows exporting chats which leads to directories with all sent and rec
 19.12.19, 21:27 - Peter: ‎STK-20240525-WA0000.webp (Datei angehängt)
 ```
 
+### Instagram
+
+- <https://www.instagram.com/download/request> to export all your messages.
+- Formats: JSON or HTML
+- Folder `your_instagram_activity/messages/inbox/` contains folders with the other account names `<account name_id>`
+- These folders contain `message_1.json`:
+
+```json
+{
+  "participants": [
+    {
+      "name": "Hans"
+    },
+    {
+      "name": "Peter"
+    }
+  ],
+  "messages": [
+    {
+      "sender_name": "Peter",
+      "timestamp_ms": 1762181093195,
+      "content": "Hey f\u00c3\u00bcr dich",
+      "is_geoblocked_for_viewer": false,
+      "is_unsent_image_by_messenger_kid_parent": false
+    },
+    {
+      "sender_name": "Peter",
+      "timestamp_ms": 1743164942986,
+      "content": "url schau mal",
+      "share": {
+        "link": "url",
+        "share_text": "Website: urlDownloads: url bla bla..."
+      },
+      "is_geoblocked_for_viewer": false,
+      "is_unsent_image_by_messenger_kid_parent": false
+    },
+    {
+      "sender_name": "Hans",
+      "timestamp_ms": 1740313151090,
+      "photos": [
+        {
+          "uri": "your_instagram_activity/messages/inbox/peter_12345/photos/12345.jpg",
+          "creation_timestamp": 1740313150
+        }
+      ],
+      "is_geoblocked_for_viewer": false,
+      "is_unsent_image_by_messenger_kid_parent": false
+    }
+  ]
+}
+```
+
+- Besides, they contain sub folders `videos`, `photos` and `audio`.
+
 ### Psi
 
 Currently, we support only .history files not .xml files.
@@ -355,7 +405,6 @@ Log file lines with file transfers:
 
 - `~/.amsn/<account>/displaypic/cache/<contact email address>/<displaypicfile>` are avatars of contacts
 - `~/.amsn/<account>/FT/cache` contains file transfer files.
-
 
 ### Knuddels
 

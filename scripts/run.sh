@@ -1,5 +1,5 @@
 ./build.sh
-cd ./build
+cd ../build
 ./qronicle \
     --clear \
     --amsn ../personal/amsn \
@@ -7,6 +7,8 @@ cd ./build
     --kopete ../personal/kopete \
     --trillian ../personal/trillian \
     --facebook ../personal/facebook \
-    --skype ../personal/skype ../personal/skype2 \ \
+    --skype ../personal/skype \
+    --skype ../personal/skype2 \
     --whatsapp ../personal/whatsapp \
-    --psi ../personal/psi
+    --psi ../personal/psi \
+    --knuddels ../personal/knuddels
