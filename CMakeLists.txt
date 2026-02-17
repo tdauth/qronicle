@@ -104,18 +104,11 @@ set(CPACK_PACKAGE_VENDOR "Tamino Dauth")
 set(CPACK_PACKAGE_CONTACT "taminojdauth@gmail.com")
 set(CPACK_PACKAGE_VERSION "1.0.0")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Offline Qt-based messenger history visualizer")
-
 set(CPACK_GENERATOR "DEB")
-
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS
-    "libqt6sql6-sqlite"
-    "qml6-module-qtquick-layouts"
-    "qml6-module-qtquick-controls"
-    "qml6-module-qtquick-templates"
-    "libqt6svg6"
+    "libqt6sql6-sqlite;qml6-module-qtquick-layouts;qml6-module-qtquick-controls;qml6-module-qtquick-templates;libqt6svg6"
 )
-
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 
