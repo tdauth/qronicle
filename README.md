@@ -4,29 +4,30 @@ Offline Qt-based messenger history visualizer:
 
 | Name | Messages | Avatars |
 | :--- | :---:         | :---: |
+| <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ |
-| <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
-| <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
 | <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
 | <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ✅ | ✅ |
 | <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ✅ | ⏳ |
 | <a href="https://invent.kde.org/network/neochat/-/blob/master/icons/300-apps-neochat.png?ref_type=heads"><img src="./assets/icons/neochat.png" width="22" align="center"></a>  [**NeoChat**](https://apps.kde.org/de/neochat/) | ⏳ | ⏳ |
 
-The name qronicle is derived from the English word chronicle.
-However, this name was already in use for different programs.
-Since this program uses Qt the name qronicle has been chosen.
-
-The program does not connect online to any of those messengers.
+**Offline:** The program does not connect online to any of those messengers.
 It requires local history data in a certain format to process it.
 This is intended behavior since your messenger history might be confidential and should remain on your local machine.
 
+**Name:** The name qronicle is derived from the English word chronicle.
+However, this name was already in use for different programs.
+Since this program uses Qt the name qronicle has been chosen.
+
 ## Planned Features
 
+- Improve performance: Loading Skype avatars could be done more concurrently (loading images).
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
 - Fill filter text inputs with auto completion by adding SQLite views for all available messengers, nicknames etc.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
