@@ -74,15 +74,8 @@ to be found automatically.
 
 ## Manual Build Ubuntu
 
-See [build.sh](./build.sh).
-
-## Internationalization
-
-Modify the German translation:
-
-```
-/usr/lib/qt6/bin/linguist i18n/app_de.ts
-```
+- [translate.sh](./scripts/translate.sh): Update translation files.
+- [build.sh](./scripts/build.sh): Builds binary qronicle on Ubuntu and DEB file.
 
 ## Messenger History Formats
 
