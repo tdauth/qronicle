@@ -67,6 +67,7 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
         QJsonObject obj = value.toObject();
 
         Message msg;
+        msg.setFilePath(fileInfo.absoluteFilePath());
         msg.setProtocol(messengerName());
         msg.setMessenger(messengerName());
         QString senderName = QString::fromUtf8(obj.value("sender_name").toString(QObject::tr("Unknown")).toLatin1());
@@ -96,16 +97,19 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
 
         msg.setTimestamp(QDateTime::fromMSecsSinceEpoch(obj.value("timestamp_ms").toVariant().toLongLong()));
         QString content = QString::fromUtf8(obj.value("content").toString().toLatin1());
-        msg.setContent(content);
+        QString contentHtml = formatHtml(content);
+        
+        if (obj.contains("share") && obj.value("share").isObject()) {
+            QJsonObject shareObj = obj.value("share").toObject();
 
-        QString contentHtml = content;
-
-        // URLs into HTML
-        if (contentHtml.contains("http://") || contentHtml.contains("https://")) {
-            static QRegularExpression urlRegex(R"((https?:\/\/[^\s\n\r]+))");
-            contentHtml.replace(urlRegex, R"(<a href="\1">\1</a>)");
+            QString link = shareObj.value("link").toString();
+            QString shareText = shareObj.value("share_text").toString();
+            QString owner = shareObj.value("original_content_owner").toString();
+            content = QObject::tr("%1<br/><a href=\"%2\">%3</a> by %4<br/>%5").arg(content).arg(link).arg(link).arg(owner).arg(shareText);
+            contentHtml = QObject::tr("%1<br/><a href=\"%2\">%3</a> by %4<br/>%5").arg(contentHtml).arg(link).arg(link).arg(owner).arg(shareText);
         }
-
+        
+        msg.setContent(content);
         msg.setContentHtml(contentHtml);
 
         messages.append(msg);

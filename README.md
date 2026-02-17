@@ -155,7 +155,12 @@ Examples:
     {
       "sender_name": "Hans",
       "timestamp_ms": 1616613981404,
-      "content": "N\u00c3\u00a4chste Woche!",
+      "content": "Hans hat einen Anhang gesendet.",
+      "share": {
+        "link": "url",
+        "share_text": "url description",
+        "original_content_owner": "account"
+      },
       "is_geoblocked_for_viewer": false,
       "is_unsent_image_by_messenger_kid_parent": false
     },

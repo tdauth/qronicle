@@ -155,8 +155,14 @@ Alle rights reserved.</source>
         <location filename="../src/kopete.cpp" line="72"/>
         <location filename="../src/facebook.cpp" line="28"/>
         <location filename="../src/facebook.cpp" line="62"/>
-        <location filename="../src/facebook.cpp" line="72"/>
+        <location filename="../src/facebook.cpp" line="73"/>
         <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/facebook.cpp" line="108"/>
+        <location filename="../src/facebook.cpp" line="109"/>
+        <source>%1&lt;br/&gt;&lt;a href=&quot;%2&quot;&gt;%3&lt;/a&gt; by %4&lt;br/&gt;%5</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
