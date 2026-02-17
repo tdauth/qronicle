@@ -15,41 +15,41 @@
 namespace qronicle {
 
 namespace {
-    
+
 QDateTime getTimestamp(int year, int month, QString time) {
     QStringList parts = time.split(' ');
     if (parts.size() < 2) {
         qDebug() << "Invalid date" << time;
-        return QDateTime(); 
+        return QDateTime();
     }
 
     int day = parts.at(0).toInt();
     QString timeStr = parts.at(1); // "11:53:42"
     QDate date(year, month, day);
-    
+
     return QDateTime(date, QTime::fromString(timeStr, "HH:mm:ss"));
 }
 
 QString decodeMessage(const QString &message) {
-    return message.contains(QChar::ReplacementCharacter) 
-                ? QString::fromLatin1(message.toLatin1()) 
+    return message.contains(QChar::ReplacementCharacter)
+                ? QString::fromLatin1(message.toLatin1())
                 : message;
 }
-    
+
 }
 
 QString Kopete::id() const {
     return "kopete";
 }
-    
+
 Messenger::Messages Kopete::loadFile(const QString &filePath) {
     Messages messages;
-    
+
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return messages;
     }
-    
+
     // get info from file and dir names
     QFileInfo fileInfo(filePath);
     QStringView sv{fileInfo.completeBaseName()};
@@ -66,11 +66,11 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
             month = datePart.mid(4, 2).toInt();
         }
     }
-    
-    QDir parentDir = fileInfo.dir(); 
+
+    QDir parentDir = fileInfo.dir();
     QString owner = parentDir.dirName();
     QString protocol = QObject::tr("Unknown");
-    
+
     if (parentDir.cdUp()) {
         protocol = parentDir.dirName();
     }
@@ -85,23 +85,23 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
         if (token == QXmlStreamReader::StartElement) {
             QStringView tagName = reader.name();
 
-            if (tagName == u"date") {
+            if (tagName == QStringLiteral("date")) {
                 // Jahr/Monat aus dem Header überschreiben, falls vorhanden
                 auto attrs = reader.attributes();
-                if (attrs.hasAttribute(u"year")) year = attrs.value(u"year").toInt();
-                if (attrs.hasAttribute(u"month")) month = attrs.value(u"month").toInt();
-            } else if (tagName == u"msg") {
+                if (attrs.hasAttribute(QStringLiteral("year"))) year = attrs.value(QStringLiteral("year")).toInt();
+                if (attrs.hasAttribute(QStringLiteral("month"))) month = attrs.value(QStringLiteral("month")).toInt();
+            } else if (tagName == QStringLiteral("msg")) {
                 Message message;
                 auto attrs = reader.attributes();
-                
+
                 message.setFilePath(fileInfo.absoluteFilePath());
                 message.setLineNumber(reader.lineNumber());
                 message.setProtocol(protocol);
                 message.setMessenger("Kopete");
-                message.setSource(attrs.value(u"from").toString());
-                message.setSourceNick(attrs.value(u"nick").toString());
+                message.setSource(attrs.value(QStringLiteral("from")).toString());
+                message.setSourceNick(attrs.value(QStringLiteral("nick")).toString());
 
-                if (attrs.value(u"in") == u"1") {
+                if (attrs.value(QStringLiteral("in")) == QStringLiteral("1")) {
                     message.setDestination(owner);
                 } else {
                     message.setDestination(partner);
@@ -111,8 +111,8 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
                     participantNicknames.insert(message.source(), message.sourceNick());
                 }
                 message.setDestinationNick(participantNicknames.value(message.destination()));
-                
-                QString timeAttr = attrs.value(u"time").toString();
+
+                QString timeAttr = attrs.value(QStringLiteral("time")).toString();
 
                 if (timeAttr.isEmpty()) {
                     // FALLBACK: Wenn kein Zeitstempel da ist, nimm das Datum aus dem Header
@@ -125,7 +125,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
 
                 QString content = decodeMessage(reader.readElementText());
                 message.setContent(content);
-                
+
                 message.setContentHtml(formatHtml(content));
 
                 messages.push_back(std::move(message));
@@ -158,10 +158,10 @@ Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
     qDebug() << "Loading" << filePaths.size() << "Kopete files concurrently...";
 
     return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
-        filePaths, 
+        filePaths,
         [this](const QString &path) {
             // qDebug() << "Loading Kopete XML file" << path;
-            return loadFile(path); 
+            return loadFile(path);
         },
         [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
             result.append(intermediate);

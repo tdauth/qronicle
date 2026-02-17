@@ -13,15 +13,15 @@ namespace qronicle {
 QString Amsn::id() const {
     return "amsn";
 }
-    
+
 Messenger::Messages Amsn::loadFile(const QString &filePath) {
     Messages messages;
     QFileInfo fileInfo(filePath);
-    
+
     if (!fileInfo.exists()) {
         return messages;
     }
-    
+
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         return messages;
@@ -51,12 +51,12 @@ Messenger::Messages Amsn::loadFile(const QString &filePath) {
                 msg.setMessenger("aMSN");
                 msg.setFilePath(fileInfo.absoluteFilePath());
                 msg.setLineNumber(lineNumber);
-                
+
                 qlonglong unixTime = match.captured(1).toLongLong();
                 msg.setTimestamp(QDateTime::fromSecsSinceEpoch(unixTime));
                 QString sender = match.captured(2);
                 msg.setSourceNick(sender);
-                
+
                 if (m_contacts.contains(sender)) {
                     msg.setSource(m_contacts.value(sender).name);
                 } else if (sender == myselfNick) {
@@ -64,7 +64,7 @@ Messenger::Messages Amsn::loadFile(const QString &filePath) {
                 } else {
                     msg.setSource(fileInfo.completeBaseName());
                 }
-                
+
                 QString color = match.captured(3);
                 QString message = match.captured(4);
 
@@ -75,7 +75,7 @@ Messenger::Messages Amsn::loadFile(const QString &filePath) {
                 qWarning() << "Ignoring aMSN log file line in file" << filePath << ":" << line;
             }
         }
-        
+
         lineNumber++;
     }
 
@@ -84,7 +84,7 @@ Messenger::Messages Amsn::loadFile(const QString &filePath) {
         if (msg.sourceNick() == myselfNick) {
             QString email = fileInfo.completeBaseName();
             msg.setDestination(email);
-            
+
             if (msg.destinationNick().isEmpty() && m_contacts.contains(email)) {
                 msg.setDestinationNick(m_contacts.value(email).nick);
             }
@@ -111,16 +111,16 @@ Messenger::Messages Amsn::loadDirectories(const QStringList &dirPaths) {
         qWarning() << "No aMSN .log files found-";
         return {};
     }
-    
+
     loadABooks(dirPaths);
     loadAvatars(dirPaths);
 
     qDebug() << "Loading" << filePaths.size() << "aMSN files in concurrently...";
 
     return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
-        filePaths, 
+        filePaths,
         [this](const QString &path) {
-            return loadFile(path); 
+            return loadFile(path);
         },
         [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
             result.append(intermediate);
@@ -137,39 +137,39 @@ QStringList Amsn::defaultDirectories() {
 
 void Amsn::loadABooks(const QStringList &dirPaths) {
     QStringList allABookFiles;
-    
+
     for (const QString &basePath : dirPaths) {
         QDirIterator it(basePath, QStringList() << "abook.xml", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext()) {
             allABookFiles << it.next();
         }
     }
-    
+
     qDebug() << "ABook files" << allABookFiles << "from" << dirPaths;
 
-    
+
     if (!allABookFiles.isEmpty()) {
         QtConcurrent::blockingMappedReduced<Contacts>(
             allABookFiles,
             [](const QString &filePath) -> Contacts {
                 Contacts localMap;
                 QFile file(filePath);
-                
+
                 if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
                     qWarning() << "Could not open file:" << filePath << file.errorString();
                     return localMap;
                 }
-                
+
                 // Avoid encoding errors like BOM markers etc.
                 QString content = QString::fromUtf8(file.readAll());
                 file.close();
-                
+
                 // Avoid error pseudo attribute:
                 int headerEnd = content.indexOf("?>");
                 if (headerEnd != -1) {
                     content = content.mid(headerEnd + 2);
                 }
-                
+
                 QXmlStreamReader xml(content);
                 Contact current;
                 bool inContact = false;
@@ -180,48 +180,48 @@ void Amsn::loadABooks(const QStringList &dirPaths) {
                     if (token == QXmlStreamReader::StartElement) {
                         auto tagName = xml.name();
 
-                        if (tagName == "contact") {
+                        if (tagName == QStringLiteral("contact")) {
                             inContact = true;
                             current = Contact();
                             current.name = xml.attributes().value("name").toString().toLower();
                         } else if (inContact) {
-                            if (tagName == "cid") {
+                            if (tagName == QStringLiteral("cid")) {
                                 current.cid = xml.readElementText();
-                            } else if (tagName == "nick") {
+                            } else if (tagName == QStringLiteral("nick")) {
                                 current.nick = xml.readElementText();
-                            } else if (tagName == "displaypicfile") {
+                            } else if (tagName == QStringLiteral("displaypicfile")) {
                                 current.displaypicfile = xml.readElementText();
-                            } else if (tagName == "mfn") {
+                            } else if (tagName == QStringLiteral("mfn")) {
                                 current.mfn = xml.readElementText();
-                            } else if (tagName == "login") {
+                            } else if (tagName == QStringLiteral("login")) {
                                 current.login = xml.readElementText();
                             }
                         }
-                    } 
+                    }
                     else if (token == QXmlStreamReader::EndElement) {
-                        if (xml.name() == "contact") {
+                        if (xml.name() == QStringLiteral("contact")) {
                             if (!current.mfn.isEmpty()) {
                                 localMap.insert(current.mfn, current);
                             }
-                            
+
                             if (!current.login.isEmpty()) {
                                 localMap.insert(current.login, current);
                             }
-                            
+
                             if (!current.nick.isEmpty()) {
                                 localMap.insert(current.nick, current);
                             }
-                            
+
                             if (!current.name.isEmpty()) {
                                 localMap.insert(current.name, current);
                             }
-                            
+
                             inContact = false;
                             current = Contact();
                         }
                     }
                 }
-                
+
                 if (xml.hasError()) {
                     qDebug() << "XML Error in" << filePath << ":" << xml.errorString();
                 }
@@ -235,7 +235,7 @@ void Amsn::loadABooks(const QStringList &dirPaths) {
             }
         );
     }
-    
+
     qDebug() << "ABook contacts" << m_contacts.size();
 }
 
@@ -270,7 +270,7 @@ void Amsn::loadAvatars(const QStringList &dirPaths) {
                 QFileInfo info(path);
                 data.folderName = info.dir().dirName();
                 data.completeBaseName = info.completeBaseName();
-                
+
                 QImage img;
                 if (img.load(path)) {
                     data.image = img;
@@ -284,14 +284,14 @@ void Amsn::loadAvatars(const QStringList &dirPaths) {
                         // TODO handle multiple "myself" entries if there are multiple folders by considering the current dir
                         if (m_contacts.contains("myself")) {
                             auto myself = m_contacts.value("myself");
-                            
+
                             this->m_avatars.insert("myself", data.image);
                             this->m_avatars.insert(myself.mfn, data.image);
                             this->m_avatars.insert(myself.login, data.image);
                         }
                     } else {
                         this->m_avatars.insert(data.folderName, data.image);
-                        
+
                         for (auto it = m_contacts.constBegin(); it != m_contacts.constEnd(); ++it) {
                             if (it->displaypicfile == data.completeBaseName) {
                                 this->m_avatars.insert(it->name, data.image);
