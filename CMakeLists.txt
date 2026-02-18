@@ -39,6 +39,8 @@ qt_add_executable(qronicle
     src/message.cpp
     src/messenger.hpp
     src/messenger.cpp
+    src/qronicle.hpp
+    src/qronicle.cpp
     src/kopete.hpp
     src/kopete.cpp
     src/trillian.hpp

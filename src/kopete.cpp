@@ -85,12 +85,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
         if (token == QXmlStreamReader::StartElement) {
             QStringView tagName = reader.name();
 
-            if (tagName == QStringLiteral("date")) {
-                // Jahr/Monat aus dem Header überschreiben, falls vorhanden
-                auto attrs = reader.attributes();
-                if (attrs.hasAttribute(QStringLiteral("year"))) year = attrs.value(QStringLiteral("year")).toInt();
-                if (attrs.hasAttribute(QStringLiteral("month"))) month = attrs.value(QStringLiteral("month")).toInt();
-            } else if (tagName == QStringLiteral("msg")) {
+            if (tagName == QStringLiteral("message")) {
                 Message message;
                 auto attrs = reader.attributes();
 

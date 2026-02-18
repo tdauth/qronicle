@@ -4,6 +4,7 @@ Offline Qt-based messenger history visualizer:
 
 | Name | Messages | Avatars |
 | :--- | :---:         | :---: |
+| <img src="./assets/icons/qronicle.png" width="22" align="center"> [**qronicle**](https://github.com/tdauth/qronicle) | ✅ | ⏳ |
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
@@ -39,7 +40,6 @@ Since this program uses Qt the name qronicle has been chosen.
 - UI should support Pos 1 and End to jump to the beginning/end of messages.
 - Allow adding folders and single files. Folders could contain sub folders with messenger ids like my personal folder and import everything automatically.
 - Export everything as XML/JSON into folders.
-- A custom XML format for a fake messenger qronicle. XML is better for this than JSON since big messages with formatting and comments are allowed.
 - Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
 - Update logo based on [Kish tablet](https://en.wikipedia.org/wiki/Kish_tablet) which is considered one of the oldest known writing objects in human history.
 - Add menu with all supported messengers showing some help text with detailed information on how to import it.
@@ -86,6 +86,10 @@ to be found automatically.
 - [build.sh](./scripts/build.sh): Builds binary qronicle on Ubuntu and DEB file.
 
 ## Messenger History Formats
+
+### qronicle
+
+This program has its own XML message history format: [messages.xml](./xml/messages.xml)
 
 ### Kopete
 

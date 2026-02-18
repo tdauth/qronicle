@@ -8,8 +8,8 @@
         <translation type="vanished">Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="37"/>
-        <location filename="../src/Main.qml" line="95"/>
+        <location filename="../src/Main.qml" line="48"/>
+        <location filename="../src/Main.qml" line="110"/>
         <source>About</source>
         <translation>Über</translation>
     </message>
@@ -18,17 +18,17 @@
         <translation type="vanished">Programm beenden</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="44"/>
+        <location filename="../src/Main.qml" line="55"/>
         <source>Exit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="68"/>
+        <location filename="../src/Main.qml" line="83"/>
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="128"/>
+        <location filename="../src/Main.qml" line="143"/>
         <source>qronicle 1.0</source>
         <translation>qronicle 1.0</translation>
     </message>
@@ -39,17 +39,17 @@ Alle rights reserved.</source>
 Alle Rechte vorbehalten.</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="172"/>
+        <location filename="../src/Main.qml" line="187"/>
         <source>Reset</source>
         <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="284"/>
+        <location filename="../src/Main.qml" line="299"/>
         <source>Participant...</source>
         <translation>Teilnehmer ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="480"/>
+        <location filename="../src/Main.qml" line="495"/>
         <source>File Path...</source>
         <translation>Dateipfad ...</translation>
     </message>
@@ -58,22 +58,27 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Nachricht ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="350"/>
+        <location filename="../src/Main.qml" line="365"/>
         <source>Sender...</source>
         <translation>Sender ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="415"/>
+        <location filename="../src/Main.qml" line="430"/>
         <source>Receiver...</source>
         <translation>Empfänger ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="208"/>
+        <location filename="../src/Main.qml" line="223"/>
         <source>Messenger...</source>
         <translation>Messenger ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="136"/>
+        <location filename="../src/Main.qml" line="37"/>
+        <source>Open config folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="151"/>
         <source>Build date: %1
 Copyright © 2026 Tamino Dauth
 Alle rights reserved.</source>
@@ -82,78 +87,78 @@ Copyright © 2026 Tamino Dauth
 Alle Rechte vorbehalten.</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="275"/>
+        <location filename="../src/Main.qml" line="290"/>
         <source>Protocol...</source>
         <translation>Protokoll ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="490"/>
+        <location filename="../src/Main.qml" line="505"/>
         <source>Search Message Content...</source>
         <translation>Nachrichteninhalt suchen ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="628"/>
+        <location filename="../src/Main.qml" line="643"/>
         <source>From: %1 (%2)</source>
         <translation>Von: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="629"/>
-        <location filename="../src/Main.qml" line="728"/>
+        <location filename="../src/Main.qml" line="644"/>
+        <location filename="../src/Main.qml" line="743"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="676"/>
+        <location filename="../src/Main.qml" line="691"/>
         <source>Copy Link Address</source>
         <translation>Link-Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="680"/>
+        <location filename="../src/Main.qml" line="695"/>
         <source>Copy File Path</source>
         <translation>Dateipfad kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="727"/>
+        <location filename="../src/Main.qml" line="742"/>
         <source>To: %1 (%2)</source>
         <translation>An: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="797"/>
+        <location filename="../src/Main.qml" line="812"/>
         <source>Messenger: %1</source>
         <translation>Messenger: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="856"/>
+        <location filename="../src/Main.qml" line="871"/>
         <source>Protocol: %1</source>
         <translation>Protokoll: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="929"/>
+        <location filename="../src/Main.qml" line="944"/>
         <source>Copy Message</source>
         <translation>Nachricht kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="937"/>
+        <location filename="../src/Main.qml" line="952"/>
         <source>Jump to this message (clear filters)</source>
         <translation>Zu dieser Nachricht springen (Filter leeren)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="974"/>
+        <location filename="../src/Main.qml" line="989"/>
         <source>Messages: %1 / %2</source>
         <translation>Nachrichten: %1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="984"/>
+        <location filename="../src/Main.qml" line="999"/>
         <source>Period: %1</source>
         <translation>Zeitraum: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="995"/>
+        <location filename="../src/Main.qml" line="1010"/>
         <source>All data loaded</source>
         <translation>Alle Daten geladen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="996"/>
+        <location filename="../src/Main.qml" line="1011"/>
         <source>Filtered</source>
         <translation>Gefiltert</translation>
     </message>
@@ -161,13 +166,13 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="94"/>
-        <location filename="../src/main.cpp" line="99"/>
+        <location filename="../src/main.cpp" line="97"/>
+        <location filename="../src/main.cpp" line="102"/>
         <source>qronicle</source>
         <translation>qronicle</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="103"/>
+        <location filename="../src/main.cpp" line="106"/>
         <source>Clears the existing database before loading messages.</source>
         <translation>Löscht die bestehende Datenbank vor dem Laden von Nachrichten.</translation>
     </message>
@@ -176,7 +181,7 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Erlaube mehrfache gleiche Nachrichten.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="120"/>
+        <location filename="../src/main.cpp" line="124"/>
         <source>%1 directories.</source>
         <translation>%1-Verzeichnisse.</translation>
     </message>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<history version="1.0">
+    <participants>
+        <participant nickName="Hans" contact="12345">
+            <avatar></avatar>
+        </participant>
+        <participant nickName="Klaus" contact="6789">
+            <avatar></avatar>
+        </participant>
+    </participants>
+
+    <messages>
+        <message type="chat" direction="out" from="12345" fromNickName="Hans" to="6789" toNickName="Klaus" timestamp="2023-10-27T14:30:05Z" protocol="ICQProtocol">
+            <body>Hey Klaus, wie geht es dir?</body>
+        </message>
+        <message type="chat" direction="in" from="6789" fromNickName="Klaus" to="12345" toNickName="Hans" timestamp="2023-10-27T14:30:05Z" protocol="ICQProtocol">
+            <body>Mir geht es gut!</body>
+        </message>
+    </messages>
+</history>
