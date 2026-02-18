@@ -376,6 +376,14 @@ Log file lines with file transfers:
 - `~/.amsn/<account>/displaypic/cache/<contact email address>/<displaypicfile>` are avatars of contacts
 - `~/.amsn/<account>/FT/cache` contains file transfer files.
 
+### Telegram
+
+- Only possible via the [Telegram Dekstop app](https://desktop.telegram.org/)
+- Click on a chat
+- Click on the three dots at the top right
+- Click on "Export chat history"
+- You have to wait 24 hours to be able to download it.
+
 ### Knuddels
 
 - You can export your chats "Chat exportieren" which creates a file `chat_history_<your nickname>_<other nick name>_<year><month><day>_<hour><minute><second>.txt`
