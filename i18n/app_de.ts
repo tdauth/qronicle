@@ -97,68 +97,68 @@ Alle Rechte vorbehalten.</translation>
         <translation>Nachrichteninhalt suchen ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="643"/>
+        <location filename="../src/Main.qml" line="623"/>
         <source>From: %1 (%2)</source>
         <translation>Von: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="644"/>
-        <location filename="../src/Main.qml" line="743"/>
+        <location filename="../src/Main.qml" line="624"/>
+        <location filename="../src/Main.qml" line="646"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="691"/>
+        <location filename="../src/Main.qml" line="812"/>
         <source>Copy Link Address</source>
         <translation>Link-Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="695"/>
+        <location filename="../src/Main.qml" line="816"/>
         <source>Copy File Path</source>
         <translation>Dateipfad kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="742"/>
+        <location filename="../src/Main.qml" line="645"/>
         <source>To: %1 (%2)</source>
         <translation>An: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="812"/>
+        <location filename="../src/Main.qml" line="710"/>
         <source>Messenger: %1</source>
         <translation>Messenger: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="871"/>
+        <location filename="../src/Main.qml" line="768"/>
         <source>Protocol: %1</source>
         <translation>Protokoll: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="944"/>
+        <location filename="../src/Main.qml" line="899"/>
         <source>Copy Message</source>
         <translation>Nachricht kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="952"/>
+        <location filename="../src/Main.qml" line="907"/>
         <source>Jump to this message (clear filters)</source>
         <translation>Zu dieser Nachricht springen (Filter leeren)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="989"/>
+        <location filename="../src/Main.qml" line="944"/>
         <source>Messages: %1 / %2</source>
         <translation>Nachrichten: %1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="999"/>
+        <location filename="../src/Main.qml" line="954"/>
         <source>Period: %1</source>
         <translation>Zeitraum: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="1010"/>
+        <location filename="../src/Main.qml" line="965"/>
         <source>All data loaded</source>
         <translation>Alle Daten geladen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="1011"/>
+        <location filename="../src/Main.qml" line="966"/>
         <source>Filtered</source>
         <translation>Gefiltert</translation>
     </message>

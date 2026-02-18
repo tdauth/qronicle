@@ -249,11 +249,11 @@ ApplicationWindow {
                     }
 
                     onPressed: {
-                        if (filteredMessengers.length > 0) messengerPopup.open()
+                        if (filteredMessengers.length > 0) messengerSearchPopup.open()
                     }
 
                     Popup {
-                        id: messengerPopup
+                        id: messengerSearchPopup
                         y: parent.height
                         width: parent.width
                         visible: messengerSearch.activeFocus && messengerSearch.filteredMessengers.length > 0 && messengerSearch.text.length > 0
@@ -271,7 +271,7 @@ ApplicationWindow {
                                 onClicked: {
                                     messengerSearch.text = modelData
                                     messengerSearch.applySelection(modelData)
-                                    messengerPopup.close()
+                                    messengerSearchPopup.close()
                                 }
                             }
                         }
@@ -518,7 +518,7 @@ ApplicationWindow {
             }
         }
 
-        // Chat-Hintergrund für die Liste
+        // chat background for list
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -578,367 +578,322 @@ ApplicationWindow {
                     anchors.right: chatListView.right
                 }
 
-                delegate: Column {
-                    id: messageDelegate
-                    width: chatListView.width - 30
-                    // Nutze implicitHeight der Column + Margins für die Höhe
-                    height: messageDelegate.implicitHeight + 20
-                    spacing: 4
+                // Die Sprechblase
+                Rectangle {
+                    // Berechnet die Breite dynamisch: Gesamtbreite minus sichtbare Avatare
+                    width: parent.width
 
-                    Row { // Äußere Reihe für Avatar + Sprechblase
-                        spacing: 8
-                        width: parent.width
+                    height: innerCol.implicitHeight + 16
+                    color: "#ffffff"
+                    radius: 6
+                    border.color: "#ddd"
 
-                        // 1. SENDER AVATAR (Links)
-                        Rectangle {
-                            width: 36; height: 36
-                            radius: 18
-                            color: "#eee"
-                            clip: true
-                            visible: model.sourceAvatar && !model.sourceAvatar.isNull
-
-                            Image {
-                                anchors.fill: parent
-                                fillMode: Image.PreserveAspectCrop
-                                source: model.sourceAvatar ? "image://avatars/" + model.sourceAvatar : ""
-                                sourceSize.width: 40  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
-                                sourceSize.height: 40
-                                asynchronous: true    // Erlaubt das Laden im Hintergrund
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.RightButton
+                        onClicked: (mouse) => {
+                            if (mouse.button === Qt.RightButton) {
+                                contextMenu.popup();
                             }
                         }
+                    }
 
-                        // Die Sprechblase
-                        Rectangle {
-                            // Berechnet die Breite dynamisch: Gesamtbreite minus sichtbare Avatare
+                    Column {
+                        id: innerCol
+                        anchors.fill: parent
+                        anchors.margins: 8
+                        spacing: 4
+
+                        RowLayout {
                             width: parent.width
-                                - (model.sourceAvatar ? 44 : 0)
-                                - (model.targetAvatar ? 44 : 0)
 
-                            height: innerCol.implicitHeight + 16
-                            color: "#ffffff"
-                            radius: 6
-                            border.color: "#ddd"
+                            Row {
+                                width: parent.width
+                                spacing: 8  // Abstand in Pixeln zwischen den Elementen
 
-                            MouseArea {
-                                anchors.fill: parent
-                                acceptedButtons: Qt.RightButton
-                                onClicked: (mouse) => {
-                                    if (mouse.button === Qt.RightButton) {
-                                        contextMenu.popup();
-                                    }
-                                }
-                            }
-
-
-                            Column {
-                                id: innerCol
-                                anchors.fill: parent
-                                anchors.margins: 8
-                                spacing: 4
-
-                                // Zeile 1: Sender (links), Datei (mitte) & Zeit (rechts)
-                                RowLayout {
-                                    width: parent.width
-                                    TextEdit {
-                                        text: qsTr("From: %1 (%2)")
-                                            .arg(sourceNick || qsTr("Unknown"))
-                                            .arg(sourceId)
-                                        font.pointSize: 9
-                                        color: "#2c3e50"
-                                        textFormat: Text.StyledText
-                                        Layout.fillWidth: true
-                                        selectByMouse: true
-                                        selectionColor: "#3498db"
-                                        persistentSelection: true
-                                        readOnly: true // Verhindert Bearbeitung beim Klicken auf den Link
-                                    }
-
-                                    // Dateilink (URL auf filePath, zeigt nur Dateinamen)
-                                    TextEdit {
-                                        id: fileText
-
-                                        // WICHTIG: Erst das Format, dann der Text
-                                        textFormat: Text.RichText // Versuche RichText statt StyledText, falls es Probleme gibt
-
-
-                                        // Properties für sauberen Zugriff
-                                        readonly property string fullUrl: "file://" + filePath + (lineNumber > 0 ? "#" + lineNumber : "")
-                                        readonly property string fileName: filePath.split('/').pop()
-
-                                        // Layout-Integration
-                                        Layout.alignment: Qt.AlignVCenter
-                                        Layout.preferredWidth: contentWidth // Nutzt die tatsächliche Textbreite
-
-                                        // Styling & Inhalt
-                                        // Inline-Style für die Farbe, da linkColor in TextEdit nicht existiert
-                                        text: "<a href='" + fullUrl + "' style='color:#3498db; text-decoration:none;'>" + fileName + "</a>"
-                                        font.pointSize: 9
-                                        color: "#3498db"
-
-                                        readOnly: true
-                                        selectByMouse: true
-
-                                        // Link-Klick Logik
-                                        onLinkActivated: (link) => {
-                                            console.log("Opening link:", link);
-                                            Qt.openUrlExternally(link);
-                                        }
-
-                                        // Kontextmenü
-                                        Menu {
-                                            id: contextMenuCopyLink
-                                            MenuItem {
-                                                text: qsTr("Copy Link Address")
-                                                onTriggered: fileText.copyToClipboard(fileText.fullUrl)
-                                            }
-                                            MenuItem {
-                                                text: qsTr("Copy File Path")
-                                                onTriggered: fileText.copyToClipboard(filePath)
-                                            }
-                                        }
-
-                                        // Helferfunktion (Nutzt das interne Clipboard-System von TextEdit)
-                                        function copyToClipboard(txt) {
-                                            tempCopyEdit.text = txt;
-                                            tempCopyEdit.selectAll();
-                                            tempCopyEdit.copy();
-                                        }
-
-                                        // Unsichtbarer Helfer für Clipboard
-                                        TextEdit { id: tempCopyEdit; visible: false }
-
-                                        // MouseArea für Cursor & Rechtsklick
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            acceptedButtons: Qt.RightButton
-                                            // Verweist auf hoveredLink des Elternelements (TextEdit)
-                                            cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
-
-                                            onClicked: (mouse) => {
-                                                if (mouse.button === Qt.RightButton) {
-                                                    contextMenuCopyLink.popup();
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    TextEdit {
-                                        text: Qt.formatDateTime(time, Qt.DefaultLocaleShortDate)
-                                        font.pointSize: 8
-                                        color: "#666"
-                                        Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                                        selectByMouse: true
-                                        selectionColor: "#3498db"
-                                        persistentSelection: true
-                                        readOnly: true
-                                    }
+                                Image {
+                                    fillMode: Image.PreserveAspectCrop
+                                    source: model.sourceAvatar ? "image://avatars/" + model.sourceAvatar : ""
+                                    sourceSize.width: 16  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
+                                    sourceSize.height: 16
+                                    asynchronous: true    // Erlaubt das Laden im Hintergrund
                                 }
 
-                                // Zeile 2: Empfänger (links) & Protokoll (rechts)
-                                RowLayout {
-                                    width: parent.width
-                                    TextEdit {
-                                        text: qsTr("To: %1 (%2)")
-                                                .arg(targetNick || qsTr("Unknown"))
-                                                .arg(targetId)
-                                        font.pointSize: 9
-                                        color: "#7f8c8d"
-                                        textFormat: Text.StyledText
-                                        Layout.fillWidth: true
-                                        readOnly: true
-                                        selectByMouse: true
-                                        selectionColor: "#3498db"
-                                        persistentSelection: true
-                                    }
-                                    // Container für die Icons (Messenger & Protocol)
-                                    Row {
-                                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                                        spacing: 6
-
-                                        // --- MESSENGER ICON ---
-                                        Item {
-                                            width: 16
-                                            height: 16
-                                            // Nur anzeigen, wenn messenger gesetzt ist und sich vom Protokoll unterscheidet
-                                            visible: typeof messenger !== "undefined" && messenger !== "" &&
-                                                    messenger.toLowerCase() !== protocol.toLowerCase()
-
-                                            Image {
-                                                id: messengerIcon
-                                                anchors.fill: parent
-                                                source: `qrc:/icons/${messenger}`
-                                                fillMode: Image.PreserveAspectFit
-                                                onStatusChanged: if (status === Image.Error) visible = false
-                                            }
-
-                                            TextEdit {
-                                                anchors.centerIn: parent
-                                                text: `[${messenger}]`
-                                                visible: messengerIcon.status === Image.Error
-                                                font.pointSize: 7
-                                                color: "#888"
-                                                readOnly: true
-                                                selectByMouse: true
-                                            }
-
-                                            MouseArea {
-                                                id: messengerMouseArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-
-                                                Popup {
-                                                    id: messengerPopup
-                                                    // Sichtbarkeit steuern
-                                                    visible: messengerMouseArea.containsMouse
-
-                                                    // Verhindert, dass das Popup den Fokus stiehlt oder schließt
-                                                    focus: false
-                                                    closePolicy: Popup.NoAutoClose
-
-                                                    // Positionierung: Etwas unterhalb der Maus oder des Elements
-                                                    y: parent.height + 5
-                                                    x: 0
-
-                                                    background: Rectangle {
-                                                        color: "#ffffff"
-                                                        border.color: "#bbbbbb"
-                                                        radius: 2
-                                                        // Schatten-Effekt (optional, für ToolTip-Optik)
-                                                        layer.enabled: true
-                                                    }
-
-                                                    contentItem: Label {
-                                                        text: qsTr("Messenger: %1").arg(messenger)
-                                                        font.pointSize: 8
-                                                        color: "#333"
-                                                        padding: 5
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        // --- PROTOCOL ICON ---
-                                        Item {
-                                            width: 16
-                                            height: 16
-
-                                            Image {
-                                                id: protocolIcon
-                                                anchors.fill: parent
-                                                source: `qrc:/icons/${protocol}`
-                                                fillMode: Image.PreserveAspectFit
-                                                onStatusChanged: if (status === Image.Error) visible = false
-                                            }
-
-                                            TextEdit {
-                                                anchors.centerIn: parent
-                                                text: `[${protocol}]`
-                                                visible: protocolIcon.status === Image.Error
-                                                font.pointSize: 7
-                                                color: "#888"
-                                                readOnly: true
-                                                selectByMouse: true
-                                            }
-
-                                            MouseArea {
-                                                id: protocolMouseArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-
-                                                Popup {
-                                                    id: protocolPopup
-                                                    // Sichtbarkeit steuern
-                                                    visible: protocolMouseArea.containsMouse
-
-                                                    // Verhindert, dass das Popup den Fokus stiehlt oder schließt
-                                                    focus: false
-                                                    closePolicy: Popup.NoAutoClose
-
-                                                    // Positionierung: Etwas unterhalb der Maus oder des Elements
-                                                    y: parent.height + 5
-                                                    x: 0
-
-                                                    background: Rectangle {
-                                                        color: "#ffffff"
-                                                        border.color: "#bbbbbb"
-                                                        radius: 2
-                                                        // Schatten-Effekt (optional, für ToolTip-Optik)
-                                                        layer.enabled: true
-                                                    }
-
-                                                    contentItem: Label {
-                                                        text: qsTr("Protocol: %1").arg(protocol)
-                                                        font.pointSize: 8
-                                                        color: "#333"
-                                                        padding: 5
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Trennlinie
-                                Rectangle {
-                                    width: parent.width
-                                    height: 1
-                                    color: "#eee"
-                                    visible: messageText !== ""
-                                    Layout.topMargin: 2
-                                    Layout.bottomMargin: 2
-                                }
-
-                                // Nachrichtentext
                                 TextEdit {
-                                    id: msgContent
-                                    text: messageText
-                                    width: parent.width
-                                    wrapMode: Text.WordWrap
-                                    font.pointSize: 10
-                                    textFormat: Text.RichText
+                                    text: qsTr("From: %1 (%2)")
+                                        .arg(sourceNick || qsTr("Unknown"))
+                                        .arg(sourceId)
+                                    font.pointSize: 9
+                                    color: "#2c3e50"
+                                    textFormat: Text.StyledText
+                                    Layout.fillWidth: true
+                                    selectByMouse: true
+                                    selectionColor: "#3498db"
+                                    persistentSelection: true
+                                    readOnly: true // Verhindert Bearbeitung beim Klicken auf den Link
+                                }
+
+                                Image {
+                                    fillMode: Image.PreserveAspectCrop
+                                    source: model.targetAvatar ? "image://avatars/" + model.targetAvatar : ""
+                                    sourceSize.width: 16  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
+                                    sourceSize.height: 16
+                                    asynchronous: true    // Erlaubt das Laden im Hintergrund
+                                }
+
+                                TextEdit {
+                                    text: qsTr("To: %1 (%2)")
+                                            .arg(targetNick || qsTr("Unknown"))
+                                            .arg(targetId)
+                                    font.pointSize: 9
+                                    color: "#7f8c8d"
+                                    textFormat: Text.StyledText
+                                    Layout.fillWidth: true
                                     readOnly: true
                                     selectByMouse: true
                                     selectionColor: "#3498db"
                                     persistentSelection: true
+                                }
 
-                                    onLinkActivated: (link) => {
-                                        Qt.openUrlExternally(link)
+                                Item {
+                                    width: 16
+                                    height: 16
+                                    // Nur anzeigen, wenn messenger gesetzt ist und sich vom Protokoll unterscheidet
+                                    visible: typeof messenger !== "undefined" && messenger !== "" &&
+                                            messenger.toLowerCase() !== protocol.toLowerCase()
+
+                                    Image {
+                                        id: messengerIcon
+                                        anchors.fill: parent
+                                        source: `qrc:/icons/${messenger}`
+                                        fillMode: Image.PreserveAspectFit
+                                        onStatusChanged: if (status === Image.Error) visible = false
+                                    }
+
+                                    TextEdit {
+                                        anchors.centerIn: parent
+                                        text: `[${messenger}]`
+                                        visible: messengerIcon.status === Image.Error
+                                        font.pointSize: 7
+                                        color: "#888"
+                                        readOnly: true
+                                        selectByMouse: true
                                     }
 
                                     MouseArea {
+                                        id: messengerMouseArea
                                         anchors.fill: parent
-                                        acceptedButtons: Qt.NoButton
-                                        cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.DefaultCursor
+                                        hoverEnabled: true
+
+                                        Popup {
+                                            id: messengerPopup
+                                            // Sichtbarkeit steuern
+                                            visible: messengerMouseArea.containsMouse
+
+                                            // Verhindert, dass das Popup den Fokus stiehlt oder schließt
+                                            focus: false
+                                            closePolicy: Popup.NoAutoClose
+
+                                            // Positionierung: Etwas unterhalb der Maus oder des Elements
+                                            y: parent.height + 5
+                                            x: 0
+
+                                            background: Rectangle {
+                                                color: "#ffffff"
+                                                border.color: "#bbbbbb"
+                                                radius: 2
+                                                // Schatten-Effekt (optional, für ToolTip-Optik)
+                                                layer.enabled: true
+                                            }
+
+                                            contentItem: Label {
+                                                text: qsTr("Messenger: %1").arg(messenger)
+                                                font.pointSize: 8
+                                                color: "#333"
+                                                padding: 5
+                                            }
+                                        }
                                     }
+                                }
+
+                                Item {
+                                    width: 16
+                                    height: 16
+
+                                    Image {
+                                        id: protocolIcon
+                                        anchors.fill: parent
+                                        source: `qrc:/icons/${protocol}`
+                                        fillMode: Image.PreserveAspectFit
+                                        onStatusChanged: if (status === Image.Error) visible = false
+                                    }
+
+                                    TextEdit {
+                                        anchors.centerIn: parent
+                                        text: `[${protocol}]`
+                                        visible: protocolIcon.status === Image.Error
+                                        font.pointSize: 7
+                                        color: "#888"
+                                        readOnly: true
+                                        selectByMouse: true
+                                    }
+
+                                    MouseArea {
+                                        id: protocolMouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+
+                                        Popup {
+                                            id: protocolPopup
+                                            // Sichtbarkeit steuern
+                                            visible: protocolMouseArea.containsMouse
+
+                                            // Verhindert, dass das Popup den Fokus stiehlt oder schließt
+                                            focus: false
+                                            closePolicy: Popup.NoAutoClose
+
+                                            // Positionierung: Etwas unterhalb der Maus oder des Elements
+                                            y: parent.height + 5
+                                            x: 0
+
+                                            background: Rectangle {
+                                                color: "#ffffff"
+                                                border.color: "#bbbbbb"
+                                                radius: 2
+                                                // Schatten-Effekt (optional, für ToolTip-Optik)
+                                                layer.enabled: true
+                                            }
+
+                                            contentItem: Label {
+                                                text: qsTr("Protocol: %1").arg(protocol)
+                                                font.pointSize: 8
+                                                color: "#333"
+                                                padding: 5
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Dateilink (URL auf filePath, zeigt nur Dateinamen)
+                                TextEdit {
+                                    id: fileText
+
+                                    // WICHTIG: Erst das Format, dann der Text
+                                    textFormat: Text.RichText // Versuche RichText statt StyledText, falls es Probleme gibt
+
+
+                                    // Properties für sauberen Zugriff
+                                    readonly property string fullUrl: "file://" + filePath + (lineNumber > 0 ? "#" + lineNumber : "")
+                                    readonly property string fileName: filePath.split('/').pop()
+
+                                    // Layout-Integration
+                                    Layout.alignment: Qt.AlignVCenter
+                                    Layout.preferredWidth: contentWidth // Nutzt die tatsächliche Textbreite
+
+                                    // Styling & Inhalt
+                                    // Inline-Style für die Farbe, da linkColor in TextEdit nicht existiert
+                                    text: "<a href='" + fullUrl + "' style='color:#3498db; text-decoration:none;'>" + fileName + "</a>"
+                                    font.pointSize: 9
+                                    color: "#3498db"
+
+                                    readOnly: true
+                                    selectByMouse: true
+
+                                    // Link-Klick Logik
+                                    onLinkActivated: (link) => {
+                                        console.log("Opening link:", link);
+                                        Qt.openUrlExternally(link);
+                                    }
+
+                                    // Kontextmenü
+                                    Menu {
+                                        id: contextMenuCopyLink
+                                        MenuItem {
+                                            text: qsTr("Copy Link Address")
+                                            onTriggered: fileText.copyToClipboard(fileText.fullUrl)
+                                        }
+                                        MenuItem {
+                                            text: qsTr("Copy File Path")
+                                            onTriggered: fileText.copyToClipboard(filePath)
+                                        }
+                                    }
+
+                                    // Helferfunktion (Nutzt das interne Clipboard-System von TextEdit)
+                                    function copyToClipboard(txt) {
+                                        tempCopyEdit.text = txt;
+                                        tempCopyEdit.selectAll();
+                                        tempCopyEdit.copy();
+                                    }
+
+                                    // Unsichtbarer Helfer für Clipboard
+                                    TextEdit { id: tempCopyEdit; visible: false }
+
+                                    // MouseArea für Cursor & Rechtsklick
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        acceptedButtons: Qt.RightButton
+                                        // Verweist auf hoveredLink des Elternelements (TextEdit)
+                                        cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.IBeamCursor
+
+                                        onClicked: (mouse) => {
+                                            if (mouse.button === Qt.RightButton) {
+                                                contextMenuCopyLink.popup();
+                                            }
+                                        }
+                                    }
+                                }
+
+                                TextEdit {
+                                    text: Qt.formatDateTime(time, Qt.DefaultLocaleShortDate)
+                                    font.pointSize: 8
+                                    color: "#666"
+                                    Layout.alignment: Qt.AlignRight | Qt.AlignTop
+                                    selectByMouse: true
+                                    selectionColor: "#3498db"
+                                    persistentSelection: true
+                                    readOnly: true
                                 }
                             }
                         }
 
-                        // 3. EMPFÄNGER AVATAR (Rechts)
+                        // Trennlinie
                         Rectangle {
-                            width: 36
-                            height: 36
-                            radius: 18
+                            width: parent.width
+                            height: 1
                             color: "#eee"
-                            clip: true
-                            // Sichtbar nur, wenn targetAvatar Daten hat
-                            visible: model.targetAvatar && !model.targetAvatar.isNull
+                            visible: messageText !== ""
+                            Layout.topMargin: 2
+                            Layout.bottomMargin: 2
+                        }
 
-                            Image {
+                        // Nachrichtentext
+                        TextEdit {
+                            id: msgContent
+                            text: messageText
+                            width: parent.width
+                            wrapMode: Text.WordWrap
+                            font.pointSize: 10
+                            textFormat: Text.RichText
+                            readOnly: true
+                            selectByMouse: true
+                            selectionColor: "#3498db"
+                            persistentSelection: true
+
+                            onLinkActivated: (link) => {
+                                Qt.openUrlExternally(link)
+                            }
+
+                            MouseArea {
                                 anchors.fill: parent
-                                fillMode: Image.PreserveAspectCrop
-                                source: model.targetAvatar ? "image://avatars/" + model.targetAvatar : ""
-                                sourceSize.width: 40  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
-                                sourceSize.height: 40
-                                asynchronous: true    // Erlaubt das Laden im Hintergrund
+                                acceptedButtons: Qt.NoButton
+                                cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.DefaultCursor
                             }
                         }
                     }
 
                     Menu {
                         id: contextMenu
-
 
                         MenuItem {
                             text: qsTr("Copy Message")
