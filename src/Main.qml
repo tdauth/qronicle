@@ -133,7 +133,7 @@ ApplicationWindow {
                         }
 
                         Label {
-                            text: qsTr("Copyright © 2026 Tamino Dauth\nAlle rights reserved.")
+                            text: qsTr("Build date: %1\nCopyright © 2026 Tamino Dauth\nAlle rights reserved.").arg(Qt.formatDateTime(buildDateTime, "yyyy-MM-dd HH:mm:ss"))
                             width: parent.width
                             horizontalAlignment: Text.AlignHCenter
                             wrapMode: Text.WordWrap
@@ -208,9 +208,67 @@ ApplicationWindow {
                     placeholderText: qsTr("Messenger...")
                     text: chatModel.filterMessenger
                     Layout.fillWidth: true
-                    onTextChanged: if (activeFocus) messengerTimer.restart()
-                    Timer { id: messengerTimer; interval: 500; onTriggered: chatModel.filterMessenger = parent.text }
+
+                    property var allMessengers: []
+                    property var filteredMessengers: []
+                    
+                    function applySelection(val) {
+                        console.log("Filter messenger:", val);
+                        chatModel.filterMessenger = val; 
+                    }
+
+                    onActiveFocusChanged: {
+                        if (activeFocus) {
+                            allMessengers = chatModel.getAllMessengers()
+                            filteredMessengers = allMessengers
+                        }
+                    }
+
+                    onTextChanged: {
+                        if (activeFocus) {
+                            messengerTimer.restart()
+                            filteredMessengers = allMessengers.filter(messenger => 
+                                messenger.toLowerCase().includes(text.toLowerCase())
+                            )
+                        }
+                    }
+                    
+                    onPressed: {
+                        if (filteredMessengers.length > 0) messengerPopup.open()
+                    }
+
+                    Popup {
+                        id: messengerPopup
+                        y: parent.height
+                        width: parent.width
+                        visible: messengerSearch.activeFocus && messengerSearch.filteredMessengers.length > 0 && messengerSearch.text.length > 0
+                        focus: false
+                        closePolicy: Popup.NoAutoClose
+
+                        contentItem: ListView {
+                            implicitHeight: Math.min(contentHeight, 200)
+                            model: messengerSearch.filteredMessengers 
+                            clip: true
+                            delegate: ItemDelegate {
+                                id: messengerDelegate
+                                width: parent.width
+                                text: modelData
+                                onClicked: {
+                                    messengerSearch.text = modelData
+                                    messengerSearch.applySelection(modelData)
+                                    messengerPopup.close()
+                                }
+                            }
+                        }
+                    }
+
+                    Timer { 
+                        id: messengerTimer
+                        interval: 500
+                        onTriggered: chatModel.filterMessenger = messengerSearch.text 
+                    }
                 }
+                
 
                 TextField {
                     id: protocolSearch

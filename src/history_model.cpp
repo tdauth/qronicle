@@ -91,6 +91,17 @@ void HistoryModel::applyFilters(const QString &filePath, const QString &message,
     this->select();
 }
 
+QStringList HistoryModel::getAllMessengers() {
+    QStringList messengers;
+    QSqlQuery query(database());
+    query.exec("SELECT messenger FROM view_messenger ORDER BY messenger ASC;");
+    while (query.next()) {
+        messengers << query.value(0).toString();
+    }
+    qDebug() << "All messengers:" << messengers;
+    return messengers;
+}
+
 QStringList HistoryModel::getAllNickNames() {
     QStringList nicks;
     QSqlQuery query(database());

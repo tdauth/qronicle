@@ -25,33 +25,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="136"/>
-        <source>Copyright © 2026 Tamino Dauth
-Alle rights reserved.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/Main.qml" line="172"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="422"/>
+        <location filename="../src/Main.qml" line="480"/>
         <source>File Path...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="292"/>
+        <location filename="../src/Main.qml" line="350"/>
         <source>Sender...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="226"/>
+        <location filename="../src/Main.qml" line="284"/>
         <source>Participant...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="357"/>
+        <location filename="../src/Main.qml" line="415"/>
         <source>Receiver...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -61,78 +55,85 @@ Alle rights reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="217"/>
+        <location filename="../src/Main.qml" line="136"/>
+        <source>Build date: %1
+Copyright © 2026 Tamino Dauth
+Alle rights reserved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="275"/>
         <source>Protocol...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="432"/>
+        <location filename="../src/Main.qml" line="490"/>
         <source>Search Message Content...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="570"/>
+        <location filename="../src/Main.qml" line="628"/>
         <source>From: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="571"/>
-        <location filename="../src/Main.qml" line="670"/>
+        <location filename="../src/Main.qml" line="629"/>
+        <location filename="../src/Main.qml" line="728"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="618"/>
+        <location filename="../src/Main.qml" line="676"/>
         <source>Copy Link Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="622"/>
+        <location filename="../src/Main.qml" line="680"/>
         <source>Copy File Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="669"/>
+        <location filename="../src/Main.qml" line="727"/>
         <source>To: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="739"/>
+        <location filename="../src/Main.qml" line="797"/>
         <source>Messenger: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="798"/>
+        <location filename="../src/Main.qml" line="856"/>
         <source>Protocol: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="871"/>
+        <location filename="../src/Main.qml" line="929"/>
         <source>Copy Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="879"/>
+        <location filename="../src/Main.qml" line="937"/>
         <source>Jump to this message (clear filters)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="916"/>
+        <location filename="../src/Main.qml" line="974"/>
         <source>Messages: %1 / %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="926"/>
+        <location filename="../src/Main.qml" line="984"/>
         <source>Period: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="937"/>
+        <location filename="../src/Main.qml" line="995"/>
         <source>All data loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="938"/>
+        <location filename="../src/Main.qml" line="996"/>
         <source>Filtered</source>
         <translation type="unfinished"></translation>
     </message>
@@ -174,13 +175,13 @@ Alle rights reserved.</source>
 <context>
     <name>qronicle::HistorySearchProxy</name>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="94"/>
+        <location filename="../src/history_search_proxy.cpp" line="103"/>
         <source>%1 - %2</source>
         <comment>Date range from - to</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="98"/>
+        <location filename="../src/history_search_proxy.cpp" line="107"/>
         <source>-</source>
         <comment>No date available</comment>
         <translation type="unfinished"></translation>

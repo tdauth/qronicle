@@ -208,6 +208,13 @@ int main(int argc, char *argv[]) {
     QQmlApplicationEngine engine;
     engine.addImageProvider(QLatin1String("avatars"), new AvatarProvider(std::move(allAvatars)));
     engine.rootContext()->setContextProperty("chatModel", proxyModel);
+    
+    QLocale compilerLocale(QLocale::English);
+    QDate buildDate = compilerLocale.toDate(QString(__DATE__).simplified(), "MMM d yyyy");
+    QTime buildTime = QTime::fromString(__TIME__, "HH:mm:ss");
+    QDateTime buildDateTime(buildDate, buildTime);
+    engine.rootContext()->setContextProperty("buildDateTime", buildDateTime);
+    
     engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/Main.qml")));
     
     return app.exec();

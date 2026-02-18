@@ -30,6 +30,15 @@ int HistorySearchProxy::getUnfilteredIndex(int currentProxyRow) {
     return sourceIdx.row();
 }
 
+QStringList HistorySearchProxy::getAllMessengers() {
+    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+    if (sqlModel == nullptr) {
+        return QStringList();
+    }
+
+    return sqlModel->getAllMessengers();
+}
+
 QStringList HistorySearchProxy::getAllNickNames() {
     auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
     if (sqlModel == nullptr) {

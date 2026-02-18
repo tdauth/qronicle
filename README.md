@@ -27,6 +27,7 @@ Since this program uses Qt the name qronicle has been chosen.
 
 ## Planned Features
 
+- Avatars must be persistet in the database in some extra table. Otherwise, they are gone without --clear.
 - Improve performance: Loading Skype avatars could be done more concurrently (loading images).
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
 - Fill filter text inputs with auto completion by adding SQLite views for all available messengers, nicknames etc.
