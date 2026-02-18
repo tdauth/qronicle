@@ -32,7 +32,8 @@ public:
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     void applyFilters(const QString &filePath, const QString &message,
-                               const QString &nick, const QString &target,
+                                const QString &particpant,
+                               const QString &sender, const QString &target,
                                const QString &messenger, const QString &protocol);
 
     QStringList getAllNickNames();

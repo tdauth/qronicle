@@ -106,7 +106,8 @@ void HistorySearchProxy::triggerFilter(const QString &f) {
         sqlModel->applyFilters(
             m_filterFilePath,
             m_filterMessage,
-            m_filterNick,
+            m_filterParticipant,
+            m_filterSender,
             m_filterTarget,
             m_filterMessenger,
             m_filterProtocol

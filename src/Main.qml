@@ -174,15 +174,15 @@ ApplicationWindow {
                     shortcut: "Ctrl+R" // Optional: Ein Shortcut zum Zurücksetzen
 
                     onTriggered: {
-                        // 1. C++ Model leeren
-                        chatModel.filterNick = ""
+                        chatModel.filterParticipant = ""
+                        chatModel.filterSender = ""
                         chatModel.filterTarget = ""
                         chatModel.filterMessenger = ""
                         chatModel.filterProtocol = ""
                         chatModel.filterFilePath = ""
                         chatModel.filterMessage = ""
 
-                        // 2. UI Felder leeren
+                        participantSearch.text = ""
                         senderSearch.text = ""
                         receiverSearch.text = ""
                         messengerSearch.text = ""
@@ -202,45 +202,7 @@ ApplicationWindow {
 
                     flat: true
                 }
-
-                TextField {
-                    id: senderSearch
-                    placeholderText: qsTr("Sender...")
-                    text: chatModel.filterNick
-                    Layout.fillWidth: true
-
-                    property var allNickNames: []
-                    property var filteredNickNames: []
-
-                    onActiveFocusChanged: {
-                        if (activeFocus) {
-                            allNickNames = chatModel.getAllNickNames()
-                            filteredNickNames = allNickNames
-                        }
-                    }
-
-                    onTextChanged: {
-                        if (activeFocus) {
-                            nickTimer.restart()
-                            filteredNickNames = allNickNames.filter(nick =>
-                                nick.toLowerCase().indexOf(senderSearch.text.toLowerCase()) !== -1
-                            )
-                        }
-                    }
-
-                    Timer { id: nickTimer; interval: 500; onTriggered: chatModel.filterNick = parent.text }
-                }
-
-                TextField {
-                    id: receiverSearch
-                    placeholderText: qsTr("Receiver...")
-                    text: chatModel.filterTarget
-                    Layout.fillWidth: true
-                    onTextChanged: if (activeFocus) targetTimer.restart()
-                    Timer { id: targetTimer; interval: 500; onTriggered: chatModel.filterTarget = parent.text }
-                }
-
-                // --- Reihe 2: Technische Filter ---
+                
                 TextField {
                     id: messengerSearch
                     placeholderText: qsTr("Messenger...")
@@ -258,29 +220,224 @@ ApplicationWindow {
                     onTextChanged: if (activeFocus) protocolTimer.restart()
                     Timer { id: protocolTimer; interval: 500; onTriggered: chatModel.filterProtocol = parent.text }
                 }
+                
+                TextField {
+                    id: participantSearch
+                    placeholderText: qsTr("Participant...")
+                    text: chatModel.filterParticipant
+                    Layout.fillWidth: true
+
+                    property var allNickNames: []
+                    property var filteredNickNames: []
+                    
+                    function applySelection(val) {
+                        console.log("Filter participant:", val);
+                        chatModel.filterParticipant = val; 
+                    }
+
+                    onActiveFocusChanged: {
+                        if (activeFocus) {
+                            allNickNames = chatModel.getAllNickNames()
+                            filteredNickNames = allNickNames
+                        }
+                    }
+
+                    onTextChanged: {
+                        if (activeFocus) {
+                            participantNickTimer.restart()
+                            filteredNickNames = allNickNames.filter(nick => 
+                                nick.toLowerCase().includes(text.toLowerCase())
+                            )
+                        }
+                    }
+                    
+                    onPressed: {
+                        if (filteredNickNames.length > 0) participantNickPopup.open()
+                    }
+
+                    Popup {
+                        id: participantNickPopup
+                        y: parent.height
+                        width: parent.width
+                        visible: participantSearch.activeFocus && participantSearch.filteredNickNames.length > 0 && participantSearch.text.length > 0
+                        focus: false
+                        closePolicy: Popup.NoAutoClose
+
+                        contentItem: ListView {
+                            implicitHeight: Math.min(contentHeight, 200)
+                            model: participantSearch.filteredNickNames 
+                            clip: true
+                            delegate: ItemDelegate {
+                                id: participantNickDelegate
+                                width: parent.width
+                                text: modelData
+                                onClicked: {
+                                    participantSearch.text = modelData
+                                    participantSearch.applySelection(modelData)
+                                    participantNickPopup.close()
+                                }
+                            }
+                        }
+                    }
+
+                    Timer { 
+                        id: participantNickTimer
+                        interval: 500
+                        onTriggered: chatModel.filterParticipant = participantSearch.text 
+                    }
+                }
+                
+                TextField {
+                    id: senderSearch
+                    placeholderText: qsTr("Sender...")
+                    text: chatModel.filterSender 
+                    Layout.fillWidth: true
+
+                    property var allNickNames: []
+                    property var filteredNickNames: []
+                    
+                    function applySelection(val) {
+                        console.log("Filter sender:", val);
+                        chatModel.filterSender = val; 
+                    }
+
+                    onActiveFocusChanged: {
+                        if (activeFocus) {
+                            allNickNames = chatModel.getAllNickNames()
+                            filteredNickNames = allNickNames
+                        }
+                    }
+
+                    onTextChanged: {
+                        if (activeFocus) {
+                            senderNickTimer.restart()
+                            filteredNickNames = allNickNames.filter(nick => 
+                                nick.toLowerCase().includes(text.toLowerCase())
+                            )
+                        }
+                    }
+                    
+                    onPressed: {
+                        if (filteredNickNames.length > 0) senderNickPopup.open()
+                    }
+
+                    Popup {
+                        id: senderNickPopup
+                        y: parent.height
+                        width: parent.width
+                        visible: senderSearch.activeFocus && senderSearch.filteredNickNames.length > 0 && senderSearch.text.length > 0
+                        focus: false
+                        closePolicy: Popup.NoAutoClose
+
+                        contentItem: ListView {
+                            implicitHeight: Math.min(contentHeight, 200)
+                            model: senderSearch.filteredNickNames 
+                            clip: true
+                            delegate: ItemDelegate {
+                                width: parent.width
+                                text: modelData
+                                onClicked: {
+                                    senderSearch.text = modelData
+                                    senderSearch.applySelection(modelData)
+                                    senderNickPopup.close()
+                                }
+                            }
+                        }
+                    }
+
+                    Timer { 
+                        id: senderNickTimer
+                        interval: 500
+                        onTriggered: chatModel.filterSender = senderSearch.text 
+                    }
+                }
+                
+                TextField {
+                    id: receiverSearch
+                    placeholderText: qsTr("Receiver...")
+                    text: chatModel.filterTarget 
+                    Layout.fillWidth: true
+
+                    property var allNickNames: []
+                    property var filteredNickNames: []
+                    
+                    function applySelection(val) {
+                        console.log("Filter receiver:", val);
+                        chatModel.filterTarget = val; 
+                    }
+
+                    onActiveFocusChanged: {
+                        if (activeFocus) {
+                            allNickNames = chatModel.getAllNickNames()
+                            filteredNickNames = allNickNames
+                        }
+                    }
+
+                    onTextChanged: {
+                        if (activeFocus) {
+                            receiverNickTimer.restart()
+                            filteredNickNames = allNickNames.filter(nick => 
+                                nick.toLowerCase().includes(text.toLowerCase())
+                            )
+                        }
+                    }
+                    
+                    onPressed: {
+                        if (filteredNickNames.length > 0) receiverNickPopup.open()
+                    }
+
+                    Popup {
+                        id: receiverNickPopup
+                        y: parent.height
+                        width: parent.width
+                        visible: receiverSearch.activeFocus && receiverSearch.filteredNickNames.length > 0 && receiverSearch.text.length > 0
+                        focus: false
+                        closePolicy: Popup.NoAutoClose
+
+                        contentItem: ListView {
+                            implicitHeight: Math.min(contentHeight, 200)
+                            model: receiverSearch.filteredNickNames 
+                            clip: true
+                            delegate: ItemDelegate {
+                                width: parent.width
+                                text: modelData
+                                onClicked: {
+                                    receiverSearch.text = modelData
+                                    receiverSearch.applySelection(modelData)
+                                    receiverNickPopup.close()
+                                }
+                            }
+                        }
+                    }
+
+                    Timer { 
+                        id: receiverNickTimer
+                        interval: 500
+                        onTriggered: chatModel.filterTarget = receiverSearch.text 
+                    }
+                }
 
                 TextField {
                     id: filePathSearch
                     placeholderText: qsTr("File Path...")
                     text: chatModel.filterFilePath
                     Layout.fillWidth: true
+                    Layout.columnSpan: 3
                     onTextChanged: if (activeFocus) filePathTimer.restart()
                     Timer { id: filePathTimer; interval: 500; onTriggered: chatModel.filterFilePath = parent.text }
                 }
 
-                // --- Reihe 3: Der Inhalt (Volle Breite) ---
                 TextField {
                     id: messageSearch
                     placeholderText: qsTr("Search Message Content...")
                     text: chatModel.filterMessage
                     Layout.fillWidth: true
-                    Layout.columnSpan: 3 // Geht über alle 3 Spalten
+                    Layout.columnSpan: 3
                     onTextChanged: if (activeFocus) msgTimer.restart()
                     Timer { id: msgTimer; interval: 500; onTriggered: chatModel.filterMessage = parent.text }
                 }
             }
 
-            // Trennlinie unten
             Rectangle {
                 width: parent.width; height: 1
                 color: "#ccc";

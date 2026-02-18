@@ -14,7 +14,8 @@ class HistorySearchProxy : public QSortFilterProxyModel {
     // Properties für QML
     Q_PROPERTY(QString filterFilePath READ filterFilePath WRITE setFilterFilePath NOTIFY filterChanged)
     Q_PROPERTY(QString filterMessage READ filterMessage WRITE setFilterMessage NOTIFY filterChanged)
-    Q_PROPERTY(QString filterNick READ filterNick WRITE setFilterNick NOTIFY filterChanged)
+    Q_PROPERTY(QString filterParticipant READ filterParticipant WRITE setFilterParticipant NOTIFY filterChanged)
+    Q_PROPERTY(QString filterSender READ filterSender WRITE setFilterSender NOTIFY filterChanged)
     Q_PROPERTY(QString filterTarget READ filterTarget WRITE setFilterTarget NOTIFY filterChanged)
 
     Q_PROPERTY(QString filterMessenger READ filterMessenger WRITE setFilterMessenger NOTIFY filterChanged)
@@ -61,14 +62,26 @@ public:
         triggerFilter(f);
 
     }
-
-    QString filterNick() const { return m_filterNick; }
-    void setFilterNick(const QString &f) {
-        if (m_filterNick == f) {
+    
+    QString filterParticipant() const { return m_filterParticipant; }
+    void setFilterParticipant(const QString &f) {
+        if (m_filterParticipant == f) {
             return;
         }
 
-        m_filterNick = f;
+        m_filterParticipant = f;
+
+        triggerFilter(f);
+
+    }
+
+    QString filterSender() const { return m_filterSender; }
+    void setFilterSender(const QString &f) {
+        if (m_filterSender == f) {
+            return;
+        }
+
+        m_filterSender = f;
 
         triggerFilter(f);
 
@@ -114,7 +127,8 @@ public:
 signals:
     void filterFilePathChanged();
     void filterMessageChanged();
-    void filterNickChanged();
+    void filterParticipantChanged();
+    void filterSenderChanged();
     void filterTargetChanged();
     void filterMessengerChanged();
     void filterProtocolChanged();
@@ -127,7 +141,8 @@ protected:
 private:
     QString m_filterFilePath;
     QString m_filterMessage;
-    QString m_filterNick;
+    QString m_filterParticipant;
+    QString m_filterSender;
     QString m_filterTarget;
     QString m_filterMessenger;
     QString m_filterProtocol;

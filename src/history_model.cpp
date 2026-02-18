@@ -54,20 +54,39 @@ QHash<int, QByteArray> HistoryModel::roleNames() const {
     };
 }
 
-void HistoryModel::applyFilters(const QString &filePath, const QString &message,
-                            const QString &nick, const QString &target,
+void HistoryModel::applyFilters(const QString &filePath, const QString &message, const QString &particpant,
+                            const QString &sender, const QString &target,
                             const QString &messenger, const QString &protocol) {
     QStringList filters;
+    
+    if (!filePath.isEmpty()) {
+        filters << QString("filePath LIKE '%%1%' COLLATE NOCASE").arg(filePath);
+    }
+    
+    if (!message.isEmpty()) {
+        filters << QString("messageHtml LIKE '%%1%' COLLATE NOCASE").arg(message);
+    }
+    
+    if (!particpant.isEmpty()) {
+        filters << QString("(senderNick LIKE '%%1%' OR receiverNick LIKE '%%2%') COLLATE NOCASE").arg(particpant).arg(particpant);
+    }
+    
+    if (!sender.isEmpty()) {
+        filters << QString("senderNick LIKE '%%1%' COLLATE NOCASE").arg(sender);
+    }
+    
+    if (!target.isEmpty()) {
+        filters << QString("receiverNick LIKE '%%1%' COLLATE NOCASE").arg(target);
+    }
+    
+    if (!messenger.isEmpty()) {
+        filters << QString("messenger LIKE '%%1%' COLLATE NOCASE").arg(messenger);
+    }
+    
+    if (!protocol.isEmpty()) {
+        filters << QString("protocol LIKE '%%1%' COLLATE NOCASE").arg(protocol);
+    }
 
-    // SQL nutzt "LIKE" für Teilsuche. % ist der Platzhalter.
-    if (!filePath.isEmpty())  filters << QString("filePath LIKE '%%1%' COLLATE NOCASE").arg(filePath);
-    if (!message.isEmpty())   filters << QString("messageHtml LIKE '%%1%' COLLATE NOCASE").arg(message);
-    if (!nick.isEmpty())      filters << QString("senderNick LIKE '%%1%' COLLATE NOCASE").arg(nick);
-    if (!target.isEmpty())    filters << QString("receiverNick LIKE '%%1%' COLLATE NOCASE").arg(target);
-    if (!messenger.isEmpty()) filters << QString("messenger LIKE '%%1%' COLLATE NOCASE").arg(messenger);
-    if (!protocol.isEmpty())  filters << QString("protocol LIKE '%%1%' COLLATE NOCASE").arg(protocol);
-
-    // Filter setzen und Datenbank neu abfragen
     this->setFilter(filters.join(" AND "));
     this->select();
 }
@@ -79,6 +98,7 @@ QStringList HistoryModel::getAllNickNames() {
     while (query.next()) {
         nicks << query.value(0).toString();
     }
+    qDebug() << "All nicks:" << nicks;
     return nicks;
 }
 
