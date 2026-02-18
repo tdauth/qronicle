@@ -133,7 +133,7 @@ ApplicationWindow {
                         }
 
                         Label {
-                            text: qsTr("Build date: %1\nCopyright © 2026 Tamino Dauth\nAlle rights reserved.").arg(Qt.formatDateTime(buildDateTime, "yyyy-MM-dd HH:mm:ss"))
+                            text: qsTr("Build date: %1\nCopyright © 2026 Tamino Dauth\nAlle rights reserved.").arg(Qt.formatDateTime(buildDateTime, "yyyy-MM-dd HH:mm"))
                             width: parent.width
                             horizontalAlignment: Text.AlignHCenter
                             wrapMode: Text.WordWrap

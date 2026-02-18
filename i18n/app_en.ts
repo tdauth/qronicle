@@ -171,6 +171,16 @@ Alle rights reserved.</source>
         <source>%1&lt;br/&gt;&lt;a href=&quot;%2&quot;&gt;%3&lt;/a&gt; by %4&lt;br/&gt;%5</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/trillian.cpp" line="104"/>
+        <source>Session changed to %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/trillian.cpp" line="121"/>
+        <source>Status changed to %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qronicle::HistorySearchProxy</name>

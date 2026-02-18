@@ -98,7 +98,7 @@ QStringList HistoryModel::getAllMessengers() {
     while (query.next()) {
         messengers << query.value(0).toString();
     }
-    qDebug() << "All messengers:" << messengers;
+    //qDebug() << "All messengers:" << messengers;
     return messengers;
 }
 
@@ -109,7 +109,7 @@ QStringList HistoryModel::getAllNickNames() {
     while (query.next()) {
         nicks << query.value(0).toString();
     }
-    qDebug() << "All nicks:" << nicks;
+    //qDebug() << "All nicks:" << nicks;
     return nicks;
 }
 

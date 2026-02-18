@@ -77,7 +77,9 @@ Alle Rechte vorbehalten.</translation>
         <source>Build date: %1
 Copyright © 2026 Tamino Dauth
 Alle rights reserved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Build-Datum: %1
+Copyright © 2026 Tamino Dauth
+Alle Rechte vorbehalten.</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="275"/>
@@ -192,6 +194,16 @@ Alle rights reserved.</source>
         <location filename="../src/facebook.cpp" line="109"/>
         <source>%1&lt;br/&gt;&lt;a href=&quot;%2&quot;&gt;%3&lt;/a&gt; by %4&lt;br/&gt;%5</source>
         <translation>%1&lt;br/&gt;&lt;a href=&quot;%2&quot;&gt;%3&lt;/a&gt; von %4&lt;br/&gt;%5</translation>
+    </message>
+    <message>
+        <location filename="../src/trillian.cpp" line="104"/>
+        <source>Session changed to %1: %2.</source>
+        <translation>Sitzung geändert zu %1: %2.</translation>
+    </message>
+    <message>
+        <location filename="../src/trillian.cpp" line="121"/>
+        <source>Status changed to %1.</source>
+        <translation>Status geändert zu %1.</translation>
     </message>
 </context>
 <context>

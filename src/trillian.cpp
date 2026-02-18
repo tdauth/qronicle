@@ -20,7 +20,7 @@ QDateTime getTimestamp(const QString &time) {
     bool ok;
     qint64 msecs = time.toLongLong(&ok);
     if (!ok) {
-        qDebug() << "Ungültiger Zeitstempel:" << time;
+        qWarning() << "Invalid Trillian timestamp:" << time;
         return QDateTime();
     }
     // Falls Kopete Sekunden statt Millisekunden nutzt (1185831353 = 2007)
@@ -60,11 +60,10 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
         return messages;
     }
 
-    // Die gesamte Datei einlesen
     QByteArray data = file.readAll();
 
     QXmlStreamReader reader;
-    // Wir "faken" ein Root-Element
+    // fake root element to parse
     reader.addData("<root>");
     reader.addData(data);
     reader.addData("</root>");
@@ -90,6 +89,39 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                     // TODO messenger and protocol are different
                     protocol = attrs.value(QStringLiteral("medium")).toString();
                 }
+                
+                Message message;
+                message.setProtocol(protocol);
+                message.setMessenger("Trillian");
+                message.setFilePath(fileInfo.absoluteFilePath());
+                message.setLineNumber(reader.lineNumber());
+                message.setSource(attrs.value(QStringLiteral("from")).toString());
+                message.setSourceNick(message.source());
+                message.setDestination(attrs.value(QStringLiteral("to")).toString());
+                message.setDestinationNick(message.destination());
+                message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
+                QString type = decodeMessage(attrs.value(QStringLiteral("type")).toString());
+                QString content = QObject::tr("Session changed to %1: %2.").arg(type).arg(attrs.value(QStringLiteral("medium")).toString());
+                message.setContent(content);
+                message.setContentHtml(content);
+                messages.push_back(std::move(message));
+            } else if (tagName == QStringLiteral("status")) {
+                auto attrs = reader.attributes();
+                Message message;
+                message.setProtocol(protocol);
+                message.setMessenger("Trillian");
+                message.setFilePath(fileInfo.absoluteFilePath());
+                message.setLineNumber(reader.lineNumber());
+                message.setSource(attrs.value(QStringLiteral("from")).toString());
+                message.setSourceNick(message.source());
+                message.setDestination(attrs.value(QStringLiteral("from")).toString());
+                message.setDestinationNick(message.destination());
+                message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
+                QString type = decodeMessage(attrs.value(QStringLiteral("type")).toString());
+                QString content = QObject::tr("Status changed to %1.").arg(type);
+                message.setContent(content);
+                message.setContentHtml(content);
+                messages.push_back(std::move(message));
             } else if (tagName == QStringLiteral("message")) {
                 Message message;
                 auto attrs = reader.attributes();
@@ -103,18 +135,25 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 QString type = attrs.value(QStringLiteral("type")).toString();
                 bool in = type == "incoming_privateMessage";
 
-                QString rawValue = attrs.value(QStringLiteral("from_display")).toString();
-                QString nick = decodeMessage(rawValue);
-                message.setSourceNick(nick);
+                if (type == "information_standard") {
+                    message.setSource(other);
+                    message.setSourceNick(other);
+                    message.setDestination(owner);
+                    message.setDestinationNick(other);
+                } else {
+                    QString rawValue = attrs.value(QStringLiteral("from_display")).toString();
+                    QString nick = decodeMessage(rawValue);
+                    message.setSourceNick(nick);
 
-                message.setSource(attrs.value(QStringLiteral("from")).toString());
-                message.setDestination(attrs.value(QStringLiteral("to")).toString());
+                    message.setSource(attrs.value(QStringLiteral("from")).toString());
+                    message.setDestination(attrs.value(QStringLiteral("to")).toString());
 
-                // Nickname-Cache
-                if (!participantNicknames.contains(message.source())) {
-                    participantNicknames.insert(message.source(), nick);
+                    // Nickname-Cache
+                    if (message.source() != message.sourceNick() && !participantNicknames.contains(message.source())) {
+                        participantNicknames.insert(message.source(), nick);
+                    }
+                    message.setDestinationNick(participantNicknames.value(message.destination()));
                 }
-                message.setDestinationNick(participantNicknames.value(message.destination()));
 
                 message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
 
@@ -124,7 +163,24 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setContentHtml(content); // Do not format HTML. It seems that Trillian already has HTML links.
 
                 messages.push_back(std::move(message));
+            } else {
+                qWarning() << "Ignoring Trillian tag" << tagName << "in file" << fileInfo.absoluteFilePath() << reader.lineNumber();
             }
+        }
+    }
+    
+    //qDebug() << "Trillian participantNicknames:" << participantNicknames;
+    
+    // Sometimes the from_display will appear only later in the chat, so we refill here:
+    for (auto &msg : messages) {
+        if (participantNicknames.contains(msg.sourceNick())) {
+            //qDebug() << "Trillian updating source" << msg.sourceNick() << "with" << participantNicknames.value(msg.sourceNick());
+            msg.setSourceNick(participantNicknames.value(msg.sourceNick()));
+        }
+        
+        if (participantNicknames.contains(msg.destinationNick())) {
+            //qDebug() << "Trillian updating destination" << msg.destinationNick() << "with" << participantNicknames.value(msg.destinationNick());
+            msg.setDestinationNick(participantNicknames.value(msg.destinationNick()));
         }
     }
 

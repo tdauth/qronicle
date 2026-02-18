@@ -27,9 +27,11 @@ Since this program uses Qt the name qronicle has been chosen.
 
 ## Planned Features
 
-- Avatars must be persistet in the database in some extra table. Otherwise, they are gone without --clear.
+- Persist avatars in a database table.
+- Presist source files in a database table, so you never rely on local files and can open specific lines.
 - Improve performance: Loading Skype avatars could be done more concurrently (loading images).
 - Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
+- Filtering participants, from and to should filter nick names and raw values.
 - Fill filter text inputs with auto completion by adding SQLite views for all available messengers, nicknames etc.
 - Combining filters like multiple senders, multiple receivers, multiple protcools etc.
 - Allow filtering for timestamp from to with UI date selectors from QML.
@@ -205,6 +207,7 @@ SQLite database `~/.Skype/[YourSkypeName]/main.db`.
 
 ### Trillian
 
+- My examples are from Trillian 3.1 with ICQ only.
 - `ICQ/Query/192780216.log`
 
 [16:33] Peter: wa machsch
@@ -213,8 +216,15 @@ SQLite database `~/.Skype/[YourSkypeName]/main.db`.
 - `ICQ/Query/192780216.xml`
 
 ```xml
+<session type="start" time="1142447323" medium="ICQ" to="192780216" from="192880392"/>
 <message type="outgoing_privateMessage" time="1143128021" medium="ICQ" to="192780216" from="192880392" from_display="Barade" text="ni%C3%B6x"/>
 <message type="incoming_privateMessage" time="1143128033" medium="ICQ" to="192880392" from="192780216" from_display="192780216" text="schade"/>
+<status type="away" time="1142444225" medium="ICQ" from="192780216"/>
+<status type="not%20available" time="1142444225" medium="ICQ" from="192780216"/>
+<status type="online" time="1142447323" medium="ICQ" from="192780216"/>
+<status type="Offline" time="1142447323" medium="ICQ" from="192780216"/>
+<message type="information_standard" time="1142447323" medium="ICQ" text="Wed%20Mar%2015%2018%3A45%3A04%202006%20%2D%20Hans%20ist%20nun%20Offline%2E"/>
+<session type="stop" time="1142446756" medium="ICQ" to="192780216" from="192880392"/>
 ```
 
 - `ICQ/Query/192780216-assets.xml`
