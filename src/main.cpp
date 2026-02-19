@@ -22,6 +22,7 @@
 #include "trillian.hpp"
 #include "facebook.hpp"
 #include "instagram.hpp"
+#include "telegram.hpp"
 #include "skype.hpp"
 #include "whatsapp.hpp"
 #include "psi.hpp"
@@ -112,6 +113,7 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<Trillian>();
     messengers << std::make_shared<Facebook>();
     messengers << std::make_shared<Instagram>();
+    messengers << std::make_shared<Telegram>();
     messengers << std::make_shared<Skype>();
     messengers << std::make_shared<WhatsApp>();
     messengers << std::make_shared<Psi>();

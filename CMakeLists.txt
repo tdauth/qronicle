@@ -49,6 +49,8 @@ qt_add_executable(qronicle
     src/facebook.cpp
     src/instagram.hpp
     src/instagram.cpp
+    src/telegram.hpp
+    src/telegram.cpp
     src/skype.hpp
     src/skype.cpp
     src/whatsapp.hpp

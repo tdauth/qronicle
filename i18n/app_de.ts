@@ -75,7 +75,7 @@ Alle Rechte vorbehalten.</translation>
     <message>
         <location filename="../src/Main.qml" line="16"/>
         <source>Open config folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurationsverzeichnis öffnen</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="83"/>
@@ -135,7 +135,7 @@ Alle Rechte vorbehalten.</translation>
     <message>
         <location filename="../src/Main.qml" line="638"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>unbekannt</translation>
     </message>
     <message>
         <location filename="../src/Main.qml" line="689"/>
@@ -171,13 +171,13 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="97"/>
-        <location filename="../src/main.cpp" line="102"/>
+        <location filename="../src/main.cpp" line="98"/>
+        <location filename="../src/main.cpp" line="103"/>
         <source>qronicle</source>
         <translation>qronicle</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="106"/>
+        <location filename="../src/main.cpp" line="107"/>
         <source>Clears the existing database before loading messages.</source>
         <translation>Löscht die bestehende Datenbank vor dem Laden von Nachrichten.</translation>
     </message>
@@ -186,7 +186,7 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Erlaube mehrfache gleiche Nachrichten.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="124"/>
+        <location filename="../src/main.cpp" line="126"/>
         <source>%1 directories.</source>
         <translation>%1-Verzeichnisse.</translation>
     </message>
@@ -196,6 +196,10 @@ Alle Rechte vorbehalten.</translation>
         <location filename="../src/facebook.cpp" line="28"/>
         <location filename="../src/facebook.cpp" line="62"/>
         <location filename="../src/facebook.cpp" line="73"/>
+        <location filename="../src/telegram.cpp" line="53"/>
+        <location filename="../src/telegram.cpp" line="54"/>
+        <location filename="../src/telegram.cpp" line="120"/>
+        <location filename="../src/telegram.cpp" line="121"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
@@ -212,7 +216,7 @@ Alle Rechte vorbehalten.</translation>
     <message>
         <location filename="../src/trillian.cpp" line="101"/>
         <source>Session changed to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sitzung zu %1 geändert.</translation>
     </message>
     <message>
         <location filename="../src/trillian.cpp" line="118"/>
@@ -225,7 +229,7 @@ Alle Rechte vorbehalten.</translation>
     <message>
         <location filename="../src/SearchField.qml" line="7"/>
         <source>Find...</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen ...</translation>
     </message>
 </context>
 <context>

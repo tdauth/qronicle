@@ -151,18 +151,18 @@ Alle rights reserved.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="97"/>
-        <location filename="../src/main.cpp" line="102"/>
+        <location filename="../src/main.cpp" line="98"/>
+        <location filename="../src/main.cpp" line="103"/>
         <source>qronicle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="106"/>
+        <location filename="../src/main.cpp" line="107"/>
         <source>Clears the existing database before loading messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="124"/>
+        <location filename="../src/main.cpp" line="126"/>
         <source>%1 directories.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -172,6 +172,10 @@ Alle rights reserved.</source>
         <location filename="../src/facebook.cpp" line="28"/>
         <location filename="../src/facebook.cpp" line="62"/>
         <location filename="../src/facebook.cpp" line="73"/>
+        <location filename="../src/telegram.cpp" line="53"/>
+        <location filename="../src/telegram.cpp" line="54"/>
+        <location filename="../src/telegram.cpp" line="120"/>
+        <location filename="../src/telegram.cpp" line="121"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
