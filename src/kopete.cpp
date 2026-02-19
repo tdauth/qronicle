@@ -171,7 +171,7 @@ Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
     return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
         filePaths,
         [this](const QString &path) {
-            qDebug() << "Loading Kopete XML file" << path;
+            //qDebug() << "Loading Kopete XML file" << path;
             return loadFile(path);
         },
         [](Messenger::Messages &result, const Messenger::Messages &intermediate) {
