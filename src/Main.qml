@@ -449,9 +449,6 @@ ApplicationWindow {
                                 Item {
                                     width: 16
                                     height: 16
-                                    // Nur anzeigen, wenn messenger gesetzt ist und sich vom Protokoll unterscheidet
-                                    visible: typeof messenger !== "undefined" && messenger !== "" &&
-                                            messenger.toLowerCase() !== protocol.toLowerCase()
 
                                     Image {
                                         id: messengerIcon
@@ -510,6 +507,9 @@ ApplicationWindow {
                                 Item {
                                     width: 16
                                     height: 16
+                                    // Nur anzeigen, wenn protocol gesetzt ist und sich vom messenger unterscheidet
+                                    visible: typeof protocol !== "undefined" && protocol !== "" &&
+                                            protocol.toLowerCase() !== messenger.toLowerCase()
 
                                     Image {
                                         id: protocolIcon

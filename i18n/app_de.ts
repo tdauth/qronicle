@@ -123,7 +123,7 @@ Alle Rechte vorbehalten.</translation>
         <translation>An: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="501"/>
+        <location filename="../src/Main.qml" line="498"/>
         <source>Messenger: %1</source>
         <translation>Messenger: %1</translation>
     </message>

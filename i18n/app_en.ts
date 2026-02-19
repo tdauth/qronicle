@@ -93,7 +93,7 @@ Alle rights reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="501"/>
+        <location filename="../src/Main.qml" line="498"/>
         <source>Messenger: %1</source>
         <translation type="unfinished"></translation>
     </message>
