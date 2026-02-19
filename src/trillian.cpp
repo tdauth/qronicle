@@ -98,6 +98,7 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setDestinationNick(message.destination());
                 message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
                 QString type = decodeMessage(attrs.value(QStringLiteral("type")).toString());
+                message.setType(type);
                 QString content = QObject::tr("Session changed to %1.").arg(type);
                 message.setContent(content);
                 message.setContentHtml(content);
@@ -115,6 +116,7 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setDestinationNick(message.destination());
                 message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
                 QString type = decodeMessage(attrs.value(QStringLiteral("type")).toString());
+                message.setType(type);
                 QString content = QObject::tr("Status changed to %1.").arg(type);
                 message.setContent(content);
                 message.setContentHtml(content);
@@ -145,7 +147,9 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setLineNumber(reader.lineNumber());
 
                 QString type = attrs.value(QStringLiteral("type")).toString();
-                bool in = type == "incoming_privateMessage";
+                message.setType(type);
+                bool out = type == "outgoing_privateMessage";
+                message.setOut(out);
 
                 if (type == "information_standard") {
                     message.setSource(other);

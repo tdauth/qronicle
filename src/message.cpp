@@ -2,7 +2,7 @@
 
 namespace qronicle {
 
-Message::Message() : m_lineNumber(0) {
+Message::Message() : m_lineNumber(0), m_out(false) {
 }
 
 void Message::setFilePath(const QString &filePath) {

@@ -354,13 +354,15 @@ ApplicationWindow {
 
                 delegate: Rectangle {
                     id: speechBubble
-                    // Berechnet die Breite dynamisch: Gesamtbreite minus sichtbare Avatare
-                    width: chatListView.width
+                    width: chatListView.width - vBar.width
 
                     height: innerCol.implicitHeight + 16
-                    color: "#ffffff"
                     radius: 6
-                    border.color: "#ddd"
+                    
+                    color: out ? "#e1ffc7" : "#ffffff"
+                    
+                    border.width: 1
+                    border.color: out ? "#c7e3ae" : "#dddddd"
                     
                     // pass model properties into delegate
                     required property string sourceNick
@@ -375,6 +377,7 @@ ApplicationWindow {
                     required property string filePath
                     required property string lineNumber
                     required property string time
+                    required property bool out
 
                     MouseArea {
                         anchors.fill: parent
@@ -569,9 +572,8 @@ ApplicationWindow {
                                     // WICHTIG: Erst das Format, dann der Text
                                     textFormat: Text.RichText // Versuche RichText statt StyledText, falls es Probleme gibt
 
-
-                                    // Properties für sauberen Zugriff
-                                    readonly property string fullUrl: "file://" + filePath + (lineNumber > 0 ? "#" + lineNumber : "")
+                                    readonly property string maskedFilePath: filePath.replace(/%/g, "%25") // Fixes file names from Psi like at_icq.jabber.fh%2dstralsund.de.history
+                                    readonly property string fullUrl: "file://" + maskedFilePath + (lineNumber > 0 ? "#" + lineNumber : "")
                                     readonly property string fileName: filePath.split('/').pop()
 
                                     // Layout-Integration
@@ -669,6 +671,7 @@ ApplicationWindow {
                             selectByMouse: true
                             selectionColor: "#3498db"
                             persistentSelection: true
+                            horizontalAlignment: out ? TextEdit.AlignRight : TextEdit.AlignLeft
 
                             onLinkActivated: (link) => {
                                 Qt.openUrlExternally(link)

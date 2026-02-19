@@ -26,6 +26,8 @@ Messenger::Messages Knuddels::loadFile(const QString &filePath) {
     if (!file.open(QIODevice::ReadOnly)) {
         return messages;
     }
+    
+    QString fileName = fileInfo.fileName();
 
     messages.reserve(file.size() / 100);
     QTextStream in(&file);
@@ -49,6 +51,7 @@ Messenger::Messages Knuddels::loadFile(const QString &filePath) {
                 QString name = match.captured("name");
                 msg.setSource(name);
                 msg.setSourceNick(name);
+                msg.setOut(!fileName.contains(name));
                 msg.setTimestamp(QDateTime::fromString(match.captured("timestamp"), "dd.MM.yyyy HH:mm:ss"));
                 QString message = match.captured("msg");
                 msg.setContent(message);

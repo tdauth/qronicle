@@ -9,6 +9,7 @@ Offline Qt-based messenger history visualizer:
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Telegram_(software)#/media/File:Telegram_2019_Logo.svg"><img src="./assets/icons/telegram.svg" width="22" align="center"></a> [**Telegram**](https://en.wikipedia.org/wiki/Telegram_(software)) | ✅ | ⏳ |
+| <a href="https://commons.wikimedia.org/wiki/Category:Discord_logos#/media/File:Discord_color_D.svg"><img src="./assets/icons/discord.svg" width="22" align="center"></a> [**Discord**](https://en.wikipedia.org/wiki/Discord) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ |
@@ -240,6 +241,9 @@ SQLite database `~/.Skype/[YourSkypeName]/main.db`.
 <status type="Offline" time="1142447323" medium="ICQ" from="192780216"/>
 <message type="information_standard" time="1142447323" medium="ICQ" text="Wed%20Mar%2015%2018%3A45%3A04%202006%20%2D%20Hans%20ist%20nun%20Offline%2E"/>
 <session type="stop" time="1142446756" medium="ICQ" to="192780216" from="192880392"/>
+<filetransfer type="outgoing_filetransferInitialize" time="1141994829" medium="ICQ" to="192780216" from="192880392" link="C%3A%5CDokumente%20und%20Einstellungen%5CTamino%20Dauth%5CDesktop%5CIntro%2Ebmp"/>
+<filetransfer type="outgoing_filetransferUninitialize" time="1141994829" medium="ICQ" to="192780216" from="192880392" text="close"/>
+<filetransfer type="outgoing_filetransferUninitialize" time="1141994862" medium="ICQ" to="192780216" from="192880392" text="cancel"/>
 ```
 
 - `ICQ/Query/192780216-assets.xml`
@@ -552,3 +556,52 @@ The app provides smileys in form of `(hello)`.
 
 - `~/.config/discord`
 - Chromium: `~/.config/chromium/Default/IndexedDB/https_discord.com_0.indexeddb.leveldb/`
+
+Chromium extension [Discrub](https://chromewebstore.google.com/detail/discrub/plhdclenpaecffbcefjmpkkbdpkmhhbj?hl=en-US):
+
+```json
+[
+   {
+      "id":"123456",
+      "channel_id":"123456",
+      "author":{
+         "id":"123456",
+         "username":"hans",
+         "avatar":"123456",
+         "discriminator":"0",
+         "public_flags":0,
+         "flags":0,
+         "banner":null,
+         "accent_color":null,
+         "global_name":"Hans",
+         "avatar_decoration_data":null,
+         "collectibles":null,
+         "display_name_styles":null,
+         "banner_color":null,
+         "clan":null,
+         "primary_guild":null
+      },
+      "content":"Hi, how are you?",
+      "timestamp":"2022-04-17T09:48:45.828000+00:00",
+      "edited_timestamp":null,
+      "tts":false,
+      "mention_everyone":false,
+      "mentions":[
+         
+      ],
+      "attachments":[
+         
+      ],
+      "embeds":[
+         
+      ],
+      "pinned":false,
+      "type":0,
+      "flags":0,
+      "components":[
+         
+      ],
+      "userName":"hans"
+   }
+]
+```

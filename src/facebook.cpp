@@ -83,12 +83,14 @@ Messenger::Messages Facebook::loadFile(const QString &filePath) {
 
         if (senderName == title) {
             // in
+            msg.setOut(false);
             msg.setSource(contact);
             msg.setSourceNick(senderName);
             msg.setDestination(otherParticipant);
             msg.setDestinationNick(otherParticipant);
         } else {
             // out
+            msg.setOut(true);
             msg.setSource(senderName);
             msg.setSourceNick(senderName);
             msg.setDestination(contact);

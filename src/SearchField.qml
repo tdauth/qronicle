@@ -1,3 +1,4 @@
+pragma NativeMethodBehavior: AcceptThisObject
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -18,7 +19,7 @@ TextField {
 
     onActiveFocusChanged: {
         if (activeFocus && fetchFunction) {
-            allItems = fetchFunction()
+            allItems = fetchFunction.call(fetchFunction)
             filteredItems = allItems
         }
     }
@@ -26,9 +27,10 @@ TextField {
     onTextChanged: {
         if (activeFocus) {
             searchTimer.restart()
-            filteredItems = allItems.filter(item => 
-                item.toLowerCase().includes(text.toLowerCase())
-            )
+            filteredItems = allItems.filter(item => {
+                let val = String(item || "");
+                return val.toLowerCase().includes(text.toLowerCase())
+            })
         }
     }
 
@@ -37,13 +39,16 @@ TextField {
     // Das Popup wird nun über das Overlay gesteuert (verhindert Abschneiden)
     Popup {
         id: popup
-        y: control.height
-        width: control.width
+        y: parent.height
+        width: parent.width
+        
         visible: control.activeFocus && control.filteredItems.length > 0 && control.text.length > 0
         focus: false
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         contentItem: ListView {
+            //required property TextField control
+            
             implicitHeight: Math.min(contentHeight, 200)
             model: control.filteredItems
             clip: true

@@ -25,7 +25,8 @@ public:
         TargetNickRole,
         TargetAvatarRole,
         MessengerRole,
-        ProtocolRole
+        ProtocolRole,
+        OutRole
     };
 
     explicit HistoryModel(QSqlDatabase db);

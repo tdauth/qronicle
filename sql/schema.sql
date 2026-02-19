@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS messages (
     messenger TEXT DEFAULT '',
     protocol TEXT DEFAULT '',
     status TEXT DEFAULT '',
+    "out" BOOLEAN DEFAULT 0,
+    "type" TEXT DEFAULT '',
     
     UNIQUE(sender, receiver, message, created_at, messenger, protocol) 
     ON CONFLICT IGNORE -- no duplicates please

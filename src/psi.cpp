@@ -120,6 +120,7 @@ Messenger::Messages Psi::loadFile(const QString &filePath) {
                         QString nick = parts.at(4);
 
                         if (parts.at(3) == "from") {
+                            message.setOut(false);
                             message.setSource(partner);
                             message.setSourceNick(nick);
 
@@ -142,10 +143,8 @@ Messenger::Messages Psi::loadFile(const QString &filePath) {
                             } else {
                                 message.setDestination("Unknown");
                             }
-
-
-
                         } else {
+                            message.setOut(true);
                             if (owner) {
                                 message.setSource(owner->jid);
 

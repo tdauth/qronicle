@@ -97,73 +97,73 @@ Alle Rechte vorbehalten.</translation>
         <translation>Nachrichteninhalt suchen ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="411"/>
+        <location filename="../src/Main.qml" line="414"/>
         <source>From: %1 (%2)</source>
         <translation>Von: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="412"/>
-        <location filename="../src/Main.qml" line="434"/>
+        <location filename="../src/Main.qml" line="415"/>
+        <location filename="../src/Main.qml" line="437"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="600"/>
+        <location filename="../src/Main.qml" line="602"/>
         <source>Copy Link Address</source>
         <translation>Link-Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="604"/>
+        <location filename="../src/Main.qml" line="606"/>
         <source>Copy File Path</source>
         <translation>Dateipfad kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="433"/>
+        <location filename="../src/Main.qml" line="436"/>
         <source>To: %1 (%2)</source>
         <translation>An: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="498"/>
+        <location filename="../src/Main.qml" line="501"/>
         <source>Messenger: %1</source>
         <translation>Messenger: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="556"/>
+        <location filename="../src/Main.qml" line="559"/>
         <source>Protocol: %1</source>
         <translation>Protokoll: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="638"/>
+        <location filename="../src/Main.qml" line="640"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="689"/>
+        <location filename="../src/Main.qml" line="692"/>
         <source>Copy Message</source>
         <translation>Nachricht kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="697"/>
+        <location filename="../src/Main.qml" line="700"/>
         <source>Jump to this message (clear filters)</source>
         <translation>Zu dieser Nachricht springen (Filter leeren)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="734"/>
+        <location filename="../src/Main.qml" line="737"/>
         <source>Messages: %1 / %2</source>
         <translation>Nachrichten: %1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="744"/>
+        <location filename="../src/Main.qml" line="747"/>
         <source>Period: %1</source>
         <translation>Zeitraum: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="755"/>
+        <location filename="../src/Main.qml" line="758"/>
         <source>All data loaded</source>
         <translation>Alle Daten geladen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="756"/>
+        <location filename="../src/Main.qml" line="759"/>
         <source>Filtered</source>
         <translation>Gefiltert</translation>
     </message>
@@ -204,8 +204,8 @@ Alle Rechte vorbehalten.</translation>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/facebook.cpp" line="108"/>
-        <location filename="../src/facebook.cpp" line="109"/>
+        <location filename="../src/facebook.cpp" line="110"/>
+        <location filename="../src/facebook.cpp" line="111"/>
         <source>%1&lt;br/&gt;&lt;a href=&quot;%2&quot;&gt;%3&lt;/a&gt; by %4&lt;br/&gt;%5</source>
         <translation>%1&lt;br/&gt;&lt;a href=&quot;%2&quot;&gt;%3&lt;/a&gt; von %4&lt;br/&gt;%5</translation>
     </message>
@@ -214,12 +214,12 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Sitzung geändert zu %1: %2.</translation>
     </message>
     <message>
-        <location filename="../src/trillian.cpp" line="101"/>
+        <location filename="../src/trillian.cpp" line="102"/>
         <source>Session changed to %1.</source>
         <translation>Sitzung zu %1 geändert.</translation>
     </message>
     <message>
-        <location filename="../src/trillian.cpp" line="118"/>
+        <location filename="../src/trillian.cpp" line="120"/>
         <source>Status changed to %1.</source>
         <translation>Status geändert zu %1.</translation>
     </message>
@@ -227,7 +227,7 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>SearchField</name>
     <message>
-        <location filename="../src/SearchField.qml" line="7"/>
+        <location filename="../src/SearchField.qml" line="8"/>
         <source>Find...</source>
         <translation>Suchen ...</translation>
     </message>

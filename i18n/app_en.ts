@@ -4,6 +4,11 @@
 <context>
     <name>Main</name>
     <message>
+        <location filename="../src/Main.qml" line="16"/>
+        <source>Open config folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/Main.qml" line="27"/>
         <location filename="../src/Main.qml" line="42"/>
         <source>About</source>
@@ -15,48 +20,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="143"/>
-        <source>Filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/Main.qml" line="75"/>
         <source>qronicle 1.0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="189"/>
-        <source>Reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="269"/>
-        <source>File Path...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="251"/>
-        <source>Sender...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="242"/>
-        <source>Participant...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="260"/>
-        <source>Receiver...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="224"/>
-        <source>Messenger...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="16"/>
-        <source>Open config folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -67,8 +32,43 @@ Alle rights reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/Main.qml" line="143"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="189"/>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="224"/>
+        <source>Messenger...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/Main.qml" line="233"/>
         <source>Protocol...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="242"/>
+        <source>Participant...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="251"/>
+        <source>Sender...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="260"/>
+        <source>Receiver...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="269"/>
+        <source>File Path...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -77,73 +77,73 @@ Alle rights reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="411"/>
+        <location filename="../src/Main.qml" line="414"/>
         <source>From: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="412"/>
-        <location filename="../src/Main.qml" line="434"/>
+        <location filename="../src/Main.qml" line="415"/>
+        <location filename="../src/Main.qml" line="437"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="600"/>
-        <source>Copy Link Address</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="604"/>
-        <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/Main.qml" line="433"/>
+        <location filename="../src/Main.qml" line="436"/>
         <source>To: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="498"/>
+        <location filename="../src/Main.qml" line="501"/>
         <source>Messenger: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="556"/>
+        <location filename="../src/Main.qml" line="559"/>
         <source>Protocol: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="638"/>
+        <location filename="../src/Main.qml" line="602"/>
+        <source>Copy Link Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="606"/>
+        <source>Copy File Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Main.qml" line="640"/>
         <source>unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="689"/>
+        <location filename="../src/Main.qml" line="692"/>
         <source>Copy Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="697"/>
+        <location filename="../src/Main.qml" line="700"/>
         <source>Jump to this message (clear filters)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="734"/>
+        <location filename="../src/Main.qml" line="737"/>
         <source>Messages: %1 / %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="744"/>
+        <location filename="../src/Main.qml" line="747"/>
         <source>Period: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="755"/>
+        <location filename="../src/Main.qml" line="758"/>
         <source>All data loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="756"/>
+        <location filename="../src/Main.qml" line="759"/>
         <source>Filtered</source>
         <translation type="unfinished"></translation>
     </message>
@@ -180,18 +180,18 @@ Alle rights reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/facebook.cpp" line="108"/>
-        <location filename="../src/facebook.cpp" line="109"/>
+        <location filename="../src/facebook.cpp" line="110"/>
+        <location filename="../src/facebook.cpp" line="111"/>
         <source>%1&lt;br/&gt;&lt;a href=&quot;%2&quot;&gt;%3&lt;/a&gt; by %4&lt;br/&gt;%5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/trillian.cpp" line="101"/>
+        <location filename="../src/trillian.cpp" line="102"/>
         <source>Session changed to %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/trillian.cpp" line="118"/>
+        <location filename="../src/trillian.cpp" line="120"/>
         <source>Status changed to %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -199,7 +199,7 @@ Alle rights reserved.</source>
 <context>
     <name>SearchField</name>
     <message>
-        <location filename="../src/SearchField.qml" line="7"/>
+        <location filename="../src/SearchField.qml" line="8"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
