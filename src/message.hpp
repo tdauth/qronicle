@@ -6,12 +6,12 @@
 #include <QDateTime>
 
 namespace qronicle {
-    
+
 class Message {
-    
+
     public:
         Message();
-        
+
         void setFilePath(const QString &filePath);
         QString filePath() const;
         void setLineNumber(qint64 lineNumber);
@@ -36,7 +36,11 @@ class Message {
         QString protocol() const;
         void setStatus(const QString &status);
         QString status() const;
-    
+        void setOut(bool out);
+        bool out() const;
+        void setType(const QString &type);
+        QString type() const;
+
     private:
         QString m_filePath;
         qint64 m_lineNumber;
@@ -50,6 +54,8 @@ class Message {
         QString m_messenger;    // z.B. "Kopete", "Skype"
         QString m_protocol;    // z.B. "ICQ", "Jabber"
         QString m_status; // z. B. "Gelesen"
+        bool m_out; // true if the message was sent. Otherwise, it was received.
+        QString m_type; // message, session, status etc.
 };
 
 // Ignore filePath, sourceNick, destinationNick, contentHtml, messenger and status.
@@ -62,10 +68,10 @@ inline bool operator==(const Message &m1, const Message &m2) {
 }
 
 inline size_t qHash(const Message &key, size_t seed = 0) {
-    return ::qHash(key.content(), seed) ^ 
-           ::qHash(key.source(), seed) ^ 
-           ::qHash(key.destination(), seed) ^ 
-           ::qHash(key.timestamp().toSecsSinceEpoch(), seed); 
+    return ::qHash(key.content(), seed) ^
+           ::qHash(key.source(), seed) ^
+           ::qHash(key.destination(), seed) ^
+           ::qHash(key.timestamp().toSecsSinceEpoch(), seed);
 }
 
 }

@@ -29,7 +29,8 @@ Since this program uses Qt the name qronicle has been chosen.
 
 ## Planned Features
 
-- Telegram support.
+- Add field messagType which stores "message", "status", "session", "icon" etc.
+- Add field boolean out which indicates whether the message was sent or received.
 - Different background colors like in messengers for speech bubbles depending on if the message was sent to you or you sent it.
 - Allow clicking on elements to filter for them like sender, receiver, protocol etc.
 - Hovering avatars should show them bigger.
@@ -37,7 +38,6 @@ Since this program uses Qt the name qronicle has been chosen.
 - Skype messages from someone to you have always to=from.
 - File URLs for Psi and Jabber like "file:///home/tdauth/Dokumente/Projekte/qronicle/personal/psi/profiles/default/history/276483064_at_icq.jabber.fh%2dstralsund.de.history#110" do not work.
 - Show messenger before protocol and if they are the same there should always be messenger and not protocol!
-- Add field messagType which stores "message", "status", "session", "icon" etc.
 - Persist avatars in a database table.
 - Presist source files in a database table, so you never rely on local files and can open specific lines.
 - Improve performance: Loading Skype avatars could be done more concurrently (loading images).

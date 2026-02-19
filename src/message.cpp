@@ -101,5 +101,21 @@ void Message::setStatus(const QString &status) {
 QString Message::status() const {
     return m_status;
 }
-    
+
+void Message::setOut(bool out) {
+    m_out = out;
+}
+
+bool Message::out() const {
+    return m_out;
+}
+
+void Message::setType(const QString &type) {
+    m_type = type;
+}
+
+QString Message::type() const {
+    return m_type;
+}
+
 }

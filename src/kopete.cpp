@@ -82,10 +82,10 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
     while (!reader.atEnd() && !reader.hasError()) {
         QXmlStreamReader::TokenType token = reader.readNext();
         //qDebug() << "Current Token:" << reader.tokenString() << "Name:" << reader.name();
-        
+
         if (token == QXmlStreamReader::DTD) {
             QString dtdName = reader.dtdName().toString();
-            
+
             if (dtdName != "Kopete-History") {
                 qWarning() << "XML Error in" << filePath << " is missing DOCTYPE Kopete-History and has instead" << dtdName << "!";
                 return messages;
@@ -110,8 +110,10 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
 
                 if (attrs.value(QStringLiteral("in")) == QStringLiteral("1")) {
                     message.setDestination(owner);
+                    message.setOut(false);
                 } else {
                     message.setDestination(partner);
+                    message.setOut(true);
                 }
 
                 if (!participantNicknames.contains(message.source())) {
@@ -143,7 +145,7 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
     if (reader.hasError()) {
         qWarning() << "XML Error in" << filePath << ":" << reader.errorString();
     }
-    
+
     if (!hasDocTypeKopeteHistory) {
         qWarning() << "XML Error in" << filePath << " is missing DOCTYPE Kopete-History!";
     }
