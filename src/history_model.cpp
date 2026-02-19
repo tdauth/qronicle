@@ -102,6 +102,17 @@ QStringList HistoryModel::getAllMessengers() {
     return messengers;
 }
 
+QStringList HistoryModel::getAllProtocols() {
+    QStringList protocols;
+    QSqlQuery query(database());
+    query.exec("SELECT protocol FROM view_protocols ORDER BY protocol ASC;");
+    while (query.next()) {
+        protocols << query.value(0).toString();
+    }
+    //qDebug() << "All protocols:" << protocols;
+    return protocols;
+}
+
 QStringList HistoryModel::getAllNickNames() {
     QStringList nicks;
     QSqlQuery query(database());

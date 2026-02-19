@@ -76,16 +76,28 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
     }
 
     QXmlStreamReader reader(&file);
-    // Nickname-Cache
+    bool hasDocTypeKopeteHistory = false;
     QMap<QString, QString> participantNicknames;
 
     while (!reader.atEnd() && !reader.hasError()) {
         QXmlStreamReader::TokenType token = reader.readNext();
-
-        if (token == QXmlStreamReader::StartElement) {
+        //qDebug() << "Current Token:" << reader.tokenString() << "Name:" << reader.name();
+        
+        if (token == QXmlStreamReader::DTD) {
+            QString dtdName = reader.dtdName().toString();
+            
+            if (dtdName != "Kopete-History") {
+                qWarning() << "XML Error in" << filePath << " is missing DOCTYPE Kopete-History and has instead" << dtdName << "!";
+                return messages;
+            } else {
+                hasDocTypeKopeteHistory = true;
+                //qDebug() << "Is Kopete-History:" << filePath;
+            }
+        } else if (hasDocTypeKopeteHistory && token == QXmlStreamReader::StartElement) {
             QStringView tagName = reader.name();
 
-            if (tagName == QStringLiteral("message")) {
+            if (tagName == QStringLiteral("msg")) {
+                //qDebug() << "Found Kopete message!";
                 Message message;
                 auto attrs = reader.attributes();
 
@@ -131,6 +143,10 @@ Messenger::Messages Kopete::loadFile(const QString &filePath) {
     if (reader.hasError()) {
         qWarning() << "XML Error in" << filePath << ":" << reader.errorString();
     }
+    
+    if (!hasDocTypeKopeteHistory) {
+        qWarning() << "XML Error in" << filePath << " is missing DOCTYPE Kopete-History!";
+    }
 
     return messages;
 }
@@ -155,7 +171,7 @@ Messenger::Messages Kopete::loadDirectories(const QStringList &dirPaths) {
     return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
         filePaths,
         [this](const QString &path) {
-            // qDebug() << "Loading Kopete XML file" << path;
+            qDebug() << "Loading Kopete XML file" << path;
             return loadFile(path);
         },
         [](Messenger::Messages &result, const Messenger::Messages &intermediate) {

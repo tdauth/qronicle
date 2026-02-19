@@ -10,6 +10,90 @@ ApplicationWindow {
 
     // Design-Konstanten
     readonly property color colorBgChat: "#e5ddd5"
+    
+    Action {
+        id: openConfigAction
+        text: qsTr("Open config folder")
+        shortcut: "Ctrl+,"
+        onTriggered: {
+            let folderUrl = "file://" + appConfigPath;
+            console.log("Open:", folderUrl);
+            Qt.openUrlExternally(folderUrl);
+        }
+    }
+
+    Action {
+        id: aboutAction
+        text: qsTr("About")
+        shortcut: "F1"
+        onTriggered: aboutDialog.open()
+    }
+
+
+    Action {
+        id: quitAction
+        text: qsTr("Exit")
+        shortcut: StandardKey.Quit
+        onTriggered: Qt.quit()
+    }
+    
+    Dialog {
+        id: aboutDialog
+        title: qsTr("About")
+
+        anchors.centerIn: parent
+        width: 300
+        height: 350
+        modal: true
+        standardButtons: Dialog.Ok
+
+        contentItem: Column {
+            spacing: 15
+            topPadding: 10
+            bottomPadding: 20
+
+            Image {
+                id: logo
+                source: "qrc:/icons/qronicle"
+                width: 80
+                height: 80
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+                    border.color: "#eeeeee"
+                    border.width: 1
+                    visible: logo.status === Image.Ready
+                }
+            }
+
+            Label {
+                text: qsTr("qronicle 1.0")
+                font.pixelSize: 18
+                font.bold: true
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Label {
+                text: qsTr("Build date: %1\nCopyright © 2026 Tamino Dauth\nAlle rights reserved.").arg(Qt.formatDateTime(buildDateTime, "yyyy-MM-dd HH:mm"))
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+            }
+
+            Label {
+                text: "<a href='https://github.com/tdauth/qronicle'>https://github.com/tdauth/qronicle</a>"
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
+                onLinkActivated: (link) => Qt.openUrlExternally(link)
+            }
+        }
+    }
 
     // Hauptcontainer (ersetzt SplitView)
     ColumnLayout {
@@ -32,36 +116,12 @@ ApplicationWindow {
                     text: "☰"
                     onClicked: mainMenu.open()
 
-                    Action {
-                        id: openConfigAction
-                        text: qsTr("Open config folder")
-                        shortcut: "Ctrl+Shift+C"
-                        onTriggered: {
-                            let folderUrl = "file://" + appConfigPath;
-                            console.log("Open:", folderUrl);
-                            Qt.openUrlExternally(folderUrl);
-                        }
-                    }
-
-                    Action {
-                        id: aboutAction
-                        text: qsTr("About")
-                        shortcut: "F1"
-                        onTriggered: aboutDialog.open()
-                    }
-
-                    Action {
-                        id: quitAction
-                        text: qsTr("Exit")
-                        shortcut: StandardKey.Quit
-                        onTriggered: Qt.quit()
-                    }
-
                     // Das eigentliche Dropdown-Menü
                     Menu {
                         id: mainMenu
+                        implicitWidth: Math.max(200, contentItem.implicitWidth + 40) 
                         y: menuButton.height // Erscheint direkt unter dem Button
-
+                        
                         MenuItem {
                             action: openConfigAction
                         }
@@ -89,7 +149,7 @@ ApplicationWindow {
                     }
 
                     icon.name: "view-filter"
-                    icon.source: icon.name === "" ? "qrc:/icons/fallback-filter.svg" : ""
+                    icon.source: "qrc:/icons/fallback-filter.svg"
 
                     checkable: true
                     checked: false // Standardmäßig aus
@@ -104,64 +164,6 @@ ApplicationWindow {
                 }
 
                 Item { Layout.fillWidth: true } // Spacer
-
-                Dialog {
-                    id: aboutDialog
-                    title: qsTr("About")
-
-                    anchors.centerIn: parent
-                    width: 300
-                    height: 350
-                    modal: true
-                    standardButtons: Dialog.Ok
-
-                    contentItem: Column {
-                        spacing: 15
-                        topPadding: 10
-                        bottomPadding: 20
-
-                        Image {
-                            id: logo
-                            source: "qrc:/icons/qronicle"
-                            width: 80
-                            height: 80
-                            anchors.horizontalCenter: parent.horizontalCenter
-
-                            fillMode: Image.PreserveAspectFit
-                            smooth: true
-
-                            Rectangle {
-                                anchors.fill: parent
-                                color: "transparent"
-                                border.color: "#eeeeee"
-                                border.width: 1
-                                visible: logo.status === Image.Ready
-                            }
-                        }
-
-                        Label {
-                            text: qsTr("qronicle 1.0")
-                            font.pixelSize: 18
-                            font.bold: true
-                            width: parent.width
-                            horizontalAlignment: Text.AlignHCenter
-                        }
-
-                        Label {
-                            text: qsTr("Build date: %1\nCopyright © 2026 Tamino Dauth\nAlle rights reserved.").arg(Qt.formatDateTime(buildDateTime, "yyyy-MM-dd HH:mm"))
-                            width: parent.width
-                            horizontalAlignment: Text.AlignHCenter
-                            wrapMode: Text.WordWrap
-                        }
-
-                        Label {
-                            text: "<a href='https://github.com/tdauth/qronicle</a>"
-                            width: parent.width
-                            horizontalAlignment: Text.AlignHCenter
-                            onLinkActivated: (link) => Qt.openUrlExternally(link)
-                        }
-                    }
-                }
             }
         }
 
@@ -186,7 +188,6 @@ ApplicationWindow {
                     id: resetFiltersAction
                     text: qsTr("Reset")
                     icon.name: "edit-clear"
-                    shortcut: "Ctrl+R" // Optional: Ein Shortcut zum Zurücksetzen
 
                     onTriggered: {
                         chatModel.filterParticipant = ""
@@ -218,276 +219,49 @@ ApplicationWindow {
                     flat: true
                 }
 
-                TextField {
+                SearchField {
                     id: messengerSearch
                     placeholderText: qsTr("Messenger...")
+                    targetProperty: "filterMessenger"
+                    fetchFunction: chatModel.getAllMessengers
                     text: chatModel.filterMessenger
-                    Layout.fillWidth: true
-
-                    property var allMessengers: []
-                    property var filteredMessengers: []
-
-                    function applySelection(val) {
-                        console.log("Filter messenger:", val);
-                        chatModel.filterMessenger = val;
-                    }
-
-                    onActiveFocusChanged: {
-                        if (activeFocus) {
-                            allMessengers = chatModel.getAllMessengers()
-                            filteredMessengers = allMessengers
-                        }
-                    }
-
-                    onTextChanged: {
-                        if (activeFocus) {
-                            messengerTimer.restart()
-                            filteredMessengers = allMessengers.filter(messenger =>
-                                messenger.toLowerCase().includes(text.toLowerCase())
-                            )
-                        }
-                    }
-
-                    onPressed: {
-                        if (filteredMessengers.length > 0) messengerSearchPopup.open()
-                    }
-
-                    Popup {
-                        id: messengerSearchPopup
-                        y: parent.height
-                        width: parent.width
-                        visible: messengerSearch.activeFocus && messengerSearch.filteredMessengers.length > 0 && messengerSearch.text.length > 0
-                        focus: false
-                        closePolicy: Popup.NoAutoClose
-
-                        contentItem: ListView {
-                            implicitHeight: Math.min(contentHeight, 200)
-                            model: messengerSearch.filteredMessengers
-                            clip: true
-                            delegate: ItemDelegate {
-                                id: messengerDelegate
-                                width: parent.width
-                                text: modelData
-                                onClicked: {
-                                    messengerSearch.text = modelData
-                                    messengerSearch.applySelection(modelData)
-                                    messengerSearchPopup.close()
-                                }
-                            }
-                        }
-                    }
-
-                    Timer {
-                        id: messengerTimer
-                        interval: 500
-                        onTriggered: chatModel.filterMessenger = messengerSearch.text
-                    }
+                    onSelectionMade: (val) => chatModel.filterMessenger = val
                 }
 
-
-                TextField {
+                SearchField {
                     id: protocolSearch
                     placeholderText: qsTr("Protocol...")
+                    targetProperty: "filterProtocol"
+                    fetchFunction: chatModel.getAllProtocols
                     text: chatModel.filterProtocol
-                    Layout.fillWidth: true
-                    onTextChanged: if (activeFocus) protocolTimer.restart()
-                    Timer { id: protocolTimer; interval: 500; onTriggered: chatModel.filterProtocol = parent.text }
+                    onSelectionMade: (val) => chatModel.filterProtocol = val
                 }
-
-                TextField {
+                
+                SearchField {
                     id: participantSearch
                     placeholderText: qsTr("Participant...")
+                    targetProperty: "filterParticipant"
+                    fetchFunction: chatModel.getAllNickNames
                     text: chatModel.filterParticipant
-                    Layout.fillWidth: true
-
-                    property var allNickNames: []
-                    property var filteredNickNames: []
-
-                    function applySelection(val) {
-                        console.log("Filter participant:", val);
-                        chatModel.filterParticipant = val;
-                    }
-
-                    onActiveFocusChanged: {
-                        if (activeFocus) {
-                            allNickNames = chatModel.getAllNickNames()
-                            filteredNickNames = allNickNames
-                        }
-                    }
-
-                    onTextChanged: {
-                        if (activeFocus) {
-                            participantNickTimer.restart()
-                            filteredNickNames = allNickNames.filter(nick =>
-                                nick.toLowerCase().includes(text.toLowerCase())
-                            )
-                        }
-                    }
-
-                    onPressed: {
-                        if (filteredNickNames.length > 0) participantNickPopup.open()
-                    }
-
-                    Popup {
-                        id: participantNickPopup
-                        y: parent.height
-                        width: parent.width
-                        visible: participantSearch.activeFocus && participantSearch.filteredNickNames.length > 0 && participantSearch.text.length > 0
-                        focus: false
-                        closePolicy: Popup.NoAutoClose
-
-                        contentItem: ListView {
-                            implicitHeight: Math.min(contentHeight, 200)
-                            model: participantSearch.filteredNickNames
-                            clip: true
-                            delegate: ItemDelegate {
-                                id: participantNickDelegate
-                                width: parent.width
-                                text: modelData
-                                onClicked: {
-                                    participantSearch.text = modelData
-                                    participantSearch.applySelection(modelData)
-                                    participantNickPopup.close()
-                                }
-                            }
-                        }
-                    }
-
-                    Timer {
-                        id: participantNickTimer
-                        interval: 500
-                        onTriggered: chatModel.filterParticipant = participantSearch.text
-                    }
+                    onSelectionMade: (val) => chatModel.filterParticipant = val
                 }
-
-                TextField {
+                
+                SearchField {
                     id: senderSearch
                     placeholderText: qsTr("Sender...")
+                    targetProperty: "filterParticipant"
+                    fetchFunction: chatModel.getAllNickNames
                     text: chatModel.filterSender
-                    Layout.fillWidth: true
-
-                    property var allNickNames: []
-                    property var filteredNickNames: []
-
-                    function applySelection(val) {
-                        console.log("Filter sender:", val);
-                        chatModel.filterSender = val;
-                    }
-
-                    onActiveFocusChanged: {
-                        if (activeFocus) {
-                            allNickNames = chatModel.getAllNickNames()
-                            filteredNickNames = allNickNames
-                        }
-                    }
-
-                    onTextChanged: {
-                        if (activeFocus) {
-                            senderNickTimer.restart()
-                            filteredNickNames = allNickNames.filter(nick =>
-                                nick.toLowerCase().includes(text.toLowerCase())
-                            )
-                        }
-                    }
-
-                    onPressed: {
-                        if (filteredNickNames.length > 0) senderNickPopup.open()
-                    }
-
-                    Popup {
-                        id: senderNickPopup
-                        y: parent.height
-                        width: parent.width
-                        visible: senderSearch.activeFocus && senderSearch.filteredNickNames.length > 0 && senderSearch.text.length > 0
-                        focus: false
-                        closePolicy: Popup.NoAutoClose
-
-                        contentItem: ListView {
-                            implicitHeight: Math.min(contentHeight, 200)
-                            model: senderSearch.filteredNickNames
-                            clip: true
-                            delegate: ItemDelegate {
-                                width: parent.width
-                                text: modelData
-                                onClicked: {
-                                    senderSearch.text = modelData
-                                    senderSearch.applySelection(modelData)
-                                    senderNickPopup.close()
-                                }
-                            }
-                        }
-                    }
-
-                    Timer {
-                        id: senderNickTimer
-                        interval: 500
-                        onTriggered: chatModel.filterSender = senderSearch.text
-                    }
+                    onSelectionMade: (val) => chatModel.filterSender = val
                 }
-
-                TextField {
+                
+                SearchField {
                     id: receiverSearch
                     placeholderText: qsTr("Receiver...")
+                    targetProperty: "filterParticipant"
+                    fetchFunction: chatModel.getAllNickNames
                     text: chatModel.filterTarget
-                    Layout.fillWidth: true
-
-                    property var allNickNames: []
-                    property var filteredNickNames: []
-
-                    function applySelection(val) {
-                        console.log("Filter receiver:", val);
-                        chatModel.filterTarget = val;
-                    }
-
-                    onActiveFocusChanged: {
-                        if (activeFocus) {
-                            allNickNames = chatModel.getAllNickNames()
-                            filteredNickNames = allNickNames
-                        }
-                    }
-
-                    onTextChanged: {
-                        if (activeFocus) {
-                            receiverNickTimer.restart()
-                            filteredNickNames = allNickNames.filter(nick =>
-                                nick.toLowerCase().includes(text.toLowerCase())
-                            )
-                        }
-                    }
-
-                    onPressed: {
-                        if (filteredNickNames.length > 0) receiverNickPopup.open()
-                    }
-
-                    Popup {
-                        id: receiverNickPopup
-                        y: parent.height
-                        width: parent.width
-                        visible: receiverSearch.activeFocus && receiverSearch.filteredNickNames.length > 0 && receiverSearch.text.length > 0
-                        focus: false
-                        closePolicy: Popup.NoAutoClose
-
-                        contentItem: ListView {
-                            implicitHeight: Math.min(contentHeight, 200)
-                            model: receiverSearch.filteredNickNames
-                            clip: true
-                            delegate: ItemDelegate {
-                                width: parent.width
-                                text: modelData
-                                onClicked: {
-                                    receiverSearch.text = modelData
-                                    receiverSearch.applySelection(modelData)
-                                    receiverNickPopup.close()
-                                }
-                            }
-                        }
-                    }
-
-                    Timer {
-                        id: receiverNickTimer
-                        interval: 500
-                        onTriggered: chatModel.filterTarget = receiverSearch.text
-                    }
+                    onSelectionMade: (val) => chatModel.filterTarget = val
                 }
 
                 TextField {
@@ -578,15 +352,29 @@ ApplicationWindow {
                     anchors.right: chatListView.right
                 }
 
-                // Die Sprechblase
-                Rectangle {
+                delegate: Rectangle {
+                    id: speechBubble
                     // Berechnet die Breite dynamisch: Gesamtbreite minus sichtbare Avatare
-                    width: parent.width
+                    width: chatListView.width
 
                     height: innerCol.implicitHeight + 16
                     color: "#ffffff"
                     radius: 6
                     border.color: "#ddd"
+                    
+                    // pass model properties into delegate
+                    required property string sourceNick
+                    required property string sourceId
+                    required property string sourceAvatar
+                    required property string targetNick
+                    required property string targetId
+                    required property string targetAvatar
+                    required property string messageText
+                    required property string messenger
+                    required property string protocol
+                    required property string filePath
+                    required property string lineNumber
+                    required property string time
 
                     MouseArea {
                         anchors.fill: parent
@@ -613,7 +401,7 @@ ApplicationWindow {
 
                                 Image {
                                     fillMode: Image.PreserveAspectCrop
-                                    source: model.sourceAvatar ? "image://avatars/" + model.sourceAvatar : ""
+                                    source: sourceAvatar ? "image://avatars/" + sourceAvatar : ""
                                     sourceSize.width: 16  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
                                     sourceSize.height: 16
                                     asynchronous: true    // Erlaubt das Laden im Hintergrund
@@ -621,8 +409,8 @@ ApplicationWindow {
 
                                 TextEdit {
                                     text: qsTr("From: %1 (%2)")
-                                        .arg(sourceNick || qsTr("Unknown"))
-                                        .arg(sourceId)
+                                        .arg(speechBubble.sourceNick || qsTr("Unknown"))
+                                        .arg(speechBubble.sourceId)
                                     font.pointSize: 9
                                     color: "#2c3e50"
                                     textFormat: Text.StyledText
@@ -635,7 +423,7 @@ ApplicationWindow {
 
                                 Image {
                                     fillMode: Image.PreserveAspectCrop
-                                    source: model.targetAvatar ? "image://avatars/" + model.targetAvatar : ""
+                                    source: targetAvatar ? "image://avatars/" + speechBubble.targetAvatar : ""
                                     sourceSize.width: 16  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
                                     sourceSize.height: 16
                                     asynchronous: true    // Erlaubt das Laden im Hintergrund
@@ -643,8 +431,8 @@ ApplicationWindow {
 
                                 TextEdit {
                                     text: qsTr("To: %1 (%2)")
-                                            .arg(targetNick || qsTr("Unknown"))
-                                            .arg(targetId)
+                                            .arg(speechBubble.targetNick || qsTr("Unknown"))
+                                            .arg(speechBubble.targetId)
                                     font.pointSize: 9
                                     color: "#7f8c8d"
                                     textFormat: Text.StyledText
@@ -845,7 +633,9 @@ ApplicationWindow {
                                 }
 
                                 TextEdit {
-                                    text: Qt.formatDateTime(time, Qt.DefaultLocaleShortDate)
+                                    text: (time !== undefined && time !== null && time !== "") 
+                                            ? Qt.formatDateTime(time, Qt.DefaultLocaleShortDate) 
+                                            : qsTr("unknown")
                                     font.pointSize: 8
                                     color: "#666"
                                     Layout.alignment: Qt.AlignRight | Qt.AlignTop

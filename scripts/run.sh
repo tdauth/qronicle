@@ -2,10 +2,11 @@
 cd ../build
 ./qronicle \
     --clear \
+    --kopete ../personal/kopete1 \
+    --kopete ../personal/kopete2 \
+    --kopete ../personal/kopete3 \
     --instagram ../personal/instagram \
     --amsn ../personal/amsn \
-    --skype ../personal/skype2 \
-    --kopete ../personal/kopete \
     --trillian ../personal/trillian \
     --facebook ../personal/facebook \
     --instagram ../personal/instagram \

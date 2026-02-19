@@ -225,6 +225,7 @@ int main(int argc, char *argv[]) {
     QDateTime buildDateTime(buildDate, buildTime);
     engine.rootContext()->setContextProperty("buildDateTime", buildDateTime);
 
+    engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/SearchField.qml")));
     engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/Main.qml")));
 
     return app.exec();

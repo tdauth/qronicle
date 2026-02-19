@@ -70,7 +70,6 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
 
     QMap<QString, QString> participantNicknames;
 
-    QString protocol;
     QString owner;
     QString other;
 
@@ -86,12 +85,10 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 if (attrs.value(QStringLiteral("type")).toString() == "start") {
                     owner = attrs.value(QStringLiteral("from")).toString();
                     other = attrs.value(QStringLiteral("to")).toString();
-                    // TODO messenger and protocol are different
-                    protocol = attrs.value(QStringLiteral("medium")).toString();
                 }
                 
                 Message message;
-                message.setProtocol(protocol);
+                message.setProtocol(attrs.value(QStringLiteral("medium")).toString());
                 message.setMessenger("Trillian");
                 message.setFilePath(fileInfo.absoluteFilePath());
                 message.setLineNumber(reader.lineNumber());
@@ -101,14 +98,14 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setDestinationNick(message.destination());
                 message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
                 QString type = decodeMessage(attrs.value(QStringLiteral("type")).toString());
-                QString content = QObject::tr("Session changed to %1: %2.").arg(type).arg(attrs.value(QStringLiteral("medium")).toString());
+                QString content = QObject::tr("Session changed to %1.").arg(type);
                 message.setContent(content);
                 message.setContentHtml(content);
                 messages.push_back(std::move(message));
             } else if (tagName == QStringLiteral("status")) {
                 auto attrs = reader.attributes();
                 Message message;
-                message.setProtocol(protocol);
+                message.setProtocol(attrs.value(QStringLiteral("medium")).toString());
                 message.setMessenger("Trillian");
                 message.setFilePath(fileInfo.absoluteFilePath());
                 message.setLineNumber(reader.lineNumber());
@@ -122,12 +119,27 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setContent(content);
                 message.setContentHtml(content);
                 messages.push_back(std::move(message));
+            } else if (tagName == QStringLiteral("icon")) {
+                auto attrs = reader.attributes();
+                Message message;
+                message.setProtocol(attrs.value(QStringLiteral("medium")).toString());
+                message.setMessenger("Trillian");
+                message.setFilePath(fileInfo.absoluteFilePath());
+                message.setLineNumber(reader.lineNumber());
+                message.setSource(attrs.value(QStringLiteral("from")).toString());
+                message.setSourceNick(message.source());
+                message.setDestination(attrs.value(QStringLiteral("from")).toString());
+                message.setDestinationNick(message.destination());
+                message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
+                QString link = decodeMessage(attrs.value(QStringLiteral("link")).toString());
+                message.setContent(link);
+                message.setContentHtml(link);
+                messages.push_back(std::move(message));
             } else if (tagName == QStringLiteral("message")) {
                 Message message;
                 auto attrs = reader.attributes();
 
-                // TODO messenger and protocol are different
-                message.setProtocol(protocol);
+                message.setProtocol(attrs.value(QStringLiteral("medium")).toString());
                 message.setMessenger("Trillian");
                 message.setFilePath(fileInfo.absoluteFilePath());
                 message.setLineNumber(reader.lineNumber());

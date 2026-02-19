@@ -48,6 +48,15 @@ QStringList HistorySearchProxy::getAllNickNames() {
     return sqlModel->getAllNickNames();
 }
 
+QStringList HistorySearchProxy::getAllProtocols() {
+    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+    if (sqlModel == nullptr) {
+        return QStringList();
+    }
+
+    return sqlModel->getAllProtocols();
+}
+
 int HistorySearchProxy::totalCount() const {
     auto *sqlModel = qobject_cast<QSqlTableModel*>(sourceModel());
     if (!sqlModel) return 0;

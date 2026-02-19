@@ -30,6 +30,7 @@ public:
     Q_INVOKABLE int findIndexById(QVariant targetId);
     Q_INVOKABLE int getUnfilteredIndex(int currentProxyRow);
     Q_INVOKABLE QStringList getAllMessengers();
+    Q_INVOKABLE QStringList getAllProtocols();
     Q_INVOKABLE QStringList getAllNickNames();
 
     using QSortFilterProxyModel::QSortFilterProxyModel;

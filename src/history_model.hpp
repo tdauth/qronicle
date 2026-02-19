@@ -37,6 +37,7 @@ public:
                                const QString &messenger, const QString &protocol);
 
     QStringList getAllMessengers();
+    QStringList getAllProtocols();
     QStringList getAllNickNames();
 };
 

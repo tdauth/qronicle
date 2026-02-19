@@ -28,6 +28,7 @@ Since this program uses Qt the name qronicle has been chosen.
 
 ## Planned Features
 
+- Add field messagType which stores "message", "status", "session", "icon" etc.
 - Persist avatars in a database table.
 - Presist source files in a database table, so you never rely on local files and can open specific lines.
 - Improve performance: Loading Skype avatars could be done more concurrently (loading images).
@@ -223,6 +224,7 @@ SQLite database `~/.Skype/[YourSkypeName]/main.db`.
 <session type="start" time="1142447323" medium="ICQ" to="192780216" from="192880392"/>
 <message type="outgoing_privateMessage" time="1143128021" medium="ICQ" to="192780216" from="192880392" from_display="Barade" text="ni%C3%B6x"/>
 <message type="incoming_privateMessage" time="1143128033" medium="ICQ" to="192880392" from="192780216" from_display="192780216" text="schade"/>
+<icon time="1143128033" medium="ICQ" from="192880392" link="D%3A%5CArbeit%5CProgramme%5CTrillian%5Cusers%5Cdefault%5Cbuddyicons%5Cassets%5CICQ%2D192880392%2D1168282015%2Ejpg"/>
 <status type="away" time="1142444225" medium="ICQ" from="192780216"/>
 <status type="not%20available" time="1142444225" medium="ICQ" from="192780216"/>
 <status type="online" time="1142447323" medium="ICQ" from="192780216"/>
