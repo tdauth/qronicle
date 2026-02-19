@@ -390,6 +390,124 @@ Log file lines with file transfers:
 - Click on "Export chat history"
 - You have to wait 24 hours to be able to download it.
 
+```json
+{
+ "name": "Hans",
+ "type": "personal_chat",
+ "id": 12345678,
+ "messages": [
+    {
+    "id": 5144,
+    "type": "service",
+    "date": "2026-01-13T13:28:08",
+    "date_unixtime": "1768307288",
+    "actor": "Hans",
+    "actor_id": "user12345678",
+    "action": "joined_telegram",
+    "text": "",
+    "text_entities": []
+    },
+    {
+      "id": 423,
+      "type": "message",
+      "date": "2019-07-05T02:07:48",
+      "date_unixtime": "1562285268",
+      "from": "Telegram",
+      "from_id": "user12345678",
+      "text": [
+        {
+        "type": "bold",
+        "text": "Anmeldecode:"
+        },
+        " 123456. ",
+        {
+        "type": "bold",
+        "text": "Auf keinen Fall"
+        },
+        " diesen Code anderen geben, selbst wenn sie behaupten zum Telegram-Team zu gehören!\n\nDieser Code kann dazu benutzt werden, um sich mit deinem Konto zu verbinden. Wir fragen den Code niemals für einen anderen Zweck ab.\n\nWenn du den Code nicht durch die Anmeldung eines anderen Gerätes angefordert hast, so kannst du diese Nachricht einfach ignorieren."
+      ],
+      "text_entities": [
+        {
+        "type": "bold",
+        "text": "Anmeldecode:"
+        },
+        {
+        "type": "plain",
+        "text": " 123456. "
+        },
+        {
+        "type": "bold",
+        "text": "Auf keinen Fall"
+        },
+        {
+        "type": "plain",
+        "text": " diesen Code anderen geben, selbst wenn sie behaupten zum Telegram-Team zu gehören!\n\nDieser Code kann dazu benutzt werden, um sich mit deinem Konto zu verbinden. Wir fragen den Code niemals für einen anderen Zweck ab.\n\nWenn du den Code nicht durch die Anmeldung eines anderen Gerätes angefordert hast, so kannst du diese Nachricht einfach ignorieren."
+        }
+      ]
+    },
+    {
+      "id": 554,
+      "type": "message",
+      "date": "2020-04-18T15:26:01",
+      "date_unixtime": "1587216361",
+      "from": "Telegram",
+      "from_id": "user12345678",
+      "text": [
+        "Tritt für wichtige Coronavirus-Updates dem offiziellen Telegram-Kanal des Bundesministeriums für Gesundheit bei. Tippe auf ",
+        {
+        "type": "link",
+        "text": "https://t.me/Corona_Infokanal_BMG"
+        },
+        " und anschließend auf „Beitreten“."
+      ],
+      "text_entities": [
+        {
+        "type": "plain",
+        "text": "Tritt für wichtige Coronavirus-Updates dem offiziellen Telegram-Kanal des Bundesministeriums für Gesundheit bei. Tippe auf "
+        },
+        {
+        "type": "link",
+        "text": "https://t.me/Corona_Infokanal_BMG"
+        },
+        {
+        "type": "plain",
+        "text": " und anschließend auf „Beitreten“."
+        }
+      ]
+    },
+    {
+    "id": 5147,
+    "type": "message",
+    "date": "2026-01-17T15:32:12",
+    "date_unixtime": "1768660332",
+    "from": "Peter",
+    "from_id": "user12345678",
+    "text": "Hi",
+    "text_entities": [
+      {
+      "type": "plain",
+      "text": "Hi"
+      }
+    ]
+    },
+      {
+    "id": 5160,
+    "type": "message",
+    "date": "2026-01-19T05:32:56",
+    "date_unixtime": "1768797176",
+    "from": "Hans",
+    "from_id": "user12345678",
+    "photo": "photos/photo_1@19-01-2026_05-32-56.jpg",
+    "photo_file_size": 139616,
+    "width": 720,
+    "height": 1280,
+    "text": "",
+    "text_entities": []
+    }
+  ]
+}
+```
+
 ### Knuddels
 
 - You can export your chats "Chat exportieren" which creates a file `chat_history_<your nickname>_<other nick name>_<year><month><day>_<hour><minute><second>.txt`
