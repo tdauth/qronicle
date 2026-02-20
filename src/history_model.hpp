@@ -35,11 +35,13 @@ public:
     void applyFilters(const QString &filePath, const QString &message,
                                 const QString &particpant,
                                const QString &sender, const QString &target,
-                               const QString &messenger, const QString &protocol);
+                               const QString &messenger, const QString &protocol, const QDateTime &from, const QDateTime &to);
 
     QStringList getAllMessengers();
     QStringList getAllProtocols();
     QStringList getAllNickNames();
+    QDateTime getFrom();
+    QDateTime getTo();
 };
 
 }

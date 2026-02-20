@@ -1,4 +1,6 @@
 #include <QSqlQuery>
+#include <QSqlError>
+#include <QTimeZone>
 
 #include "history_model.hpp"
 
@@ -33,6 +35,7 @@ QVariant HistoryModel::data(const QModelIndex& index, int role) const {
         case ProtocolRole:   return rec.value("protocol");
         case OutRole:   return rec.value("out");
         case TimestampRole:  return rec.value("created_at").toDateTime();
+        
         default: return {};
     }
 }
@@ -58,8 +61,10 @@ QHash<int, QByteArray> HistoryModel::roleNames() const {
 
 void HistoryModel::applyFilters(const QString &filePath, const QString &message, const QString &particpant,
                             const QString &sender, const QString &target,
-                            const QString &messenger, const QString &protocol) {
+                            const QString &messenger, const QString &protocol, const QDateTime &from, const QDateTime &to) {
     QStringList filters;
+    
+    qDebug() << "Apply filters with from and to" << from << to;
     
     if (!filePath.isEmpty()) {
         filters << QString("filePath LIKE '%%1%' COLLATE NOCASE").arg(filePath);
@@ -88,9 +93,29 @@ void HistoryModel::applyFilters(const QString &filePath, const QString &message,
     if (!protocol.isEmpty()) {
         filters << QString("protocol LIKE '%%1%' COLLATE NOCASE").arg(protocol);
     }
+    
+    if (from.isValid()) {
+        QDateTime fromUtc = from.toUTC();
+        QTime t = fromUtc.time();
+        // cut seconds and milliseconds
+        fromUtc.setTime(QTime(t.hour(), t.minute(), 0, 0));
+        QString fromStr = fromUtc.toString(Qt::ISODate);
+        qDebug() << "Filter from" << fromStr;
+        filters << QString("datetime(created_at) >= datetime('%1')").arg(fromStr);
+    }
+    
+    if (to.isValid()) {
+        // add a second to ignore milliseconds
+        QString toStr = to.addSecs(1).toUTC().toString(Qt::ISODate);
+        qDebug() << "Filter to" << toStr;
+        filters << QString("datetime(created_at) <= datetime('%1')").arg(toStr);
+    }
+
 
     this->setFilter(filters.join(" AND "));
-    this->select();
+    if (!this->select()) {
+        qDebug() << "SQL Error:" << this->lastError().text();
+    }
 }
 
 QStringList HistoryModel::getAllMessengers() {
@@ -124,6 +149,56 @@ QStringList HistoryModel::getAllNickNames() {
     }
     //qDebug() << "All nicks:" << nicks;
     return nicks;
+}
+
+QDateTime HistoryModel::getFrom() {
+    QSqlQuery query(database());
+    query.exec("SELECT MIN(datetime(created_at)) FROM messages;");
+    
+    QDateTime from; // Startet als "invalid" (null)
+
+    if (query.next() && !query.value(0).isNull()) {
+        QString raw = query.value(0).toString();
+        from = QDateTime::fromString(raw, "yyyy-MM-dd HH:mm:ss");
+        
+        if (from.isValid()) {
+            from.setTimeZone(QTimeZone::UTC); 
+        }
+    }
+
+    if (!from.isValid()) {
+        qDebug() << "From: DB value invalid or empty, using current UTC as fallback";
+        from = QDateTime::currentDateTimeUtc();
+    }
+
+    qDebug() << "Final From (UTC):" << from.toString(Qt::ISODate);
+    
+    return from;
+}
+
+QDateTime HistoryModel::getTo() {
+    QSqlQuery query(database());
+    query.exec("SELECT MAX(datetime(created_at)) FROM messages;");
+    
+    QDateTime to;
+
+    if (query.next() && !query.value(0).isNull()) {
+        QString raw = query.value(0).toString();
+        to = QDateTime::fromString(raw, "yyyy-MM-dd HH:mm:ss");
+        
+        if (to.isValid()) {
+            to.setTimeZone(QTimeZone::UTC); 
+        }
+    }
+
+    if (!to.isValid()) {
+        qDebug() << "To: DB value invalid or empty, using current UTC as fallback";
+        to = QDateTime::currentDateTimeUtc();
+    }
+
+    qDebug() << "Final To (UTC):" << to.toString(Qt::ISODate);
+    
+    return to;
 }
 
 }

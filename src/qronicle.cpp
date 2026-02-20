@@ -51,6 +51,8 @@ Messenger::Messages Qronicle::loadFile(const QString &filePath) {
                 message.setDestination(attrs.value(QStringLiteral("to")).toString());
                 message.setDestinationNick(attrs.value(QStringLiteral("toNickName")).toString());
                 message.setTimestamp(QDateTime::fromString(attrs.value(QStringLiteral("timestamp")).toString(), Qt::ISODate));
+                message.setOut(attrs.value(QStringLiteral("direction")).toString() == "out");
+                message.setType(attrs.value(QStringLiteral("type")).toString());
 
                 // Zum Body-Element springen, um den Text zu lesen
                 reader.readNextStartElement();

@@ -8,7 +8,7 @@ Offline Qt-based messenger history visualizer:
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Telegram_(software)#/media/File:Telegram_2019_Logo.svg"><img src="./assets/icons/telegram.svg" width="22" align="center"></a> [**Telegram**](https://en.wikipedia.org/wiki/Telegram_(software)) | ✅ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Telegram_(software)#/media/File:Telegram_2019_Logo.svg"><img src="./assets/icons/telegram.svg" width="22" align="center"></a> [**Telegram**](https://en.wikipedia.org/wiki/Telegram_\(software\)) | ✅ | ⏳ |
 | <a href="https://commons.wikimedia.org/wiki/Category:Discord_logos#/media/File:Discord_color_D.svg"><img src="./assets/icons/discord.svg" width="22" align="center"></a> [**Discord**](https://en.wikipedia.org/wiki/Discord) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
@@ -28,34 +28,7 @@ This is intended behavior since your messenger history might be confidential and
 However, this name was already in use for different programs.
 Since this program uses Qt the name qronicle has been chosen.
 
-## Planned Features
-
-- Add field messagType which stores "message", "status", "session", "icon" etc.
-- Add field boolean out which indicates whether the message was sent or received.
-- Different background colors like in messengers for speech bubbles depending on if the message was sent to you or you sent it.
-- Allow clicking on elements to filter for them like sender, receiver, protocol etc.
-- Hovering avatars should show them bigger.
-- Some Skype messages appear empty: meisterderanor. Check why.
-- Skype messages from someone to you have always to=from.
-- File URLs for Psi and Jabber like "file:///home/tdauth/Dokumente/Projekte/qronicle/personal/psi/profiles/default/history/276483064_at_icq.jabber.fh%2dstralsund.de.history#110" do not work.
-- Show messenger before protocol and if they are the same there should always be messenger and not protocol!
-- Persist avatars in a database table.
-- Presist source files in a database table, so you never rely on local files and can open specific lines.
-- Improve performance: Loading Skype avatars could be done more concurrently (loading images).
-- Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
-- Filtering participants, from and to should filter nick names and raw values.
-- Fill filter text inputs with auto completion by adding SQLite views for all available messengers, nicknames etc.
-- Combining filters like multiple senders, multiple receivers, multiple protcools etc.
-- Allow filtering for timestamp from to with UI date selectors from QML.
-- UI should support page up and down to scroll up and down the messages.
-- UI should support Pos 1 and End to jump to the beginning/end of messages.
-- Allow adding folders and single files. Folders could contain sub folders with messenger ids like my personal folder and import everything automatically.
-- Export everything as XML/JSON into folders.
-- Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
-- Update logo based on [Kish tablet](https://en.wikipedia.org/wiki/Kish_tablet) which is considered one of the oldest known writing objects in human history.
-- Add menu with all supported messengers showing some help text with detailed information on how to import it.
-
-## Customize
+## Usage
 
 ### Themes
 
@@ -605,3 +578,24 @@ Chromium extension [Discrub](https://chromewebstore.google.com/detail/discrub/pl
    }
 ]
 ```
+
+## Planned Features
+
+- Allow clicking on elements to filter for them like sender, receiver, protocol etc.
+- Hovering avatars should show them bigger.
+- Some Skype messages appear empty: meisterderanor. Check why.
+- Skype messages from someone to you have always to=from.
+- File URLs for Psi and Jabber like "file:///home/tdauth/Dokumente/Projekte/qronicle/personal/psi/profiles/default/history/276483064_at_icq.jabber.fh%2dstralsund.de.history#110" do not work.
+- Persist avatars in a database table.
+- Presist source files in a database table, so you never rely on local files and can open specific lines.
+- Improve performance: Loading Skype avatars could be done more concurrently (loading images).
+- Handle directories more separately: aMSN should support multiple folders with address books. Currently, only one "myself" entry and all address books are used togher. Handle it a bit more separately. Same for PSI and other messengers.
+- Filtering participants, from and to should filter nick names and raw values.
+- Combining filters like multiple senders, multiple receivers, multiple protcools etc.
+- UI should support page up and down to scroll up and down the messages.
+- UI should support Pos 1 and End to jump to the beginning/end of messages.
+- Allow adding folders and single files. Folders could contain sub folders with messenger ids like my personal folder and import everything automatically.
+- Export everything as XML/JSON into folders.
+- Replay mode: Show some kind of realistic messenging considering the message timestamps to replay how it was send in real time.
+- Update logo based on [Kish tablet](https://en.wikipedia.org/wiki/Kish_tablet) which is considered one of the oldest known writing objects in human history.
+- Add menu with all supported messengers showing some help text with detailed information on how to import it.

@@ -48,6 +48,24 @@ QStringList HistorySearchProxy::getAllNickNames() {
     return sqlModel->getAllNickNames();
 }
 
+QDateTime HistorySearchProxy::getFrom() {
+    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+    if (sqlModel == nullptr) {
+        return QDateTime();
+    }
+    
+    return sqlModel->getFrom();
+}
+
+QDateTime HistorySearchProxy::getTo() {
+    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+    if (sqlModel == nullptr) {
+        return QDateTime();
+    }
+    
+    return sqlModel->getTo();
+}
+
 QStringList HistorySearchProxy::getAllProtocols() {
     auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
     if (sqlModel == nullptr) {
@@ -116,11 +134,10 @@ QString HistorySearchProxy::dateRange() const {
     return tr("-", "No date available");
 }
 
-void HistorySearchProxy::triggerFilter(const QString &f) {
-    // 1. Zugriff auf das zugrunde liegende SQL-Model
+void HistorySearchProxy::triggerFilter() {
+    qDebug() << "Trigger filter";
     auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
     if (sqlModel) {
-        // 2. Die schwere Arbeit an SQLite übergeben
         sqlModel->applyFilters(
             m_filterFilePath,
             m_filterMessage,
@@ -128,7 +145,9 @@ void HistorySearchProxy::triggerFilter(const QString &f) {
             m_filterSender,
             m_filterTarget,
             m_filterMessenger,
-            m_filterProtocol
+            m_filterProtocol,
+            m_filterFrom,
+            m_filterTo
         );
     }
 

@@ -119,7 +119,7 @@ ApplicationWindow {
                     // Das eigentliche Dropdown-Menü
                     Menu {
                         id: mainMenu
-                        implicitWidth: Math.max(200, contentItem.implicitWidth + 40) 
+                        implicitWidth: Math.max(300, contentItem.implicitWidth + 40) 
                         y: menuButton.height // Erscheint direkt unter dem Button
                         
                         MenuItem {
@@ -179,7 +179,7 @@ ApplicationWindow {
                 id: filterGrid
                 anchors.fill: parent
                 anchors.margins: 10
-                columns: 3
+                columns: 2
                 columnSpacing: 8
                 rowSpacing: 8
 
@@ -197,6 +197,8 @@ ApplicationWindow {
                         chatModel.filterProtocol = ""
                         chatModel.filterFilePath = ""
                         chatModel.filterMessage = ""
+                        chatModel.filterFrom = chatModel.getFrom()
+                        chatModel.filterTo = chatModel.getTo()
 
                         participantSearch.text = ""
                         senderSearch.text = ""
@@ -205,6 +207,9 @@ ApplicationWindow {
                         protocolSearch.text = ""
                         filePathSearch.text = ""
                         messageSearch.text = ""
+                        
+                        fromSearch.selectedDateTime = chatModel.filterFrom
+                        toSearch.selectedDateTime = chatModel.filterTo
                     }
                 }
 
@@ -217,6 +222,33 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignLeft
 
                     flat: true
+                }
+                
+                SearchField {
+                    id: participantSearch
+                    placeholderText: qsTr("Participant...")
+                    targetProperty: "filterParticipant"
+                    fetchFunction: chatModel.getAllNickNames
+                    text: chatModel.filterParticipant
+                    onSelectionMade: (val) => chatModel.filterParticipant = val
+                }
+                
+                SearchField {
+                    id: senderSearch
+                    placeholderText: qsTr("Sender...")
+                    targetProperty: "filterSender"
+                    fetchFunction: chatModel.getAllNickNames
+                    text: chatModel.filterSender
+                    onSelectionMade: (val) => chatModel.filterSender = val
+                }
+                
+                SearchField {
+                    id: receiverSearch
+                    placeholderText: qsTr("Receiver...")
+                    targetProperty: "filterTarget"
+                    fetchFunction: chatModel.getAllNickNames
+                    text: chatModel.filterTarget
+                    onSelectionMade: (val) => chatModel.filterTarget = val
                 }
 
                 SearchField {
@@ -236,40 +268,12 @@ ApplicationWindow {
                     text: chatModel.filterProtocol
                     onSelectionMade: (val) => chatModel.filterProtocol = val
                 }
-                
-                SearchField {
-                    id: participantSearch
-                    placeholderText: qsTr("Participant...")
-                    targetProperty: "filterParticipant"
-                    fetchFunction: chatModel.getAllNickNames
-                    text: chatModel.filterParticipant
-                    onSelectionMade: (val) => chatModel.filterParticipant = val
-                }
-                
-                SearchField {
-                    id: senderSearch
-                    placeholderText: qsTr("Sender...")
-                    targetProperty: "filterParticipant"
-                    fetchFunction: chatModel.getAllNickNames
-                    text: chatModel.filterSender
-                    onSelectionMade: (val) => chatModel.filterSender = val
-                }
-                
-                SearchField {
-                    id: receiverSearch
-                    placeholderText: qsTr("Receiver...")
-                    targetProperty: "filterParticipant"
-                    fetchFunction: chatModel.getAllNickNames
-                    text: chatModel.filterTarget
-                    onSelectionMade: (val) => chatModel.filterTarget = val
-                }
 
                 TextField {
                     id: filePathSearch
                     placeholderText: qsTr("File Path...")
                     text: chatModel.filterFilePath
                     Layout.fillWidth: true
-                    Layout.columnSpan: 3
                     onTextChanged: if (activeFocus) filePathTimer.restart()
                     Timer { id: filePathTimer; interval: 500; onTriggered: chatModel.filterFilePath = parent.text }
                 }
@@ -279,9 +283,29 @@ ApplicationWindow {
                     placeholderText: qsTr("Search Message Content...")
                     text: chatModel.filterMessage
                     Layout.fillWidth: true
-                    Layout.columnSpan: 3
                     onTextChanged: if (activeFocus) msgTimer.restart()
                     Timer { id: msgTimer; interval: 500; onTriggered: chatModel.filterMessage = parent.text }
+                }
+                
+                DateTimePicker {
+                    id: fromSearch
+                    selectedDateTime: chatModel.filterFrom
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 1
+                    onSelectedDateTimeChanged: fromTimer.restart()
+                    Timer { id: fromTimer; interval: 500; onTriggered: chatModel.filterFrom = fromSearch.selectedDateTime }
+                }
+                
+                DateTimePicker {
+                    id: toSearch
+                    selectedDateTime: chatModel.filterTo
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 1
+                    onSelectedDateTimeChanged: {
+                        console.log("DEBUG: Picker Signal gefeuert!", selectedDateTime)
+                        toTimer.restart()
+                    }
+                    Timer { id: toTimer; interval: 500; onTriggered: chatModel.filterTo = toSearch.selectedDateTime }
                 }
             }
 

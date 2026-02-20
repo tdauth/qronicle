@@ -1,4 +1,3 @@
-pragma NativeMethodBehavior: AcceptThisObject
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -8,57 +7,70 @@ TextField {
     placeholderText: qsTr("Find...")
     Layout.fillWidth: true
 
-    // Properties für die Flexibilität
     property var allItems: []
     property var filteredItems: []
-    property string targetProperty: "" // Welches Feld im chatModel gefiltert wird
-    property var fetchFunction: null   // Die Funktion zum Laden der Daten (z.B. getAllMessengers)
+    property string targetProperty: "" 
+    property var fetchFunction: null   
+    
+    // NEU: Flag, um das automatische Wiederöffnen zu verhindern
+    property bool isSelecting: false
 
-    // Signal zur Anwendung der Auswahl
     signal selectionMade(string value)
+
+    function updateVisibility() {
+        // Nur öffnen, wenn wir NICHT gerade aktiv ein Element auswählen
+        if (!isSelecting && activeFocus && filteredItems.length > 0) {
+            popup.open()
+        } else {
+            popup.close()
+        }
+    }
 
     onActiveFocusChanged: {
         if (activeFocus && fetchFunction) {
+            isSelecting = false // Reset beim neuen Fokus
             allItems = fetchFunction.call(fetchFunction)
             filteredItems = allItems
+            updateVisibility()
         }
     }
 
     onTextChanged: {
-        if (activeFocus) {
+        if (activeFocus && !isSelecting) {
             searchTimer.restart()
             filteredItems = allItems.filter(item => {
                 let val = String(item || "");
                 return val.toLowerCase().includes(text.toLowerCase())
             })
+            updateVisibility()
         }
     }
 
-    onPressed: if (filteredItems.length > 0) popup.open()
-
-    // Das Popup wird nun über das Overlay gesteuert (verhindert Abschneiden)
     Popup {
         id: popup
         y: parent.height
         width: parent.width
-        
-        visible: control.activeFocus && control.filteredItems.length > 0 && control.text.length > 0
         focus: false
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         contentItem: ListView {
-            //required property TextField control
-            
             implicitHeight: Math.min(contentHeight, 200)
             model: control.filteredItems
             clip: true
             delegate: ItemDelegate {
-                width: parent.width
+                width: ListView.view.width
                 text: modelData
                 onClicked: {
-                    control.text = modelData
+                    control.isSelecting = true // 1. Sperre setzen
+                    control.text = modelData   // 2. Text ändern (triggert onTextChanged)
                     control.selectionMade(modelData)
-                    popup.close()
+                    popup.close()              // 3. Popup schließen
+                    
+                    // Fokus wegzunehmen ist die sicherste Methode, um das Popup zu schließen
+                    control.focus = false 
+                    
+                    // Sperre kurz verzögert lösen, falls der User direkt wieder reinklickt
+                    control.isSelecting = false
                 }
             }
         }
@@ -68,7 +80,7 @@ TextField {
         id: searchTimer
         interval: 500
         onTriggered: {
-            if (targetProperty !== "") {
+            if (targetProperty !== "" && typeof chatModel !== "undefined") {
                 chatModel[targetProperty] = control.text
             }
         }

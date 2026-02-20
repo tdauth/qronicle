@@ -2,6 +2,34 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en" sourcelanguage="en">
 <context>
+    <name>DateTimePicker</name>
+    <message>
+        <location filename="../src/DateTimePicker.qml" line="12"/>
+        <source>Choose date time...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DateTimePicker.qml" line="116"/>
+        <source>Select Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DateTimePicker.qml" line="124"/>
+        <source>Hour:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DateTimePicker.qml" line="146"/>
+        <source>Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/DateTimePicker.qml" line="172"/>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Main</name>
     <message>
         <location filename="../src/Main.qml" line="16"/>
@@ -42,108 +70,108 @@ Alle rights reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="224"/>
+        <location filename="../src/Main.qml" line="256"/>
         <source>Messenger...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="233"/>
+        <location filename="../src/Main.qml" line="265"/>
         <source>Protocol...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="242"/>
+        <location filename="../src/Main.qml" line="229"/>
         <source>Participant...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="251"/>
+        <location filename="../src/Main.qml" line="238"/>
         <source>Sender...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="260"/>
+        <location filename="../src/Main.qml" line="247"/>
         <source>Receiver...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="269"/>
+        <location filename="../src/Main.qml" line="274"/>
         <source>File Path...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="279"/>
+        <location filename="../src/Main.qml" line="283"/>
         <source>Search Message Content...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="414"/>
+        <location filename="../src/Main.qml" line="438"/>
         <source>From: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="415"/>
-        <location filename="../src/Main.qml" line="437"/>
+        <location filename="../src/Main.qml" line="439"/>
+        <location filename="../src/Main.qml" line="461"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="436"/>
+        <location filename="../src/Main.qml" line="460"/>
         <source>To: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="498"/>
+        <location filename="../src/Main.qml" line="522"/>
         <source>Messenger: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="559"/>
+        <location filename="../src/Main.qml" line="583"/>
         <source>Protocol: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="602"/>
+        <location filename="../src/Main.qml" line="626"/>
         <source>Copy Link Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="606"/>
+        <location filename="../src/Main.qml" line="630"/>
         <source>Copy File Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="640"/>
+        <location filename="../src/Main.qml" line="664"/>
         <source>unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="692"/>
+        <location filename="../src/Main.qml" line="716"/>
         <source>Copy Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="700"/>
+        <location filename="../src/Main.qml" line="724"/>
         <source>Jump to this message (clear filters)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="737"/>
+        <location filename="../src/Main.qml" line="761"/>
         <source>Messages: %1 / %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="747"/>
+        <location filename="../src/Main.qml" line="771"/>
         <source>Period: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="758"/>
+        <location filename="../src/Main.qml" line="782"/>
         <source>All data loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="759"/>
+        <location filename="../src/Main.qml" line="783"/>
         <source>Filtered</source>
         <translation type="unfinished"></translation>
     </message>
@@ -199,7 +227,7 @@ Alle rights reserved.</source>
 <context>
     <name>SearchField</name>
     <message>
-        <location filename="../src/SearchField.qml" line="8"/>
+        <location filename="../src/SearchField.qml" line="7"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -207,13 +235,13 @@ Alle rights reserved.</source>
 <context>
     <name>qronicle::HistorySearchProxy</name>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="112"/>
+        <location filename="../src/history_search_proxy.cpp" line="130"/>
         <source>%1 - %2</source>
         <comment>Date range from - to</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="116"/>
+        <location filename="../src/history_search_proxy.cpp" line="134"/>
         <source>-</source>
         <comment>No date available</comment>
         <translation type="unfinished"></translation>

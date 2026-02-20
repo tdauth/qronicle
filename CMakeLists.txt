@@ -69,6 +69,7 @@ qt_add_qml_module(qronicle
     QML_FILES
       "src/Main.qml"
       "src/SearchField.qml"
+      "src/DateTimePicker.qml"
     DEPENDENCIES
       QtQuick
       QtQuick.Layouts

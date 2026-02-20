@@ -206,6 +206,8 @@ int main(int argc, char *argv[]) {
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     proxyModel->setRecursiveFilteringEnabled(false);
     proxyModel->setDynamicSortFilter(false);
+    proxyModel->setFilterFrom(baseModel->getFrom());
+    proxyModel->setFilterTo(baseModel->getTo());
 
     qDebug() << "--- Registered files QRC ---";
     QDirIterator it(":", QDirIterator::Subdirectories);
@@ -228,6 +230,7 @@ int main(int argc, char *argv[]) {
     engine.rootContext()->setContextProperty("buildDateTime", buildDateTime);
 
     engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/SearchField.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/DateTimePicker.qml")));
     engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/Main.qml")));
 
     return app.exec();

@@ -68,12 +68,12 @@ void Database::saveMessages(const Messenger::Messages &messages) {
         rcvNicks << m.destinationNick();
         msgs     << m.content();
         msgHtmls << m.contentHtml();
-        times    << m.timestamp().toUTC().toString(Qt::ISODate); // UTC ist Standard für DBs
+        times    << m.timestamp().toUTC().toString(Qt::ISODate);
         mngrs    << m.messenger();
         protos   << m.protocol();
         stats    << m.status();
         out      << m.out();
-        type      << m.type();
+        type     << m.type();
     }
 
     query.addBindValue(fPaths);

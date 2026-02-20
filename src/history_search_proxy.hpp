@@ -17,9 +17,10 @@ class HistorySearchProxy : public QSortFilterProxyModel {
     Q_PROPERTY(QString filterParticipant READ filterParticipant WRITE setFilterParticipant NOTIFY filterChanged)
     Q_PROPERTY(QString filterSender READ filterSender WRITE setFilterSender NOTIFY filterChanged)
     Q_PROPERTY(QString filterTarget READ filterTarget WRITE setFilterTarget NOTIFY filterChanged)
-
     Q_PROPERTY(QString filterMessenger READ filterMessenger WRITE setFilterMessenger NOTIFY filterChanged)
     Q_PROPERTY(QString filterProtocol READ filterProtocol WRITE setFilterProtocol NOTIFY filterChanged)
+    Q_PROPERTY(QDateTime filterFrom READ filterFrom WRITE setFilterFrom NOTIFY filterChanged)
+    Q_PROPERTY(QDateTime filterTo READ filterTo WRITE setFilterTo NOTIFY filterChanged)
 
     Q_PROPERTY(int totalCount READ totalCount NOTIFY filterChanged)
     Q_PROPERTY(int filteredCount READ filteredCount NOTIFY filterChanged)
@@ -32,6 +33,9 @@ public:
     Q_INVOKABLE QStringList getAllMessengers();
     Q_INVOKABLE QStringList getAllProtocols();
     Q_INVOKABLE QStringList getAllNickNames();
+    
+    Q_INVOKABLE QDateTime getFrom();
+    Q_INVOKABLE QDateTime getTo();
 
     using QSortFilterProxyModel::QSortFilterProxyModel;
 
@@ -49,7 +53,7 @@ public:
 
         m_filterFilePath = f;
 
-        triggerFilter(f);
+        triggerFilter();
 
     }
 
@@ -61,7 +65,7 @@ public:
 
         m_filterMessage = f;
 
-        triggerFilter(f);
+        triggerFilter();
 
     }
     
@@ -73,7 +77,7 @@ public:
 
         m_filterParticipant = f;
 
-        triggerFilter(f);
+        triggerFilter();
 
     }
 
@@ -85,7 +89,7 @@ public:
 
         m_filterSender = f;
 
-        triggerFilter(f);
+        triggerFilter();
 
     }
 
@@ -97,10 +101,8 @@ public:
 
         m_filterTarget = f;
 
-        triggerFilter(f);
-
+        triggerFilter();
     }
-
 
     QString filterMessenger() const { return m_filterMessenger; }
     void setFilterMessenger(const QString &f) {
@@ -110,8 +112,7 @@ public:
 
         m_filterMessenger = f;
 
-        triggerFilter(f);
-
+        triggerFilter();
     }
 
     QString filterProtocol() const { return m_filterProtocol; }
@@ -122,8 +123,31 @@ public:
 
         m_filterProtocol = f;
 
-        triggerFilter(f);
+        triggerFilter();
+    }
+    
+    QDateTime filterFrom() const { return m_filterFrom; }
+    void setFilterFrom(const QDateTime &f) {
+        if (m_filterFrom == f || !f.isValid()) {
+            return;
+        }
 
+        m_filterFrom = f;
+
+        triggerFilter();
+    }
+
+    QDateTime filterTo() const { return m_filterTo; }
+    void setFilterTo(const QDateTime &f) {
+        if (m_filterTo == f || !f.isValid()) {
+            return;
+        }
+        
+        qDebug() << "Filter to changed" << f;
+
+        m_filterTo = f;
+
+        triggerFilter();
     }
 
 signals:
@@ -134,6 +158,8 @@ signals:
     void filterTargetChanged();
     void filterMessengerChanged();
     void filterProtocolChanged();
+    void filterFromChanged();
+    void filterToChanged();
 
     void filterChanged();
 
@@ -148,8 +174,10 @@ private:
     QString m_filterTarget;
     QString m_filterMessenger;
     QString m_filterProtocol;
+    QDateTime m_filterFrom;
+    QDateTime m_filterTo;
 
-    void triggerFilter(const QString &f);
+    void triggerFilter();
 };
 
 }
