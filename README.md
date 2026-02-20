@@ -28,6 +28,11 @@ This is intended behavior since your messenger history might be confidential and
 However, this name was already in use for different programs.
 Since this program uses Qt the name qronicle has been chosen.
 
+## Support
+
+[![PayPal Donate](https://img.shields.io)](https://www.paypal.com/donate?hosted_button_id=ZAAKMQLSNGDK8)
+[![PayPal Subscribe](https://img.shields.io)](https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-2H6673288J5283354M6TTVVY)
+
 ## Usage
 
 ### History
