@@ -9,7 +9,7 @@ Offline Qt-based messenger history visualizer:
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Telegram_(software)#/media/File:Telegram_2019_Logo.svg"><img src="./assets/icons/telegram.svg" width="22" align="center"></a> [**Telegram**](https://en.wikipedia.org/wiki/Telegram_\(software\)) | ✅ | ⏳ |
-| <a href="https://commons.wikimedia.org/wiki/Category:Discord_logos#/media/File:Discord_color_D.svg"><img src="./assets/icons/discord.svg" width="22" align="center"></a> [**Discord**](https://en.wikipedia.org/wiki/Discord) | ⏳ | ⏳ |
+| <a href="https://discord.com/branding"><img src="./assets/icons/discord.svg" width="22" align="center"></a> [**Discord**](https://en.wikipedia.org/wiki/Discord) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ |
@@ -30,15 +30,15 @@ Since this program uses Qt the name qronicle has been chosen.
 
 ## Usage
 
-### Themes
+### History
 
-Support messenger themes: Sound effects (double clicking on messages), smileys, UI style etc. should look like in the original app.
-By default, the program could look up the default folders conta
-Themes should be stored in the config folder with the messenger ID as folder name and could be fully customized by the user.
-For example, I created `~.config/qronicle/themes/trillian/` with the sub folder `plugins` which contains sound effects and icons in the file structure of Trillian 3.1.
-It should then be automatically used.
-The same for other messengers.
-Themese cannot be part of the program itself due to copyright restrictions.
+You can place any chat history of different app into `~/.config/qronicle/<app name>`:
+
+- `~/.config/qronicle/kopete`.
+- `~/.config/qronicle/skype`.
+- `~/.config/qronicle/whatsapp`.
+
+to be found automatically.
 
 ### Aliases
 
@@ -54,15 +54,15 @@ Define aliases in `~/.config/qronicle/qronicle.conf`:
 You can place any number of images into `~/.config/qronicle/avatars`.
 These will be used as avatars if the file name without extension matches the user ID.
 
-### History
+### Themes
 
-You can place any chat history of different app into `~/.config/qronicle/<app name>`:
-
-- `~/.config/qronicle/kopete`.
-- `~/.config/qronicle/skype`.
-- `~/.config/qronicle/whatsapp`.
-
-to be found automatically.
+Support messenger themes: Sound effects (double clicking on messages), smileys, UI style etc. should look like in the original app.
+By default, the program could look up the default folders conta
+Themes should be stored in the config folder with the messenger ID as folder name and could be fully customized by the user.
+For example, I created `~.config/qronicle/themes/trillian/` with the sub folder `plugins` which contains sound effects and icons in the file structure of Trillian 3.1.
+It should then be automatically used.
+The same for other messengers.
+Themese cannot be part of the program itself due to copyright restrictions.
 
 ## Manual Build Ubuntu
 
