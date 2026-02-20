@@ -1,0 +1,16 @@
+name: Build and Release
+on:
+  push:
+    tags:
+      - 'v*' # Trigger bei Tags wie v1.0.0
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Checkout Code
+        uses: [actions/checkout@v4](

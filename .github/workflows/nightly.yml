@@ -1,0 +1,42 @@
+name: Nightly Build
+on:
+  schedule:
+    # Führt den Build jeden Tag um 02:00 UTC aus
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Ermöglicht den manuellen Start über das GitHub-UI
+
+jobs:
+  nightly-build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # Du kannst hier Betriebssysteme hinzufügen/entfernen
+        os: [windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout Code
+        uses: [actions/checkout@v4](https://github.com)
+
+      - name: Install Qt
+        uses: [jurplel/install-qt-action@v3](https://github.com)
+        with:
+          version: '6.6.0' # Spezifische Version für Stabilität
+
+      - name: Configure and Build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+
+      - name: Create Package
+        run: |
+          cd build
+          cpack -C Release
+
+      # Archiviert das Paket als Artefakt (kein fester Release, da "Nightly")
+      - name: Upload Artifact
+        uses: [actions/upload-artifact@v4](https://github.com)
+        with:
+          name: nightly-build-${{ matrix.os }}
+          path: build/*-v*.* # Oder der spezifische Output-Pfad deiner CPack-Generatoren
+          retention-days: 7 # Löscht alte Nightly-Builds automatisch nach 7 Tagen
