@@ -30,8 +30,7 @@ Since this program uses Qt the name qronicle has been chosen.
 
 ## Support
 
-- [Support ❤️](https://www.paypal.com/donate?hosted_button_id=ZAAKMQLSNGDK8)
-- [Sponsor 🎁](https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-2H6673288J5283354M6TTVVY)
+[❤️ Sponsor](https://www.paypal.com/donate?hosted_button_id=ZAAKMQLSNGDK8)
 
 ## Usage
 
