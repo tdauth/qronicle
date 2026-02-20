@@ -596,7 +596,7 @@ ApplicationWindow {
                                     // WICHTIG: Erst das Format, dann der Text
                                     textFormat: Text.RichText // Versuche RichText statt StyledText, falls es Probleme gibt
 
-                                    readonly property string maskedFilePath: filePath.replace(/%/g, "%25") // Fixes file names from Psi like at_icq.jabber.fh%2dstralsund.de.history
+                                    readonly property string maskedFilePath: encodeURI(filePath).replace(/#/g, "%23")
                                     readonly property string fullUrl: "file://" + maskedFilePath + (lineNumber > 0 ? "#" + lineNumber : "")
                                     readonly property string fileName: filePath.split('/').pop()
 

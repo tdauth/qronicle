@@ -6,27 +6,27 @@
     <message>
         <location filename="../src/DateTimePicker.qml" line="12"/>
         <source>Choose date time...</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum und Uhrzeit wählen ...</translation>
     </message>
     <message>
         <location filename="../src/DateTimePicker.qml" line="116"/>
         <source>Select Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeit wählen</translation>
     </message>
     <message>
         <location filename="../src/DateTimePicker.qml" line="124"/>
         <source>Hour:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stunde:</translation>
     </message>
     <message>
         <location filename="../src/DateTimePicker.qml" line="146"/>
         <source>Min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minute:</translation>
     </message>
     <message>
         <location filename="../src/DateTimePicker.qml" line="172"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Anwenden</translation>
     </message>
 </context>
 <context>
@@ -199,13 +199,13 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="98"/>
-        <location filename="../src/main.cpp" line="103"/>
+        <location filename="../src/main.cpp" line="99"/>
+        <location filename="../src/main.cpp" line="104"/>
         <source>qronicle</source>
         <translation>qronicle</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="107"/>
+        <location filename="../src/main.cpp" line="108"/>
         <source>Clears the existing database before loading messages.</source>
         <translation>Löscht die bestehende Datenbank vor dem Laden von Nachrichten.</translation>
     </message>
@@ -214,7 +214,7 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Erlaube mehrfache gleiche Nachrichten.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="126"/>
+        <location filename="../src/main.cpp" line="128"/>
         <source>%1 directories.</source>
         <translation>%1-Verzeichnisse.</translation>
     </message>
@@ -250,6 +250,12 @@ Alle Rechte vorbehalten.</translation>
         <location filename="../src/trillian.cpp" line="120"/>
         <source>Status changed to %1.</source>
         <translation>Status geändert zu %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/konversation.cpp" line="77"/>
+        <location filename="../src/konversation.cpp" line="78"/>
+        <source>all</source>
+        <translation>alle</translation>
     </message>
 </context>
 <context>

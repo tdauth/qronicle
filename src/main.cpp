@@ -19,6 +19,7 @@
 #include "avatar_provider.hpp"
 #include "qronicle.hpp"
 #include "kopete.hpp"
+#include "konversation.hpp"
 #include "trillian.hpp"
 #include "facebook.hpp"
 #include "instagram.hpp"
@@ -110,6 +111,7 @@ int main(int argc, char *argv[]) {
     QList<std::shared_ptr<Messenger>> messengers;
     messengers << std::make_shared<Qronicle>();
     messengers << std::make_shared<Kopete>();
+    messengers << std::make_shared<Konversation>();
     messengers << std::make_shared<Trillian>();
     messengers << std::make_shared<Facebook>();
     messengers << std::make_shared<Instagram>();

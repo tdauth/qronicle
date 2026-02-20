@@ -52,6 +52,8 @@ Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
     if (!file.open(QIODevice::ReadOnly)) {
         return messages;
     }
+    
+    QString channel = fileInfo.completeBaseName();
 
     // Vorab-Reservierung schätzt die Anzahl der Nachrichten (Dateigröße / ca. 100 Zeichen pro Nachricht)
     messages.reserve(file.size() / 100);
@@ -80,6 +82,7 @@ Messenger::Messages WhatsApp::loadFile(const QString &filePath) {
                     participants.insert(name);
                 }
 
+                msg.setChannel(channel);
                 msg.setProtocol("WhatsApp");
                 msg.setMessenger("WhatsApp");
                 msg.setFilePath(fileInfo.absoluteFilePath());

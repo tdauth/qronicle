@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS messages (
     status TEXT DEFAULT '',
     "out" BOOLEAN DEFAULT 0,
     "type" TEXT DEFAULT '',
+    channel TEXT DEFAULT '',
     
     UNIQUE(sender, receiver, message, created_at, messenger, protocol) 
     ON CONFLICT IGNORE -- no duplicates please
@@ -30,6 +31,7 @@ CREATE INDEX IF NOT EXISTS idx_created_at ON messages(created_at);
 CREATE INDEX IF NOT EXISTS idx_messenger ON messages(messenger);
 CREATE INDEX IF NOT EXISTS idx_protocol ON messages(protocol);
 CREATE INDEX IF NOT EXISTS idx_status ON messages(status);
+CREATE INDEX IF NOT EXISTS idx_channel ON messages(channel);
 
 CREATE VIEW IF NOT EXISTS view_all_contacts AS
 SELECT sender AS contact FROM messages WHERE sender != ''

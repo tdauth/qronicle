@@ -12,6 +12,7 @@ Offline Qt-based messenger history visualizer:
 | <a href="https://discord.com/branding"><img src="./assets/icons/discord.svg" width="22" align="center"></a> [**Discord**](https://en.wikipedia.org/wiki/Discord) | ⏳ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/1/1a/Breezeicons-apps-48-konversation.svg"><img src="./assets/icons/konversation.svg" width="22" align="center"></a> [**Konversation**](https://en.wikipedia.org/wiki/Konversation) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ |
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ |
 | <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
@@ -120,6 +121,14 @@ Examples:
 ```
 
 - [Sound Effects](https://invent.kde.org/network/kopete/-/tree/master/sounds?ref_type=heads)
+
+### Konversation
+
+- `~/.local/share/konversation/logs`
+- KDE 4: `~/.kde/share/apps/konversation/logs`
+- Snap: `~/snap/konversation/common/.local/share/konversation/logs` or `~/snap/konversation/<ID>/.local/share/konversation/logs`
+- File names: `server-name_#channel-name.log.`
+- Ctrl+O opens the file.
 
 ### Facebook Messenger
 

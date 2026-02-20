@@ -5,6 +5,8 @@ cd ../build
     --kopete ../personal/kopete1 \
     --kopete ../personal/kopete2 \
     --kopete ../personal/kopete3 \
+    --konversation ../personal/konversation1 \
+    --konversation ../personal/konversation2 \
     --amsn ../personal/amsn \
     --trillian ../personal/trillian \
     --facebook ../personal/facebook \

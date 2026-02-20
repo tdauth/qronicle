@@ -40,6 +40,8 @@ class Message {
         bool out() const;
         void setType(const QString &type);
         QString type() const;
+        void setChannel(const QString &channel);
+        QString channel() const;
 
     private:
         QString m_filePath;
@@ -56,6 +58,7 @@ class Message {
         QString m_status; // z. B. "Gelesen"
         bool m_out; // true if the message was sent. Otherwise, it was received.
         QString m_type; // message, session, status etc.
+        QString m_channel; // group/session/channel/server name
 };
 
 // Ignore filePath, sourceNick, destinationNick, contentHtml, messenger and status.

@@ -179,18 +179,18 @@ Alle rights reserved.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="98"/>
-        <location filename="../src/main.cpp" line="103"/>
+        <location filename="../src/main.cpp" line="99"/>
+        <location filename="../src/main.cpp" line="104"/>
         <source>qronicle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="107"/>
+        <location filename="../src/main.cpp" line="108"/>
         <source>Clears the existing database before loading messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="126"/>
+        <location filename="../src/main.cpp" line="128"/>
         <source>%1 directories.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -221,6 +221,12 @@ Alle rights reserved.</source>
     <message>
         <location filename="../src/trillian.cpp" line="120"/>
         <source>Status changed to %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/konversation.cpp" line="77"/>
+        <location filename="../src/konversation.cpp" line="78"/>
+        <source>all</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

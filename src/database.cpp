@@ -50,14 +50,14 @@ void Database::saveMessages(const Messenger::Messages &messages) {
         INSERT INTO messages (
             filePath, lineNumber, sender, senderNick, 
             receiver, receiverNick, message, messageHtml, 
-            created_at, messenger, protocol, status, "out", "type"
+            created_at, messenger, protocol, status, "out", "type", channel
         ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
     )");
 
     QVariantList fPaths, lines, snds, sndNicks, rcvs, rcvNicks, 
-                 msgs, msgHtmls, times, mngrs, protos, stats, out, type;
+                 msgs, msgHtmls, times, mngrs, protos, stats, out, type, channel;
 
     for (const auto &m : messages) {
         fPaths   << m.filePath();
@@ -74,6 +74,7 @@ void Database::saveMessages(const Messenger::Messages &messages) {
         stats    << m.status();
         out      << m.out();
         type     << m.type();
+        channel  << m.channel();
     }
 
     query.addBindValue(fPaths);
@@ -90,6 +91,7 @@ void Database::saveMessages(const Messenger::Messages &messages) {
     query.addBindValue(stats);
     query.addBindValue(out);
     query.addBindValue(type);
+    query.addBindValue(channel);
 
     if (!query.execBatch()) {
         qDebug() << "Batch Insert Error:" << query.lastError().text();

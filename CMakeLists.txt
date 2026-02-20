@@ -43,6 +43,8 @@ qt_add_executable(qronicle
     src/qronicle.cpp
     src/kopete.hpp
     src/kopete.cpp
+    src/konversation.hpp
+    src/konversation.cpp
     src/trillian.hpp
     src/trillian.cpp
     src/facebook.hpp

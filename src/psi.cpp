@@ -181,8 +181,6 @@ Messenger::Messages Psi::loadFile(const QString &filePath) {
 
                 lineNumber++;
             }
-
-            file.close();
         }
     } else {
         qWarning() << "Unsupported suffix for" << filePath;

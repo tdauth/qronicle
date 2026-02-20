@@ -118,4 +118,12 @@ QString Message::type() const {
     return m_type;
 }
 
+void Message::setChannel(const QString &channel) {
+    m_channel = channel;
+}
+
+QString Message::channel() const {
+    return m_channel;
+}
+
 }
