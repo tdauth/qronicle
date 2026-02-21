@@ -102,7 +102,7 @@ target_link_libraries(qronicle PRIVATE
 install(TARGETS qronicle RUNTIME DESTINATION bin)
 
 install(FILES
-  assets/icons/qronicle.svg
+  assets/icons/qronicle.png
   DESTINATION share/icons/hicolor/scalable/apps
 )
 install(FILES
