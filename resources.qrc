@@ -4,7 +4,7 @@
     </qresource>
 
     <qresource prefix="/icons">
-        <file alias="qronicle">assets/icons/qronicle.svg</file>
+        <file alias="qronicle">assets/icons/qronicle.png</file>
         <file alias="user">assets/icons/im-user.svg</file>
         <file alias="XMPP">assets/icons/xmpp.svg</file>
         <file alias="JabberProtocol">assets/icons/xmpp.svg</file>
