@@ -427,11 +427,12 @@ ApplicationWindow {
                                 spacing: 8  // Abstand in Pixeln zwischen den Elementen
 
                                 Image {
+                                    id: sourceAvatar
                                     fillMode: Image.PreserveAspectCrop
                                     source: sourceAvatar ? "image://avatars/" + sourceAvatar : ""
-                                    sourceSize.width: 16  // WICHTIG: Teilt dem Provider die 'requestedSize' mit
+                                    sourceSize.width: 16
                                     sourceSize.height: 16
-                                    asynchronous: true    // Erlaubt das Laden im Hintergrund
+                                    asynchronous: true
                                 }
 
                                 TextEdit {

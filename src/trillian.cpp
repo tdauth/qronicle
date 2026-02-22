@@ -99,6 +99,7 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
                 QString type = decodeMessage(attrs.value(QStringLiteral("type")).toString());
                 message.setType(type);
+                message.setOut(true);
                 QString content = QObject::tr("Session changed to %1.").arg(type);
                 message.setContent(content);
                 message.setContentHtml(content);
@@ -117,6 +118,7 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
                 QString type = decodeMessage(attrs.value(QStringLiteral("type")).toString());
                 message.setType(type);
+                message.setOut(message.source() == owner);
                 QString content = QObject::tr("Status changed to %1.").arg(type);
                 message.setContent(content);
                 message.setContentHtml(content);
@@ -133,6 +135,8 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
                 message.setDestination(attrs.value(QStringLiteral("from")).toString());
                 message.setDestinationNick(message.destination());
                 message.setTimestamp(getTimestamp(attrs.value(QStringLiteral("time")).toString()));
+                message.setType("icon");
+                message.setOut(message.source() == owner);
                 QString link = decodeMessage(attrs.value(QStringLiteral("link")).toString());
                 message.setContent(link);
                 message.setContentHtml(link);
@@ -148,7 +152,7 @@ Messenger::Messages Trillian::loadFile(const QString &filePath) {
 
                 QString type = attrs.value(QStringLiteral("type")).toString();
                 message.setType(type);
-                bool out = type == "outgoing_privateMessage";
+                const bool out = type == "outgoing_privateMessage";
                 message.setOut(out);
 
                 if (type == "information_standard") {

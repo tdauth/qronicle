@@ -84,6 +84,9 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
 
         if (!query.prepare(R"(
             SELECT 
+                m.chatname AS chatname,
+                m.type AS type,
+                m.chatmsg_status AS chatmsg_status,
                 m.body_xml, 
                 m.timestamp, 
                 m.author AS sender_id,
@@ -103,65 +106,71 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
 
         if (query.exec()) {
             while (query.next()) {
-                Message msg;
-                msg.setProtocol("Skype");
-                msg.setMessenger("Skype");
-                msg.setFilePath(filePath);
-                
-                QString sender_id = query.value("sender_id").toString();
-                QString sender_display_name = query.value("sender_display_name").toString();
-                QString receiver_id = query.value("receiver_id").toString();
-                QString receiver_display_name = query.value("receiver_display_name").toString();
-                
-                if (!m_avatars.contains(sender_id)) {
-                    QByteArray senderAvatar = loadAvatarFromDb(query.value("sender_avatar").toByteArray());
-                    QImage img;
+                // ignore other protocol messages
+                if (!query.value("type").isNull() && query.value("type").toInt() == 61) {
+                    Message msg;
+                    msg.setProtocol("Skype");
+                    msg.setMessenger("Skype");
+                    msg.setFilePath(filePath);
+                    msg.setChannel(query.value("chatname").toString());
+                    msg.setStatus(!query.value("chatmsg_status").isNull() ? QString::number(query.value("chatmsg_status").toInt()) : "");
+                    msg.setOut(!query.value("chatmsg_status").isNull() && (query.value("chatmsg_status").toInt() == 1 || query.value("chatmsg_status").toInt() == 2));
                     
-                    if (!senderAvatar.isEmpty()) {
-                        if (!img.loadFromData(senderAvatar)) {
-                            qDebug() << "Skype avatar image could not be loaded for:" << sender_id;
+                    QString sender_id = query.value("sender_id").toString();
+                    QString sender_display_name = query.value("sender_display_name").toString();
+                    QString receiver_id = query.value("receiver_id").toString();
+                    QString receiver_display_name = query.value("receiver_display_name").toString();
+                    
+                    if (!m_avatars.contains(sender_id)) {
+                        QByteArray senderAvatar = loadAvatarFromDb(query.value("sender_avatar").toByteArray());
+                        QImage img;
+                        
+                        if (!senderAvatar.isEmpty()) {
+                            if (!img.loadFromData(senderAvatar)) {
+                                qDebug() << "Skype avatar image could not be loaded for:" << sender_id;
+                            } else {
+                                qDebug() << "Skype avatar image works for:" << sender_id;
+                            }
                         } else {
-                            qDebug() << "Skype avatar image works for:" << sender_id;
+                            qDebug() << "Skype avatar image is empty for:" << sender_id;
                         }
-                    } else {
-                        qDebug() << "Skype avatar image is empty for:" << sender_id;
+                        
+                        m_avatars.insert(sender_id, img);
                     }
                     
-                    m_avatars.insert(sender_id, img);
-                }
-                
-                if (!m_avatars.contains(receiver_id)) {
-                    QByteArray receiverAvatar = loadAvatarFromDb(query.value("receiver_avatar").toByteArray());
-                    QImage img;
-                    
-                    if (!receiverAvatar.isEmpty()) {
-                        if (!img.loadFromData(receiverAvatar)) {
-                            qDebug() << "Skype avatar image could not be loaded for:" << receiver_id;
+                    if (!m_avatars.contains(receiver_id)) {
+                        QByteArray receiverAvatar = loadAvatarFromDb(query.value("receiver_avatar").toByteArray());
+                        QImage img;
+                        
+                        if (!receiverAvatar.isEmpty()) {
+                            if (!img.loadFromData(receiverAvatar)) {
+                                qDebug() << "Skype avatar image could not be loaded for:" << receiver_id;
+                            } else {
+                                qDebug() << "Skype avatar image works for:" << receiver_id;
+                            }
                         } else {
-                            qDebug() << "Skype avatar image works for:" << receiver_id;
+                            qDebug() << "Skype avatar image is empty for:" << receiver_id;
                         }
-                    } else {
-                        qDebug() << "Skype avatar image is empty for:" << receiver_id;
+                        
+                        m_avatars.insert(receiver_id, img);
                     }
                     
-                    m_avatars.insert(receiver_id, img);
-                }
-                
-                if (receiver_display_name.isEmpty()) {
-                    receiver_display_name = receiver_id;
-                }
-                
-                msg.setSource(sender_id);
-                msg.setSourceNick(sender_display_name);
-                msg.setDestination(receiver_id);
-                msg.setDestinationNick(receiver_display_name);
-                msg.setTimestamp(QDateTime::fromSecsSinceEpoch(query.value("timestamp").toLongLong()));
-                QString body_xml = query.value("body_xml").toString();
-                msg.setContent(body_xml);
-                QString contentHtml = replaceSmileys(body_xml);
-                msg.setContentHtml(contentHtml);
+                    if (receiver_display_name.isEmpty()) {
+                        receiver_display_name = receiver_id;
+                    }
+                    
+                    msg.setSource(sender_id);
+                    msg.setSourceNick(sender_display_name);
+                    msg.setDestination(receiver_id);
+                    msg.setDestinationNick(receiver_display_name);
+                    msg.setTimestamp(QDateTime::fromSecsSinceEpoch(query.value("timestamp").toLongLong()));
+                    QString body_xml = query.value("body_xml").toString();
+                    msg.setContent(body_xml);
+                    QString contentHtml = replaceSmileys(body_xml);
+                    msg.setContentHtml(contentHtml);
 
-                messages.append(msg);
+                    messages.append(msg);
+                }
             }
         } else {
             qWarning() << "SQL error:" << query.lastError().text();
@@ -178,7 +187,6 @@ Messenger::Messages Skype::loadFile(const QString &filePath) {
 Messenger::Messages Skype::loadDirectories(const QStringList &dirPaths) {
     QStringList filePaths;
 
-    // 1. Alle Pfade sammeln und filtern
     for (const QString &dirPath : dirPaths) {
         QDirIterator it(dirPath, QStringList() << "main.db", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext()) {
@@ -186,7 +194,6 @@ Messenger::Messages Skype::loadDirectories(const QStringList &dirPaths) {
             QFileInfo info(path);
             QString skypeId = info.dir().dirName();
 
-            // Deine Filter-Logik
             if (skypeId == "Data" || skypeId == "Content") {
                 continue;
             }
@@ -198,7 +205,6 @@ Messenger::Messages Skype::loadDirectories(const QStringList &dirPaths) {
 
     qDebug() << "Loading" << filePaths.size() << "Skype databases in parallel...";
 
-    // 2. Parallelisiertes Laden und Reduzieren
     return QtConcurrent::blockingMappedReduced<Messenger::Messages>(
         filePaths,
         [this](const QString &filePath) {

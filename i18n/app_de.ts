@@ -125,73 +125,73 @@ Alle Rechte vorbehalten.</translation>
         <translation>Nachrichteninhalt suchen ...</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="438"/>
+        <location filename="../src/Main.qml" line="439"/>
         <source>From: %1 (%2)</source>
         <translation>Von: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="439"/>
-        <location filename="../src/Main.qml" line="461"/>
+        <location filename="../src/Main.qml" line="440"/>
+        <location filename="../src/Main.qml" line="462"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="626"/>
+        <location filename="../src/Main.qml" line="627"/>
         <source>Copy Link Address</source>
         <translation>Link-Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="630"/>
+        <location filename="../src/Main.qml" line="631"/>
         <source>Copy File Path</source>
         <translation>Dateipfad kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="460"/>
+        <location filename="../src/Main.qml" line="461"/>
         <source>To: %1 (%2)</source>
         <translation>An: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="522"/>
+        <location filename="../src/Main.qml" line="523"/>
         <source>Messenger: %1</source>
         <translation>Messenger: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="583"/>
+        <location filename="../src/Main.qml" line="584"/>
         <source>Protocol: %1</source>
         <translation>Protokoll: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="664"/>
+        <location filename="../src/Main.qml" line="665"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="716"/>
+        <location filename="../src/Main.qml" line="717"/>
         <source>Copy Message</source>
         <translation>Nachricht kopieren</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="724"/>
+        <location filename="../src/Main.qml" line="725"/>
         <source>Jump to this message (clear filters)</source>
         <translation>Zu dieser Nachricht springen (Filter leeren)</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="761"/>
+        <location filename="../src/Main.qml" line="762"/>
         <source>Messages: %1 / %2</source>
         <translation>Nachrichten: %1 / %2</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="771"/>
+        <location filename="../src/Main.qml" line="772"/>
         <source>Period: %1</source>
         <translation>Zeitraum: %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="782"/>
+        <location filename="../src/Main.qml" line="783"/>
         <source>All data loaded</source>
         <translation>Alle Daten geladen</translation>
     </message>
     <message>
-        <location filename="../src/Main.qml" line="783"/>
+        <location filename="../src/Main.qml" line="784"/>
         <source>Filtered</source>
         <translation>Gefiltert</translation>
     </message>
@@ -242,12 +242,12 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Sitzung geändert zu %1: %2.</translation>
     </message>
     <message>
-        <location filename="../src/trillian.cpp" line="102"/>
+        <location filename="../src/trillian.cpp" line="103"/>
         <source>Session changed to %1.</source>
         <translation>Sitzung zu %1 geändert.</translation>
     </message>
     <message>
-        <location filename="../src/trillian.cpp" line="120"/>
+        <location filename="../src/trillian.cpp" line="122"/>
         <source>Status changed to %1.</source>
         <translation>Status geändert zu %1.</translation>
     </message>
