@@ -21,6 +21,7 @@
 #include "kopete.hpp"
 #include "konversation.hpp"
 #include "trillian.hpp"
+#include "signal.hpp"
 #include "facebook.hpp"
 #include "instagram.hpp"
 #include "telegram.hpp"
@@ -113,6 +114,7 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<Kopete>();
     messengers << std::make_shared<Konversation>();
     messengers << std::make_shared<Trillian>();
+    messengers << std::make_shared<Signal>();
     messengers << std::make_shared<Facebook>();
     messengers << std::make_shared<Instagram>();
     messengers << std::make_shared<Telegram>();

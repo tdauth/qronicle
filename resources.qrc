@@ -13,6 +13,7 @@
         <file alias="ICQ">assets/icons/icq.svg</file>
         <file alias="Kopete">assets/icons/kopete.svg</file>
         <file alias="Konversation">assets/icons/konversation.svg</file>
+        <file alias="Signal">assets/icons/signal.svg</file>
         <file alias="WhatsApp">assets/icons/whatsapp.svg</file>
         <file alias="Instagram">assets/icons/instagram.svg</file>
         <file alias="Facebook Messenger">assets/icons/facebook.svg</file>

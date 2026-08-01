@@ -5,6 +5,7 @@ Offline Qt-based messenger history visualizer:
 | Name | Messages | Avatars |
 | :--- | :---:         | :---: |
 | <img src="./assets/icons/qronicle.png" width="22" align="center"> [**qronicle**](https://github.com/tdauth/qronicle) | ✅ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Signal_(software)#/media/File:Signal-Logo-Ultramarine_(2024).svg"><img src="./assets/icons/signal.png" width="22" align="center"></a>  [**Signal**](<https://en.wikipedia.org/wiki/Signal_(software)>) | ⏳ | ⏳ |
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
@@ -265,6 +266,141 @@ Status               : Gelesen
 Nächste Woche!
 
 ```
+
+### Signal
+
+Folder `signal-export-2026-08-01-09-46-27` contains:
+
+- `metadata.json`
+- Folder `files` contains all media.
+- `main.jsonl`: contains all the chat history:
+
+```json
+{
+  "version":"1",
+  "backupTimeMs":"1785577587884",
+  "mediaRootBackupKey":"12345",
+  "currentAppVersion":"Desktop 8.21.0"
+}
+{
+  "account": {
+    "profileKey": "12345",
+    "username": "peter",
+    "usernameLink": {
+      "entropy": "12345",
+      "serverId":"12345",
+      "color":"BLUE"
+    },
+    "givenName":"Peter",
+    "accountSettings": {
+      "readReceipts":true,
+      "typingIndicators":true,
+      "linkPreviews":true,
+      "preferredReactionEmoji" [ "❤️","👍","👎","😂","😮","😢" ],
+      "hasViewedOnboardingStory":true,
+      "storyViewReceiptsEnabled":true,
+      "phoneNumberSharingMode":"NOBODY",
+      "defaultSentMediaQuality":"HIGH",
+      "appTheme":"SYSTEM",
+      "callsUseLessDataSetting":"MOBILE_DATA_ONLY",
+      "allowAutomaticKeyVerification":true
+    },
+    "svrPin":"12345"
+  }
+}
+{
+  "recipient": {
+    "id":"1",
+    "contact": {
+      "aci": "12345",
+      "pni": "12345",
+      "e164": "12345",
+      "profileKey": "12345",
+      "profileSharing": true,
+      "profileGivenName": "peterwurst",
+      "identityKey": "12345",
+      "systemGivenName":"Peter",
+      "systemFamilyName":"Wurst",
+      "avatarColor":"A150",
+      "registered": {}
+    }
+  }
+}
+{
+  "chatItem": {
+    "chatId":"1",
+    "authorId":"1",
+    "dateSent":"1785424844613",
+    "incoming": {
+           "dateReceived":"1785431580901",
+           "dateServerSent":"1785424845481",
+           "read":true,
+           "sealedSender":true
+    },
+    "standardMessage": {
+      "text": {
+        "body": "🌹"
+      }
+    }
+  }
+}
+{
+  "chatItem": {
+    "chatId": "1",
+    "authorId": "64",
+    "dateSent": "1785345552863",
+    "outgoing": {
+      "sendStatus": [
+        {
+          "recipientId": "1",
+          "timestamp": "1785345549613",
+          "read": {
+            "sealedSender": true
+          }
+        }
+      ],
+      "dateReceived": "1785345552866"
+    },
+    "standardMessage": {
+      "text": {
+        "body": "Nächste Woche!"
+      },
+      "attachments": [
+        {
+          "pointer": {
+            "contentType": "image/jpeg",
+            "width": 1152,
+            "height": 2048,
+            "blurHash": "12345",
+            "locatorInfo": {
+              "key": "12345",
+              "size": 299397,
+              "transitCdnKey": "12345",
+              "transitCdnNumber": 3,
+              "transitTierUploadTimestamp": "1785345571493",
+              "localKey":"12345",
+              "plaintextHash":"12345"
+            }
+          },
+          "wasDownloaded":true,
+          "clientUuid":"12345"
+        }
+      ]
+    }
+  }
+}
+```
+
+For matching attachments use `locatorInfo.plaintextHash` which contains the SHA256 hash of the file.
+
+#### Linux Version
+
+Settings -> Chats -> Export Chat history
+
+#### Additional Information
+
+- <https://aboutsignal.com/news/signal-desktop-update-local-backups-chat-export-pinned-messages/>
+- <https://github.com/carderne/signal-export>
 
 ### WhatsApp
 
