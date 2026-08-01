@@ -5,7 +5,7 @@ Offline Qt-based messenger history visualizer:
 | Name | Messages | Avatars |
 | :--- | :---:         | :---: |
 | <img src="./assets/icons/qronicle.png" width="22" align="center"> [**qronicle**](https://github.com/tdauth/qronicle) | ✅ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Signal_(software)#/media/File:Signal-Logo-Ultramarine_(2024).svg"><img src="./assets/icons/signal.png" width="22" align="center"></a>  [**Signal**](<https://en.wikipedia.org/wiki/Signal_(software)>) | ⏳ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Signal_(software)#/media/File:Signal-Logo-Ultramarine_(2024).svg"><img src="./assets/icons/signal.svg" width="22" align="center"></a>  [**Signal**](<https://en.wikipedia.org/wiki/Signal_(software)>) | ⏳ | ⏳ |
 | <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
 | <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
