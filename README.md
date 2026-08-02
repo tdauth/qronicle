@@ -273,7 +273,7 @@ Folder `signal-export-2026-08-01-09-46-27` contains:
 
 - `metadata.json`
 - Folder `files` contains all media.
-- `main.jsonl`: contains all the chat history:
+- `main.jsonl`: contains all the chat history (<https://jsonlines.org/>):
 
 ```json
 {
