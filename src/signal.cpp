@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QtConcurrent>
+#include <QTimeZone>
 
 #include "signal.hpp"
 
@@ -24,104 +25,72 @@ Messenger::Messages Signal::loadFile(const QString &filePath) {
         return messages;
     }
 
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
-    file.close();
+    QTextStream in(&file);
+    in.setEncoding(QStringConverter::Utf8); // Stellt korrekte UTF-8 Darstellung sicher
 
-    if (doc.isNull()) {
-        qWarning() << "JSON error in" << filePath << ":" << error.errorString();
-        return messages;
-    }
+    qint64 lineNumber = 0;
 
-    QFileInfo fileInfo(filePath);
-    QString absoluteFilePath = fileInfo.absoluteFilePath();
-    QString absoluteDirPath = fileInfo.absolutePath();
+    // Zeile für Zeile einlesen, bis das Ende der Datei erreicht ist
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        lineNumber++;
 
-    QJsonObject rootObj = doc.object();
-    QHash<QString, QString> nickNames;
-
-    QJsonArray messagesArray = rootObj.value("messages").toArray();
-
-    for (const QJsonValue &value : messagesArray) {
-        QJsonObject obj = value.toObject();
-
-        Message msg;
-        msg.setFilePath(absoluteFilePath);
-        msg.setProtocol("Signal");
-        msg.setMessenger("Signal");
-        msg.setTimestamp(QDateTime::fromSecsSinceEpoch(obj.value("date_unixtime").toVariant().toString().toLongLong()));
-        QString sender = obj.contains("actor_id") ? obj.value("actor_id").toString(QObject::tr("Unknown")) : obj.value("from_id").toString(QObject::tr("Unknown"));
-        QString senderName = obj.contains("actor") ? obj.value("actor").toString(QObject::tr("Unknown")) :obj.value("from").toString(QObject::tr("Unknown"));
-
-        msg.setSource(sender);
-        msg.setSourceNick(senderName);
-
-        nickNames.insert(sender, senderName);
-
-        QString content = obj.value("text").toString();
-        QJsonArray text_entities = obj.value("text_entities").toArray();
-        QString contentHtml;
-
-        for (const QJsonValue &value : text_entities) {
-            QJsonObject o = value.toObject();
-
-             if (!o.contains("type") || !o.contains("text")) {
-                qWarning() << "Missing key in text_entities:" << o;
-                continue;
-            }
-
-            QString type = o.value("type").toString();
-            QString text = o.value("text").toString();
-
-            if (type == "plain") {
-                contentHtml += text;
-            } else if (type == "mention") {
-                contentHtml += text;
-            } else if (type == "bold") {
-                contentHtml += "<b>" + text + "</b>";
-            } else if (type == "link") {
-                contentHtml += "<a href=\"" + text + "\">" + text + "</a>";
-            } else if (type == "text_link") {
-                QString href = o.value("href").toString();
-                contentHtml += "<a href=\"" + href + "\">" + text + "</a>";
-            } else {
-                qWarning() << "Ignoring unsupported Signal text type:" << type;
-            }
+        // Leere Zeilen (z. B. am Dateiende) einfach überspringen
+        if (line.isEmpty()) {
+            continue;
         }
 
-        if (obj.contains("photo")) {
-            QString photo = obj.value("photo").toString();
-            content += photo;
-            contentHtml += "<a href=\"file://" + absoluteDirPath + "/" + photo + "\">" + photo + "</a>";
+
+        QJsonParseError error;
+        QJsonDocument doc = QJsonDocument::fromJson(line.toUtf8(), &error);
+
+        if (doc.isNull()) {
+            qWarning() << "JSON error in" << filePath << ":" << error.errorString();
+            return messages;
         }
 
-        msg.setContent(content);
-        msg.setContentHtml(contentHtml);
-        messages.append(msg);
-    }
+        QFileInfo fileInfo(filePath);
+        QString absoluteFilePath = fileInfo.absoluteFilePath();
+        QString absoluteDirPath = fileInfo.absolutePath();
 
-    // Fill destinations:
-    for (auto &msg : messages) {
-        if (msg.destination().isEmpty()) {
-            bool matches = false;
+        QJsonObject rootObj = doc.object();
 
-            for (auto i = nickNames.constBegin(); i != nickNames.constEnd(); ++i) {
-                if (msg.source() != i.key()) {
-                    msg.setDestination(i.key());
-                    msg.setDestinationNick(i.value());
+        if (rootObj.contains("chatItem")) {
+            QJsonObject chatItem = rootObj.value("chatItem").toObject();
+            Message msg;
+            msg.setFilePath(absoluteFilePath);
+            msg.setLineNumber(lineNumber);
+            msg.setProtocol("Signal");
+            msg.setMessenger("Signal");
+            msg.setOut(chatItem.contains("outgoing"));
+            QTimeZone utcZone("UTC");
+            msg.setTimestamp(QDateTime::fromMSecsSinceEpoch(chatItem.value("dateSent").toString().toLongLong(), utcZone));
 
-                    matches = true;
+            if (chatItem.contains("authorId")) {
+                QString authorId = chatItem.value("authorId").toString();
+            }
 
-                    break;
+            if (chatItem.contains("standardMessage")) {
+                QJsonObject standardMessage = chatItem.value("standardMessage").toObject();
+
+                if (standardMessage.contains("text")) {
+                    QJsonObject text = standardMessage.value("text").toObject();
+
+                    if (text.contains("body")) {
+                        QString content = text.value("body").toString();
+                        msg.setContent(content);
+                        msg.setContentHtml(content);
+                    }
                 }
             }
 
-            if (!matches) {
-                msg.setDestination(QObject::tr("Unknown"));
-                msg.setDestinationNick(QObject::tr("Unknown"));
-            }
+            //qDebug() << msg.timestamp() << msg.content();
+
+            messages.append(msg);
         }
     }
+
+    file.close();
 
     return messages;
 }
