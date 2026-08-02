@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE" sourcelanguage="en_US">
 <context>
+    <name>CustomSearchField</name>
+    <message>
+        <location filename="../src/CustomSearchField.qml" line="7"/>
+        <source>Find...</source>
+        <translation type="unfinished">Suchen ...</translation>
+    </message>
+</context>
+<context>
     <name>DateTimePicker</name>
     <message>
         <location filename="../src/DateTimePicker.qml" line="12"/>
@@ -199,13 +207,13 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="99"/>
-        <location filename="../src/main.cpp" line="104"/>
+        <location filename="../src/main.cpp" line="100"/>
+        <location filename="../src/main.cpp" line="105"/>
         <source>qronicle</source>
         <translation>qronicle</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="108"/>
+        <location filename="../src/main.cpp" line="109"/>
         <source>Clears the existing database before loading messages.</source>
         <translation>Löscht die bestehende Datenbank vor dem Laden von Nachrichten.</translation>
     </message>
@@ -214,7 +222,7 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Erlaube mehrfache gleiche Nachrichten.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="128"/>
+        <location filename="../src/main.cpp" line="130"/>
         <source>%1 directories.</source>
         <translation>%1-Verzeichnisse.</translation>
     </message>
@@ -261,9 +269,8 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>SearchField</name>
     <message>
-        <location filename="../src/SearchField.qml" line="7"/>
         <source>Find...</source>
-        <translation>Suchen ...</translation>
+        <translation type="vanished">Suchen ...</translation>
     </message>
 </context>
 <context>

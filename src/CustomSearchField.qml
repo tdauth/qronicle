@@ -9,9 +9,9 @@ TextField {
 
     property var allItems: []
     property var filteredItems: []
-    property string targetProperty: "" 
-    property var fetchFunction: null   
-    
+    property string targetProperty: ""
+    property var fetchFunction: null
+
     // NEU: Flag, um das automatische Wiederöffnen zu verhindern
     property bool isSelecting: false
 
@@ -65,10 +65,10 @@ TextField {
                     control.text = modelData   // 2. Text ändern (triggert onTextChanged)
                     control.selectionMade(modelData)
                     popup.close()              // 3. Popup schließen
-                    
+
                     // Fokus wegzunehmen ist die sicherste Methode, um das Popup zu schließen
-                    control.focus = false 
-                    
+                    control.focus = false
+
                     // Sperre kurz verzögert lösen, falls der User direkt wieder reinklickt
                     control.isSelecting = false
                 }

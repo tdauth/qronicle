@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en" sourcelanguage="en">
 <context>
+    <name>CustomSearchField</name>
+    <message>
+        <location filename="../src/CustomSearchField.qml" line="7"/>
+        <source>Find...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DateTimePicker</name>
     <message>
         <location filename="../src/DateTimePicker.qml" line="12"/>
@@ -179,18 +187,18 @@ Alle rights reserved.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="99"/>
-        <location filename="../src/main.cpp" line="104"/>
+        <location filename="../src/main.cpp" line="100"/>
+        <location filename="../src/main.cpp" line="105"/>
         <source>qronicle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="108"/>
+        <location filename="../src/main.cpp" line="109"/>
         <source>Clears the existing database before loading messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="128"/>
+        <location filename="../src/main.cpp" line="130"/>
         <source>%1 directories.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -227,14 +235,6 @@ Alle rights reserved.</source>
         <location filename="../src/konversation.cpp" line="77"/>
         <location filename="../src/konversation.cpp" line="78"/>
         <source>all</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SearchField</name>
-    <message>
-        <location filename="../src/SearchField.qml" line="7"/>
-        <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

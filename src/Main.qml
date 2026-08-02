@@ -10,7 +10,7 @@ ApplicationWindow {
 
     // Design-Konstanten
     readonly property color colorBgChat: "#e5ddd5"
-    
+
     Action {
         id: openConfigAction
         text: qsTr("Open config folder")
@@ -36,7 +36,7 @@ ApplicationWindow {
         shortcut: StandardKey.Quit
         onTriggered: Qt.quit()
     }
-    
+
     Dialog {
         id: aboutDialog
         title: qsTr("About")
@@ -119,9 +119,9 @@ ApplicationWindow {
                     // Das eigentliche Dropdown-Menü
                     Menu {
                         id: mainMenu
-                        implicitWidth: Math.max(300, contentItem.implicitWidth + 40) 
+                        implicitWidth: Math.max(300, contentItem.implicitWidth + 40)
                         y: menuButton.height // Erscheint direkt unter dem Button
-                        
+
                         MenuItem {
                             action: openConfigAction
                         }
@@ -207,7 +207,7 @@ ApplicationWindow {
                         protocolSearch.text = ""
                         filePathSearch.text = ""
                         messageSearch.text = ""
-                        
+
                         fromSearch.selectedDateTime = chatModel.filterFrom
                         toSearch.selectedDateTime = chatModel.filterTo
                     }
@@ -223,8 +223,8 @@ ApplicationWindow {
 
                     flat: true
                 }
-                
-                SearchField {
+
+                CustomSearchField {
                     id: participantSearch
                     placeholderText: qsTr("Participant...")
                     targetProperty: "filterParticipant"
@@ -232,8 +232,8 @@ ApplicationWindow {
                     text: chatModel.filterParticipant
                     onSelectionMade: (val) => chatModel.filterParticipant = val
                 }
-                
-                SearchField {
+
+                CustomSearchField {
                     id: senderSearch
                     placeholderText: qsTr("Sender...")
                     targetProperty: "filterSender"
@@ -241,8 +241,8 @@ ApplicationWindow {
                     text: chatModel.filterSender
                     onSelectionMade: (val) => chatModel.filterSender = val
                 }
-                
-                SearchField {
+
+                CustomSearchField {
                     id: receiverSearch
                     placeholderText: qsTr("Receiver...")
                     targetProperty: "filterTarget"
@@ -251,7 +251,7 @@ ApplicationWindow {
                     onSelectionMade: (val) => chatModel.filterTarget = val
                 }
 
-                SearchField {
+                CustomSearchField {
                     id: messengerSearch
                     placeholderText: qsTr("Messenger...")
                     targetProperty: "filterMessenger"
@@ -260,7 +260,7 @@ ApplicationWindow {
                     onSelectionMade: (val) => chatModel.filterMessenger = val
                 }
 
-                SearchField {
+                CustomSearchField {
                     id: protocolSearch
                     placeholderText: qsTr("Protocol...")
                     targetProperty: "filterProtocol"
@@ -286,7 +286,7 @@ ApplicationWindow {
                     onTextChanged: if (activeFocus) msgTimer.restart()
                     Timer { id: msgTimer; interval: 500; onTriggered: chatModel.filterMessage = parent.text }
                 }
-                
+
                 DateTimePicker {
                     id: fromSearch
                     selectedDateTime: chatModel.filterFrom
@@ -295,7 +295,7 @@ ApplicationWindow {
                     onSelectedDateTimeChanged: fromTimer.restart()
                     Timer { id: fromTimer; interval: 500; onTriggered: chatModel.filterFrom = fromSearch.selectedDateTime }
                 }
-                
+
                 DateTimePicker {
                     id: toSearch
                     selectedDateTime: chatModel.filterTo
@@ -382,12 +382,12 @@ ApplicationWindow {
 
                     height: innerCol.implicitHeight + 16
                     radius: 6
-                    
+
                     color: out ? "#e1ffc7" : "#ffffff"
-                    
+
                     border.width: 1
                     border.color: out ? "#c7e3ae" : "#dddddd"
-                    
+
                     // pass model properties into delegate
                     required property string sourceNick
                     required property string sourceId
@@ -660,8 +660,8 @@ ApplicationWindow {
                                 }
 
                                 TextEdit {
-                                    text: (time !== undefined && time !== null && time !== "") 
-                                            ? Qt.formatDateTime(time, Qt.DefaultLocaleShortDate) 
+                                    text: (time !== undefined && time !== null && time !== "")
+                                            ? Qt.formatDateTime(time, Qt.DefaultLocaleShortDate)
                                             : qsTr("unknown")
                                     font.pointSize: 8
                                     color: "#666"

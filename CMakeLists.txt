@@ -72,7 +72,7 @@ qt_add_qml_module(qronicle
     VERSION 1.0
     QML_FILES
       "src/Main.qml"
-      "src/SearchField.qml"
+      "src/CustomSearchField.qml"
       "src/DateTimePicker.qml"
     DEPENDENCIES
       QtQuick
