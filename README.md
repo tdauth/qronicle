@@ -310,6 +310,14 @@ Folder `signal-export-2026-08-01-09-46-27` contains:
 }
 {
   "recipient": {
+    "id": "64",
+    "self": {
+      "avatarColor": "A200"
+    }
+  }
+}
+{
+  "recipient": {
     "id":"1",
     "contact": {
       "aci": "12345",
@@ -323,6 +331,28 @@ Folder `signal-export-2026-08-01-09-46-27` contains:
       "systemFamilyName":"Wurst",
       "avatarColor":"A150",
       "registered": {}
+    }
+  }
+}
+{
+  "chat": {
+    "id": "1",
+    "recipientId": "64",
+    "expireTimerVersion": 1
+  }
+}
+{
+  "chatItem": {
+    "chatId": "60",
+    "authorId": "64",
+    "dateSent": "1769782261829",
+    "directionless": {},
+    "updateMessage": {
+      "groupChange": {
+        "updates": [
+          {"groupMemberJoinedUpdate":{"newMemberAci":"12345"}}
+        ]
+      }
     }
   }
 }

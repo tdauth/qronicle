@@ -236,6 +236,8 @@ Alle Rechte vorbehalten.</translation>
         <location filename="../src/telegram.cpp" line="54"/>
         <location filename="../src/telegram.cpp" line="120"/>
         <location filename="../src/telegram.cpp" line="121"/>
+        <location filename="../src/signal.cpp" line="133"/>
+        <location filename="../src/signal.cpp" line="146"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
