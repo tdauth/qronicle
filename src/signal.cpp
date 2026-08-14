@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QCryptographicHash>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -14,6 +15,26 @@ namespace qronicle {
 
 QString Signal::id() const {
     return "signal";
+}
+
+namespace {
+
+QByteArray sha256FileBase64(const QString& filePath) {
+    QFile f(filePath);
+
+    if (!f.open(QIODevice::ReadOnly)) {
+        return {};
+    }
+
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+
+    while (!f.atEnd()) {
+        hash.addData(f.read(1024 * 1024));
+    }
+
+    return hash.result().toBase64();
+}
+
 }
 
 Messenger::Messages Signal::loadFile(const QString &filePath) {
@@ -31,6 +52,19 @@ Messenger::Messages Signal::loadFile(const QString &filePath) {
     QFileInfo fileInfo(filePath);
     QString absoluteFilePath = fileInfo.absoluteFilePath();
     QString absoluteDirPath = fileInfo.absolutePath();
+
+    // The sub directory "files" contains all media.
+    QHash<QByteArray, QString> media;
+    QString filesDir = QDir(absoluteDirPath).absoluteFilePath("files");
+    QDirIterator dirIt(filesDir, QStringList() << "*", QDir::Files, QDirIterator::Subdirectories);
+    while (dirIt.hasNext()) {
+        QString mediaFilePath = dirIt.next();
+        QByteArray sha256Base64 = sha256FileBase64(mediaFilePath);
+
+        if (!sha256Base64.isEmpty()) {
+            media.insert(sha256Base64, mediaFilePath);
+        }
+    }
 
     QHash<QString, QString> nickNames;
     QString ownerName;
@@ -105,8 +139,6 @@ Messenger::Messages Signal::loadFile(const QString &filePath) {
         } else if (rootObj.contains("chatItem")) {
             QJsonObject chatItem = rootObj.value("chatItem").toObject();
 
-            // Parse only standard messages for now.
-            // TODO parse "attachments": Create file URLs by comparing the locatorInfo.plaintextHash with the matching SHA256 hash of the file in the files folder of the directory of the main.jsonl file.
             if (chatItem.contains("standardMessage")) {
                 QJsonObject standardMessage = chatItem.value("standardMessage").toObject();
                 QString chatId = chatItem.value("chatId").toString();
@@ -148,15 +180,47 @@ Messenger::Messages Signal::loadFile(const QString &filePath) {
                     }
                 }
 
+                QString content;
+
                 if (standardMessage.contains("text")) {
                     QJsonObject text = standardMessage.value("text").toObject();
 
                     if (text.contains("body")) {
-                        QString content = text.value("body").toString();
-                        msg.setContent(content);
-                        msg.setContentHtml(formatHtml(content));
+                        content = text.value("body").toString();
                     }
                 }
+
+                if (standardMessage.contains("attachments")) {
+                    for (const QJsonValue &v : standardMessage.value("attachments").toArray()) {
+                        if (v.isObject()) {
+                            QJsonObject attachment = v.toObject();
+
+                            if (attachment.contains("pointer")) {
+                                QJsonObject pointer = attachment.value("pointer").toObject();
+
+                                if (pointer.contains("locatorInfo")) {
+                                    QJsonObject locatorInfo = pointer.value("locatorInfo").toObject();
+
+                                    if (locatorInfo.contains("plaintextHash")) {
+                                        QByteArray plaintextHash = locatorInfo.value("plaintextHash").toString().trimmed().toLatin1();
+                                        auto it = media.find(plaintextHash);
+
+                                        if (it != media.end()) {
+                                            content += QUrl::fromLocalFile(it.value()).toString();
+                                        } else {
+                                            content += QUrl::fromLocalFile(QDir(filesDir).absoluteFilePath(plaintextHash)).toString();
+
+                                            qWarning() << "Missing Signal media" << plaintextHash;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                msg.setContent(content);
+                msg.setContentHtml(formatHtml(content));
 
                 messages.append(msg);
             }
