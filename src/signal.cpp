@@ -131,6 +131,22 @@ Messenger::Messages Signal::loadFile(const QString &filePath) {
              } else if (recipient.contains("self")) {
                 ownerAccountId = id;
                 nickNames.insert(id, ownerName);
+             } else if (recipient.contains("group")) {
+                 QJsonObject group = recipient.value("group").toObject();
+
+                 if (group.contains("snapshot")) {
+                    QJsonObject snapshot = group.value("snapshot").toObject();
+
+                    if (snapshot.contains("title")) {
+                        QJsonObject title = snapshot.value("title").toObject();
+
+                        if (title.contains("title")) {
+                            QString t = title.value("title").toString();
+
+                            nickNames.insert(id, t);
+                        }
+                    }
+                }
              }
         } else if (rootObj.contains("chat")) {
             QJsonObject chat = rootObj.value("chat").toObject();

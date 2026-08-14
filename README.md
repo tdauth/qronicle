@@ -318,6 +318,44 @@ Folder `signal-export-2026-08-01-09-46-27` contains:
 }
 {
   "recipient": {
+    "id":"61",
+    "group": {
+      "masterKey": "12345",
+      "whitelisted": true,
+      "snapshot": {
+        "title": {
+          "title": "My Group"
+        },
+        "description": {
+          "descriptionText": "This is my group."
+        },
+        "avatarUrl": "groups/12345/12345",
+        "accessControl": {
+          "attributes": "MEMBER",
+          "members": "MEMBER",
+          "addFromInviteLink": "UNSATISFIABLE",
+          "memberLabel":"MEMBER"
+        },
+        "version":4,
+        "members": [
+          {
+            "userId": "12345",
+            "role":"ADMINISTRATOR"
+          },
+          {
+            "userId":"12345",
+            "role":"DEFAULT",
+            "joinedAtVersion": 3,
+            "labelString": "🧜🏻‍♀️"
+          }
+        ]
+      },
+      "avatarColor":"A180"
+    }
+  }
+}
+{
+  "recipient": {
     "id":"1",
     "contact": {
       "aci": "12345",
