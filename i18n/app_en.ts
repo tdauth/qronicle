@@ -187,18 +187,18 @@ Alle rights reserved.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="100"/>
-        <location filename="../src/main.cpp" line="105"/>
+        <location filename="../src/main.cpp" line="109"/>
+        <location filename="../src/main.cpp" line="114"/>
         <source>qronicle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="109"/>
+        <location filename="../src/main.cpp" line="118"/>
         <source>Clears the existing database before loading messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="130"/>
+        <location filename="../src/main.cpp" line="139"/>
         <source>%1 directories.</source>
         <translation type="unfinished"></translation>
     </message>

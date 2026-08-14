@@ -69,6 +69,12 @@ QMap<QString, QString> loadCustomAliases() {
     QMap<QString, QString> aliases;
 
     QSettings settings;
+
+    qDebug() << "QSettings format:" << settings.format();
+    qDebug() << "QSettings organization:" << settings.organizationName();
+    qDebug() << "QSettings application:" << settings.applicationName();
+    qDebug() << "QSettings fileName:" << settings.fileName();
+
     settings.beginGroup("Aliases");
     QStringList keys = settings.allKeys();
 
@@ -83,6 +89,8 @@ QMap<QString, QString> loadCustomAliases() {
 }
 
 int main(int argc, char *argv[]) {
+    QCoreApplication::setOrganizationName("qronicle"); // important for settings folder ~/.config/qronicle
+    QCoreApplication::setApplicationName("qronicle");
     QGuiApplication app(argc, argv);
 
     QTranslator translator;
@@ -97,6 +105,7 @@ int main(int argc, char *argv[]) {
         app.installTranslator(&qtTranslator);
     }
 
+    app.setOrganizationName("qronicle"); // important for settings folder ~/.config/qronicle
     app.setApplicationName(QObject::tr("qronicle"));
     app.setApplicationVersion("1.0");
     app.setWindowIcon(QIcon(":/icons/qronicle"));
