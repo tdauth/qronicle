@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_AVATAR_PROVIDER_HPP
-#define CHRONICLE_AVATAR_PROVIDER_HPP
+#ifndef QRONICLE_AVATAR_PROVIDER_HPP
+#define QRONICLE_AVATAR_PROVIDER_HPP
 
 #include <QQuickImageProvider>
 #include <QPixmapCache>
@@ -30,14 +30,14 @@ public:
         QImage img;
         {
             // Falls du Multithreading nutzt, hier den Read-Lock setzen
-            // QReadLocker locker(&m_lock); 
+            // QReadLocker locker(&m_lock);
             img = m_avatars.value(id);
         }
 
         if (img.isNull()) {
             img = m_defaultAvatar;
         }
-        
+
         if (requestedSize.isValid() && (img.width() != requestedSize.width() || img.height() != requestedSize.height())) {
             img = img.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         }

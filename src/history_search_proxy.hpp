@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_HISTORY_SEARCH_PROXY_HPP
-#define CHRONICLE_HISTORY_SEARCH_PROXY_HPP
+#ifndef QRONICLE_HISTORY_SEARCH_PROXY_HPP
+#define QRONICLE_HISTORY_SEARCH_PROXY_HPP
 
 #include <QSortFilterProxyModel>
 
@@ -33,7 +33,7 @@ public:
     Q_INVOKABLE QStringList getAllMessengers();
     Q_INVOKABLE QStringList getAllProtocols();
     Q_INVOKABLE QStringList getAllNickNames();
-    
+
     Q_INVOKABLE QDateTime getFrom();
     Q_INVOKABLE QDateTime getTo();
 
@@ -68,7 +68,7 @@ public:
         triggerFilter();
 
     }
-    
+
     QString filterParticipant() const { return m_filterParticipant; }
     void setFilterParticipant(const QString &f) {
         if (m_filterParticipant == f) {
@@ -125,7 +125,7 @@ public:
 
         triggerFilter();
     }
-    
+
     QDateTime filterFrom() const { return m_filterFrom; }
     void setFilterFrom(const QDateTime &f) {
         if (m_filterFrom == f || !f.isValid()) {
@@ -142,7 +142,7 @@ public:
         if (m_filterTo == f || !f.isValid()) {
             return;
         }
-        
+
         qDebug() << "Filter to changed" << f;
 
         m_filterTo = f;

@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_MESSENGER_HPP
-#define CHRONICLE_MESSENGER_HPP
+#ifndef QRONICLE_MESSENGER_HPP
+#define QRONICLE_MESSENGER_HPP
 
 #include <QList>
 #include <QString>

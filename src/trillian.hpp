@@ -1,10 +1,10 @@
-#ifndef CHRONICLE_TRILLIAN_HPP
-#define CHRONICLE_TRILLIAN_HPP
+#ifndef QRONICLE_TRILLIAN_HPP
+#define QRONICLE_TRILLIAN_HPP
 
 #include "messenger.hpp"
 
 namespace qronicle {
-    
+
 class Trillian : public Messenger {
     public:
         virtual QString id() const override;

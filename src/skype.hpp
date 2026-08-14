@@ -1,10 +1,10 @@
-#ifndef CHRONICLE_SKYPE_HPP
-#define CHRONICLE_SKYPE_HPP
+#ifndef QRONICLE_SKYPE_HPP
+#define QRONICLE_SKYPE_HPP
 
 #include "messenger.hpp"
 
 namespace qronicle {
-    
+
 class Skype : public Messenger {
     public:
         virtual QString id() const override;

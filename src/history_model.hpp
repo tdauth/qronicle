@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_HISTORY_MODEL_HPP
-#define CHRONICLE_HISTORY_MODEL_HPP
+#ifndef QRONICLE_HISTORY_MODEL_HPP
+#define QRONICLE_HISTORY_MODEL_HPP
 
 #include <QSqlTableModel>
 #include <QSqlRecord>

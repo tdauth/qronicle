@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_MESSAGE_HPP
-#define CHRONICLE_MESSAGE_HPP
+#ifndef QRONICLE_MESSAGE_HPP
+#define QRONICLE_MESSAGE_HPP
 
 #include <QString>
 #include <QByteArray>

@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_TELEGRAM_HPP
-#define CHRONICLE_TELEGRAM_HPP
+#ifndef QRONICLE_TELEGRAM_HPP
+#define QRONICLE_TELEGRAM_HPP
 
 #include "messenger.hpp"
 

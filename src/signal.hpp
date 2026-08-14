@@ -1,5 +1,5 @@
-#ifndef CHRONICLE_SIGNAL_HPP
-#define CHRONICLE_SIGNAL_HPP
+#ifndef QRONICLE_SIGNAL_HPP
+#define QRONICLE_SIGNAL_HPP
 
 #include "messenger.hpp"
 

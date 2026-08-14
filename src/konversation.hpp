@@ -1,10 +1,10 @@
-#ifndef CHRONICLE_KONVERSATION_HPP
-#define CHRONICLE_KONVERSATION_HPP
+#ifndef QRONICLE_KONVERSATION_HPP
+#define QRONICLE_KONVERSATION_HPP
 
 #include "messenger.hpp"
 
 namespace qronicle {
-    
+
 class Konversation : public Messenger {
     public:
         virtual QString id() const override;
