@@ -29,6 +29,7 @@
 #include "skype.hpp"
 #include "whatsapp.hpp"
 #include "psi.hpp"
+#include "msteams.hpp"
 #include "amsn.hpp"
 #include "knuddels.hpp"
 
@@ -131,6 +132,7 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<Skype>();
     messengers << std::make_shared<WhatsApp>();
     messengers << std::make_shared<Psi>();
+    messengers << std::make_shared<MsTeams>();
     messengers << std::make_shared<Amsn>();
     messengers << std::make_shared<Knuddels>();
 

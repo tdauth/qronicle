@@ -228,13 +228,13 @@ Alle Rechte vorbehalten.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="110"/>
-        <location filename="../src/main.cpp" line="115"/>
+        <location filename="../src/main.cpp" line="111"/>
+        <location filename="../src/main.cpp" line="116"/>
         <source>qronicle</source>
         <translation>qronicle</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="119"/>
+        <location filename="../src/main.cpp" line="120"/>
         <source>Clears the existing database before loading messages.</source>
         <translation>Löscht die bestehende Datenbank vor dem Laden von Nachrichten.</translation>
     </message>
@@ -243,7 +243,7 @@ Alle Rechte vorbehalten.</translation>
         <translation type="vanished">Erlaube mehrfache gleiche Nachrichten.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="140"/>
+        <location filename="../src/main.cpp" line="142"/>
         <source>%1 directories.</source>
         <translation>%1-Verzeichnisse.</translation>
     </message>

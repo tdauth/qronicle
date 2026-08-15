@@ -15,6 +15,7 @@ cd ../build
     --skype ../personal/skype \
     --skype ../personal/skype2 \
     --skype ../personal/skype3 \
+    --msteams ../personal/msteams \
     --whatsapp ../personal/whatsapp \
     --signal ../personal/signal \
     --psi ../personal/psi \

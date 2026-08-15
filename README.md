@@ -18,10 +18,10 @@ Offline Qt-based messenger history visualizer:
 | <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ | ⏳ |
 | <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ | ⏳ |
 | <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/0/07/Microsoft_Office_Teams_%282025%E2%80%93present%29.svg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original"><img src="./assets/icons/microsoft-teams.svg" width="22" align="center"></a> [**Microsoft Teams**](https://en.wikipedia.org/wiki/Microsoft_Teams) | ⏳ | ⏳ | ⏳ |
 | <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ✅ | ✅ | ✅ |
-| <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ✅ | ⏳ | ⏳ |
-| <a href="https://invent.kde.org/network/neochat/-/blob/master/icons/300-apps-neochat.png?ref_type=heads"><img src="./assets/icons/neochat.png" width="22" align="center"></a>  [**NeoChat**](https://apps.kde.org/de/neochat/) | ⏳ | ⏳ | ⏳ |
-| <a href="https://upload.wikimedia.org/wikipedia/commons/0/07/Microsoft_Office_Teams_%282025%E2%80%93present%29.svg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original"><img src="./assets/icons/microsoft-teams.svg" width="22" align="center"></a>  [**Microsoft Teams**](https://en.wikipedia.org/wiki/Microsoft_Teams) | ⏳ | ⏳ | ⏳ |
+| <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a> [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ✅ | ⏳ | ⏳ |
+| <a href="https://invent.kde.org/network/neochat/-/blob/master/icons/300-apps-neochat.png?ref_type=heads"><img src="./assets/icons/neochat.png" width="22" align="center"></a> [**NeoChat**](https://apps.kde.org/de/neochat/) | ⏳ | ⏳ | ⏳ |
 
 **Offline:** The program does not connect online to any of those messengers.
 It requires local history data in a certain format to process it.
@@ -36,6 +36,8 @@ Since this program uses Qt the name qronicle has been chosen.
 [❤️ Sponsor](https://www.paypal.com/donate?hosted_button_id=ZAAKMQLSNGDK8)
 
 ## Usage
+
+See [run.sh](./scripts/run.sh) for options.
 
 ### History
 
@@ -529,6 +531,130 @@ vcard XML file:
 </vCard>
 ```
 
+### Microsoft Teams
+
+- <https://teams.live.com/dataexport>: Select Chat History and Media and submit a request. You have to wait until a download link appears for the request on this page.
+- It contains the file `messages.json`:
+
+```json
+{
+  "userId": "8:johnny_w2",
+  "exportDate": "2026-08-15T16:05",
+  "conversations": [
+    {
+      "id": "19:my_conversion_id",
+      "displayName": "",
+      "version":1785035180639,
+      "properties": {
+        "conversationblocked":false,
+        "lastimreceivedtime":"2022-03-30T22:11:50.584Z",
+        "consumptionhorizon":"1648678311317;1648678346315;7261694110703840390",
+        "conversationstatus":null,
+        "onetoonev2threadid":null
+        },
+        "threadProperties": {
+          "membercount":1,
+          "members": "[\"Export Owner\"]",
+          "membersBlocked":null,
+          "membersNicknames":null,
+          "topic":null,
+          "picture":null,
+          "description":null,
+          "guidelines":null,
+          "shareJoinLink":null,
+          "joiningEnabled":null,
+          "searchVisible":null,
+          "websiteText":null,
+          "websiteUrl":null,
+          "consumptionhorizons": {
+            "version":"1786809948331",
+            "consumptionhorizons": []
+          }
+        },
+        "MessageList": [
+          {
+            "id":"1648678311317",
+            "displayName": "Hans",
+            "originalarrivaltime": "2022-03-30T22:11:50.584Z",
+            "messagetype": "RichText",
+            "version": 1648678311317,
+            "content": "Hey, how are you?",
+            "conversationid": "19:my_conversion_id.v2",
+            "from":"8:klaus",
+            "properties": {
+              "s2spartnername":"chat-service-v1",
+              "importedBy": {
+                "Prefix":"8",
+                "Identifier":"klaus",
+                "Network":"skype",
+                "Properties":{},
+                "RawValue":"8:klaus"
+              },
+              "importedTime":"2026-01-18T20:28:22.159Z"
+            },
+            "amsreferences":null
+          }
+        ]
+      },
+    ]
+}
+```
+
+It is some other chat event than a message if the value "from" is null.
+
+For images:
+
+```json
+{
+  "id":"1615659045261",
+  "displayName": "Klaus",
+  "originalarrivaltime":"2021-03-13T18:10:44.06Z",
+  "messagetype":"RichText/UriObject",
+  "version":1615659045261,
+  "content":"<URIObject uri=\"https://api.asm.skype.com/v1/objects/unique_media_identifier\" url_thumbnail=\"https://api.asm.skype.com/v1/objects/unique_media_identifier/views/imgt1_anim\" type=\"Picture.1\" doc_id=\"unique_media_identifier\" width=\"1280\" height=\"720\">Um dieses geteilte Foto anzuzeigen, wechsle zu: <a href=\"https://login.skype.com/login/sso?go=xmmfallback?pic=unique_media_identifier\">https://login.skype.com/login/sso?go=xmmfallback?pic=unique_media_identifier</a><OriginalName v=\"myimage.jpg\"></OriginalName><FileSize v=\"72524\"></FileSize><meta type=\"photo\" originalName=\"myimage.jpg\"></meta></URIObject>",
+  "conversationid":"19:my_conversion_id.v2",
+  "from":"8:klaus",
+  "properties":{
+    "s2spartnername":"chat-service-v1",
+    "importedBy": {
+      "Prefix":"8",
+      "Identifier":"klaus",
+      "Network": "skype",
+      "Properties":{},
+      "RawValue":"8:klaus"
+    },
+    "importedTime":"2026-01-18T20:28:22.877Z"
+  },
+  "amsreferences":[ "unique_media_identifier" ]
+}
+```
+
+For audios:
+
+```json
+{
+  "id":"1601143974239",
+  "displayName": "Klaus",
+  "originalarrivaltime":"2020-09-26T18:12:52.573Z",
+  "messagetype":"RichText/Media_AudioMsg",
+  "version": 1601143974239,
+  "content":"<URIObject uri=\"https://api.asm.skype.com/v1/objects/unique_media_identifier\" url_thumbnail=\"https://api.asm.skype.com/v1/objects/unique_media_identifier/views/audio\" type=\"Audio.1/Message.1\" doc_id=\"unique_media_identifier\" duration_ms=\"7944\">To hear this voice message, go to: <a href=\"https://login.skype.com/login/sso?go=xmmfallback?am=unique_media_identifier\">https://login.skype.com/login/sso?go=xmmfallback?am=unique_media_identifier</a><OriginalName v=\"1-audioMessage.m4a\"></OriginalName><FileSize v=\"49610\"></FileSize></URIObject>",
+  "conversationid":"19:my_conversion_id.v2",
+  "from":"8:klaus",
+  "properties": {
+    "s2spartnername":"chat-service-v1",
+    "importedBy": {
+      "Prefix":"8",
+      "Identifier": "klaus",
+      "Network":"live",
+      "Properties":{},
+      "RawValue":"8:klaus" 
+    },
+    "importedTime": "2026-01-18T00:15:27.077Z"
+  },
+  "amsreferences": ["unique_media_identifier"]}
+```
+
 ### aMSN
 
 - `~/.amsn` contains a account data but can also contain other accounts in sub folders called by ther email address with underscores instead of dots and without at symbol.
@@ -736,11 +862,6 @@ The app provides smileys in form of `(hello)`.
 - `~/.local/share/Steam/config/htmlcache/`
 - `~/snap/steam/common/.local/share/Steam/config/htmlcache/`
 - Sub folder `Local Storage/leveldb/`
-
-### Microsoft Teams
-
-- <https://teams.live.com/dataexport>: Select Chat History and Media and submit a request. You have to wait until a download link appears for the request on this page.
-- It contains the file `messages.json`.
 
 ### Discord
 

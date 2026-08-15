@@ -208,18 +208,18 @@ Alle rights reserved.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="110"/>
-        <location filename="../src/main.cpp" line="115"/>
+        <location filename="../src/main.cpp" line="111"/>
+        <location filename="../src/main.cpp" line="116"/>
         <source>qronicle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="119"/>
+        <location filename="../src/main.cpp" line="120"/>
         <source>Clears the existing database before loading messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="140"/>
+        <location filename="../src/main.cpp" line="142"/>
         <source>%1 directories.</source>
         <translation type="unfinished"></translation>
     </message>

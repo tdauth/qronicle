@@ -61,6 +61,8 @@ qt_add_executable(qronicle
     src/whatsapp.cpp
     src/psi.hpp
     src/psi.cpp
+    src/msteams.hpp
+    src/msteams.cpp
     src/amsn.hpp
     src/amsn.cpp
     src/knuddels.hpp
