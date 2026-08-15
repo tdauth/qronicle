@@ -20,77 +20,141 @@ Messenger::Messages MsTeams::loadFile(const QString &filePath) {
     Messages messages;
 
     QFile file(filePath);
+
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Could not open MS Teams file:" << filePath;
         return messages;
     }
 
-    QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
-
     QFileInfo fileInfo(filePath);
     QString absoluteFilePath = fileInfo.absoluteFilePath();
     QString absoluteDirPath = fileInfo.absolutePath();
 
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
+
+    if (doc.isNull()) {
+        qWarning() << "JSON error in" << filePath << ":" << error.errorString();
+        return messages;
+    }
+
+    QJsonObject rootObj = doc.object();
+    QString userId;
+
+    if (rootObj.contains("userId")) {
+        userId = rootObj.value("userId").toString();
+    }
+
     QHash<QString, QString> nickNames;
-    QString ownerName;
-    QString ownerAccountId;
 
-    QHash<QString, QString> chatAccountIds;
+    if (rootObj.contains("conversations") && rootObj.value("conversations").isArray()) {
+        for (const QJsonValue &v : rootObj.value("conversations").toArray()) {
+            if (v.isObject()) {
+                QJsonObject conversation = v.toObject();
 
-    qint64 lineNumber = 0;
+                if (conversation.contains("MessageList")  && conversation.value("MessageList").isArray()) {
+                    for (const QJsonValue &v2 : conversation.value("MessageList").toArray()) {
+                        if (v2.isObject()) {
+                            QJsonObject message = v2.toObject();
 
-    while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
-        lineNumber++;
+                            if (message.contains("messagetype")) {
+                                QString messagetype = message.value("messagetype").toString();
 
-        if (line.isEmpty()) {
-            continue;
-        }
+                                // ignore other chat events for now
+                                if (messagetype == "RichText") {
+                                    Message msg;
+                                    msg.setFilePath(absoluteFilePath);
+                                    msg.setProtocol("MS Teams");
+                                    msg.setMessenger("MS Teams");
+                                    msg.setOut(message.contains("outgoing"));
+                                    msg.setTimestamp(QDateTime::fromString(message.value("originalarrivaltime").toString(), Qt::ISODateWithMs));
 
-        QJsonParseError error;
-        QJsonDocument doc = QJsonDocument::fromJson(line.toUtf8(), &error);
+                                    QString conversationId;
 
-        if (doc.isNull()) {
-            qWarning() << "JSON error in" << filePath << ":" << error.errorString();
-            return messages;
-        }
+                                    if (message.contains("conversationid")) {
+                                        conversationId = message.value("conversationid").toString();
+                                    }
 
-        QJsonObject rootObj = doc.object();
+                                    QString from;
 
-        if (rootObj.contains("conversations")) {
-            QJsonObject conversations = rootObj.value("conversations").toObject();
+                                    if (message.contains("from")) {
+                                        from = message.value("from").toString();
+                                    }
 
-            if (conversations.contains("MessageList")) {
-                for (const QJsonValue &v : conversations.value("MessageList").toArray()) {
-                    if (v.isObject()) {
-                        QJsonObject message = v.toObject();
+                                    QString rawValue;
 
-                        // ignore other chat events
-                        if (message.contains("from")) {
-                            Message msg;
-                            msg.setFilePath(absoluteFilePath);
-                            msg.setLineNumber(lineNumber);
-                            msg.setProtocol("Microsoft Teams");
-                            msg.setMessenger("Microsoft Teams");
-                            msg.setOut(message.contains("outgoing"));
-                            msg.setTimestamp(QDateTime::fromString(message.value("originalarrivaltime").toString(), Qt::ISODateWithMs));
+                                    if (message.contains("properties") && message.value("properties").isObject()) {
+                                        QJsonObject properties = message.value("properties").toObject();
 
-                            if (message.contains("from")) {
-                                msg.setSource(message.value("from").toString());
+                                        if (properties.contains("importedBy") && properties.value("importedBy").isObject()) {
+                                            QJsonObject importedBy = properties.value("importedBy").toObject();
 
-                                if (message.contains("displayName")) {
-                                    msg.setSourceNick(message.value("displayName").toString());
+                                            if (importedBy.contains("RawValue")) {
+                                                rawValue = importedBy.value("RawValue").toString();
+                                            }
+
+                                            if (importedBy.contains("Network")) {
+                                                msg.setProtocol(importedBy.value("Network").toString());
+                                            }
+                                        }
+                                    }
+
+                                    if (from.isEmpty() && !rawValue.isEmpty()) {
+                                        from = rawValue;
+                                    }
+
+                                    msg.setSource(from);
+
+                                    if (from == userId) {
+                                        msg.setOut(true);
+                                        msg.setSourceNick(userId);
+
+                                        if (rawValue != userId) {
+                                            msg.setDestination(rawValue);
+                                        } else {
+                                             if (nickNames.contains(conversationId)) {
+                                                msg.setDestination(nickNames[conversationId]);
+                                             }
+                                        }
+
+                                        if (message.contains("displayName") && !message.value("displayName").toString().isEmpty()) {
+                                            msg.setDestinationNick(message.value("displayName").toString());
+                                        } else {
+                                            if (rawValue != userId) {
+                                                msg.setDestinationNick(rawValue);
+                                            } else {
+                                                msg.setDestinationNick(msg.destination());
+                                            }
+                                        }
+                                    } else {
+                                        msg.setOut(false);
+                                        msg.setDestination(userId);
+                                        msg.setDestinationNick(userId);
+
+                                        if (message.contains("displayName") && !message.value("displayName").toString().isEmpty()) {
+                                            msg.setSourceNick(message.value("displayName").toString());
+                                        } else {
+                                            msg.setSourceNick(rawValue);
+                                        }
+                                    }
+
+                                    if (message.contains("content")) {
+                                        QString content = message.value("content").toString();
+                                        msg.setContent(content);
+                                        msg.setContentHtml(formatHtml(content));
+                                    }
+
+                                    messages.append(msg);
+
+                                    if (!conversationId.isEmpty()) {
+                                        if (msg.out()) {
+                                            nickNames.insert(conversationId, msg.destinationNick());
+                                        } else {
+                                            nickNames.insert(conversationId, msg.sourceNick());
+                                        }
+                                    }
                                 }
                             }
-
-                            if (message.contains("content")) {
-                                QString content = message.value("content").toString();
-                                msg.setContent(content);
-                                msg.setContentHtml(formatHtml(content));
-                            }
-
-                            messages.append(msg);
                         }
                     }
                 }

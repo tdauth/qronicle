@@ -26,6 +26,10 @@
         <file alias="aMSN">assets/icons/amsn.png</file>
         <file alias="Knuddels">assets/icons/knuddels.jpg</file>
         <file alias="mail">assets/icons/mail.png</file>
-        <file alias="Microsoft Teams">assets/icons/microsoft-teams.svg</file>
+        <file alias="MS Teams">assets/icons/microsoft-teams.svg</file>
+
+        <!-- For MS Teams exports only: -->
+        <file alias="skype">assets/icons/skype.svg</file>
+        <file alias="live">assets/icons/skype.svg</file>
     </qresource>
 </RCC>
