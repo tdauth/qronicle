@@ -1,4 +1,5 @@
 #include <QGuiApplication>
+#include <QApplication>
 #include <QCommandLineParser>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -91,7 +92,7 @@ QMap<QString, QString> loadCustomAliases() {
 int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("qronicle"); // important for settings folder ~/.config/qronicle
     QCoreApplication::setApplicationName("qronicle");
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     QTranslator translator;
     QLocale locale = QLocale::system();

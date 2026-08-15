@@ -12,6 +12,8 @@ class HistorySearchProxy : public QSortFilterProxyModel {
     Q_OBJECT
 
     // Properties für QML
+    Q_PROPERTY(int sourceModelCount READ sourceModelCount NOTIFY sourceModelCountChanged)
+
     Q_PROPERTY(QString filterFilePath READ filterFilePath WRITE setFilterFilePath NOTIFY filterChanged)
     Q_PROPERTY(QString filterMessage READ filterMessage WRITE setFilterMessage NOTIFY filterChanged)
     Q_PROPERTY(QString filterParticipant READ filterParticipant WRITE setFilterParticipant NOTIFY filterChanged)
@@ -36,6 +38,11 @@ public:
 
     Q_INVOKABLE QDateTime getFrom();
     Q_INVOKABLE QDateTime getTo();
+
+    int sourceModelCount() const;
+    Q_INVOKABLE int mapRowFromSource(int sourceRow);
+
+    void setSourceModel(QAbstractItemModel *sourceModel) override;
 
     using QSortFilterProxyModel::QSortFilterProxyModel;
 
@@ -162,6 +169,8 @@ signals:
     void filterToChanged();
 
     void filterChanged();
+
+    void sourceModelCountChanged();
 
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;

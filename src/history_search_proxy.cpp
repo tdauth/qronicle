@@ -53,7 +53,7 @@ QDateTime HistorySearchProxy::getFrom() {
     if (sqlModel == nullptr) {
         return QDateTime();
     }
-    
+
     return sqlModel->getFrom();
 }
 
@@ -62,8 +62,47 @@ QDateTime HistorySearchProxy::getTo() {
     if (sqlModel == nullptr) {
         return QDateTime();
     }
-    
+
     return sqlModel->getTo();
+}
+
+int HistorySearchProxy::sourceModelCount() const {
+    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+    if (sqlModel == nullptr) {
+        return 0;
+    }
+
+    return sqlModel->rowsCount();
+}
+
+int HistorySearchProxy::mapRowFromSource(int sourceRow) {
+    if (!sourceModel()) return -1;
+
+    while (sourceModel()->rowCount() <= sourceRow && sourceModel()->canFetchMore(QModelIndex())) {
+        sourceModel()->fetchMore(QModelIndex());
+    }
+
+    while (this->rowCount() < sourceModel()->rowCount() && this->canFetchMore(QModelIndex())) {
+        this->fetchMore(QModelIndex());
+    }
+
+    QModelIndex sourceIndex = sourceModel()->index(sourceRow, 0);
+    QModelIndex proxyIndex = mapFromSource(sourceIndex);
+
+    return proxyIndex.isValid() ? proxyIndex.row() : -1;
+}
+
+void HistorySearchProxy::setSourceModel(QAbstractItemModel *sourceModel) {
+    if (this->sourceModel()) {
+        disconnect(this->sourceModel(), &QAbstractItemModel::rowsInserted, this, &HistorySearchProxy::sourceModelCountChanged);
+        disconnect(this->sourceModel(), &QAbstractItemModel::rowsRemoved, this, &HistorySearchProxy::sourceModelCountChanged);
+    }
+    QSortFilterProxyModel::setSourceModel(sourceModel);
+    if (sourceModel) {
+        connect(sourceModel, &QAbstractItemModel::rowsInserted, this, &HistorySearchProxy::sourceModelCountChanged);
+        connect(sourceModel, &QAbstractItemModel::rowsRemoved, this, &HistorySearchProxy::sourceModelCountChanged);
+    }
+    emit sourceModelCountChanged();
 }
 
 QStringList HistorySearchProxy::getAllProtocols() {

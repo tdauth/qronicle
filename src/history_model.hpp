@@ -42,6 +42,8 @@ public:
     QStringList getAllNickNames();
     QDateTime getFrom();
     QDateTime getTo();
+
+    int rowsCount() const;
 };
 
 }

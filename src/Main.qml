@@ -140,7 +140,6 @@ ApplicationWindow {
 
                 ToolButton {
                     id: filterButton
-                    text: qsTr("Filter")
 
                     Shortcut {
                         id: filterShortcut
@@ -148,19 +147,71 @@ ApplicationWindow {
                         onActivated: filterButton.toggle()
                     }
 
+                    text: icon.name ? "" : qsTr("Filter")
                     icon.name: "view-filter"
                     icon.source: "qrc:/icons/fallback-filter.svg"
+
+                    hoverEnabled: true
+
+                    ToolTip {
+                        visible: parent.hovered
+                        text: qsTr("Filter") + " (" + filterShortcut.nativeText + ")"
+                        delay: 500
+                    }
 
                     checkable: true
                     checked: false // Standardmäßig aus
                     onClicked: filterPanel.visible = checked
+                }
 
-                    contentItem: Label {
-                        text: filterButton.text + (filterButton.checked ? " ▴" : " ▾") + " (" + filterShortcut.nativeText + ")"
-                        font: filterButton.font
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
+                ToolButton {
+                    id: jumpToTheTopButton
+
+                    Shortcut {
+                        id: jumpToTheTopShortcut
+                        sequence: StandardKey.Home
                     }
+
+                    text: icon.name ? "" : "⬆"
+                    icon.name: "go-top"
+                    icon.source: "qrc:/icons/fallback-filter.svg"
+
+                    hoverEnabled: true
+
+                    ToolTip {
+                        visible: parent.hovered
+                        text: qsTr("Jump to the top") + " (" + qsTr("Home") + ")"
+                        delay: 500
+                    }
+
+                    onClicked: {
+                        chatListView.forceLayout()
+                        chatListView.currentIndex = 0
+                        chatListView.positionViewAtBeginning()
+                    }
+                }
+
+                ToolButton {
+                    id: jumpToTheBottomButton
+
+                    Shortcut {
+                        id: jumpToTheBottomShortcut
+                        sequence: StandardKey.End
+                    }
+
+                    text: icon.name ? "" : "⬇"
+                    icon.name: "go-bottom"
+                    icon.source: "qrc:/icons/fallback-filter.svg"
+
+                    hoverEnabled: true
+
+                    ToolTip {
+                        visible: parent.hovered
+                        text: qsTr("Jump to the bottom") + " (" + qsTr("End") + ")"
+                        delay: 500
+                    }
+
+                    onClicked: chatListView.jumpToTheEnd()
                 }
 
                 Item { Layout.fillWidth: true } // Spacer
@@ -332,24 +383,34 @@ ApplicationWindow {
                 reuseItems: true
                 cacheBuffer: 3000
 
-                property bool initialScrollDone: false
+                Component.onCompleted: {
+                    chatListView.jumpToTheEnd()
+                }
 
-                onCountChanged: {
-                    if (!initialScrollDone && chatModel.totalCount > 0) {
-                        initialScrollDone = true
+                function jumpToTheEnd() {
+                    var totalRows = chatModel.sourceModelCount || 0
+                    var lastSourceRow = totalRows - 1
 
-                        // 1. Erster Versuch: Zum aktuell bekannten Ende
-                        chatListView.positionViewAtIndex(count - 1, ListView.End)
+                    if (lastSourceRow >= 0) {
+                        var targetListViewIndex = chatModel.mapRowFromSource(lastSourceRow)
+                        console.log("lastSourceRow=" + lastSourceRow + ", targetListViewIndex=" + targetListViewIndex)
 
-                        // 2. Erzwungener Versuch: Nach einer kurzen Verzögerung zum ECHTEN Ende
-                        // Das gibt der SQLite-Engine Zeit, das 'fetchMore' intern zu verarbeiten
-                        var scrollTimer = Qt.createQmlObject('import QtQuick; Timer { interval: 100; repeat: false }', chatListView)
-                        scrollTimer.triggered.connect(function() {
-                            // Wir springen zum absoluten Maximum aus deiner SQL-Abfrage
-                            chatListView.positionViewAtIndex(chatModel.totalCount - 1, ListView.End)
-                            scrollTimer.destroy()
-                        })
-                        scrollTimer.start()
+                        if (targetListViewIndex !== -1) {
+                            this.forceLayout()
+                            this.currentIndex = targetListViewIndex
+
+                            var jumpTimer = Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 1; repeat: false; }', chatListView)
+                            jumpTimer.triggered.connect(function() {
+                                chatListView.forceLayout()
+                                chatListView.positionViewAtIndex(targetListViewIndex, ListView.Contain)
+                                jumpTimer.destroy()
+                            })
+                            jumpTimer.start()
+
+                        } else {
+                            this.forceLayout()
+                            this.positionViewAtEnd()
+                        }
                     }
                 }
 
@@ -358,7 +419,7 @@ ApplicationWindow {
                         positionViewAtBeginning()
                         event.accepted = true
                     } else if (event.key === Qt.Key_End) {
-                        positionViewAtEnd()
+                        chatListView.jumpToTheEnd()
                         event.accepted = true
                     }
                 }
