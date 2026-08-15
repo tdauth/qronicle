@@ -14,6 +14,7 @@ cd ../build
     --telegram ../personal/telegram \
     --skype ../personal/skype \
     --skype ../personal/skype2 \
+    --skype ../personal/skype3 \
     --whatsapp ../personal/whatsapp \
     --signal ../personal/signal \
     --psi ../personal/psi \
