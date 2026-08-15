@@ -26,5 +26,6 @@
         <file alias="aMSN">assets/icons/amsn.png</file>
         <file alias="Knuddels">assets/icons/knuddels.jpg</file>
         <file alias="mail">assets/icons/mail.png</file>
+        <file alias="Microsoft Teams">assets/icons/microsoft-teams.svg</file>
     </qresource>
 </RCC>

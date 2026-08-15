@@ -21,6 +21,7 @@ Offline Qt-based messenger history visualizer:
 | <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ✅ | ✅ |
 | <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ✅ | ⏳ |
 | <a href="https://invent.kde.org/network/neochat/-/blob/master/icons/300-apps-neochat.png?ref_type=heads"><img src="./assets/icons/neochat.png" width="22" align="center"></a>  [**NeoChat**](https://apps.kde.org/de/neochat/) | ⏳ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/0/07/Microsoft_Office_Teams_%282025%E2%80%93present%29.svg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original"><img src="./assets/icons/microsoft-teams.svg" width="22" align="center"></a>  [**Microsoft Teams**](https://en.wikipedia.org/wiki/Microsoft_Teams) | ⏳ | ⏳ |
 
 **Offline:** The program does not connect online to any of those messengers.
 It requires local history data in a certain format to process it.
@@ -738,9 +739,8 @@ The app provides smileys in form of `(hello)`.
 
 ### Microsoft Teams
 
-- `~/.config/Microsoft/Microsoft Teams`
-- Export via Microsoft Export Website into JSON
-- In browser Chromium profile DB `~/.config/chromium/Default/IndexedDB/https_teams.microsoft.com_0.indexeddb.leveldb/`
+- <https://teams.live.com/dataexport>: Select Chat History and Media and submit a request. You have to wait until a download link appears for the request on this page.
+- It contains the file `messages.json`.
 
 ### Discord
 
