@@ -2,26 +2,26 @@
 
 Offline Qt-based messenger history visualizer:
 
-| Name | Messages | Avatars |
-| :--- | :---:    | :---:   |
-| <img src="./assets/icons/qronicle.png" width="22" align="center"> [**qronicle**](https://github.com/tdauth/qronicle) | ✅ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Signal_(software)#/media/File:Signal-Logo-Ultramarine_(2024).svg"><img src="./assets/icons/signal.svg" width="22" align="center"></a> [**Signal**](<https://en.wikipedia.org/wiki/Signal_(software)>) | ✅ | ⏳ |
-| <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ |
-| <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Telegram_(software)#/media/File:Telegram_2019_Logo.svg"><img src="./assets/icons/telegram.svg" width="22" align="center"></a> [**Telegram**](https://en.wikipedia.org/wiki/Telegram_\(software\)) | ✅ | ⏳ |
-| <a href="https://discord.com/branding"><img src="./assets/icons/discord.svg" width="22" align="center"></a> [**Discord**](https://en.wikipedia.org/wiki/Discord) | ⏳ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ |
-| <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ |
-| <a href="https://upload.wikimedia.org/wikipedia/commons/1/1a/Breezeicons-apps-48-konversation.svg"><img src="./assets/icons/konversation.svg" width="22" align="center"></a> [**Konversation**](https://en.wikipedia.org/wiki/Konversation) | ✅ | ⏳ |
-| <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ |
-| <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ |
-| <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ |
-| <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ |
-| <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ✅ | ✅ |
-| <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ✅ | ⏳ |
-| <a href="https://invent.kde.org/network/neochat/-/blob/master/icons/300-apps-neochat.png?ref_type=heads"><img src="./assets/icons/neochat.png" width="22" align="center"></a>  [**NeoChat**](https://apps.kde.org/de/neochat/) | ⏳ | ⏳ |
-| <a href="https://upload.wikimedia.org/wikipedia/commons/0/07/Microsoft_Office_Teams_%282025%E2%80%93present%29.svg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original"><img src="./assets/icons/microsoft-teams.svg" width="22" align="center"></a>  [**Microsoft Teams**](https://en.wikipedia.org/wiki/Microsoft_Teams) | ⏳ | ⏳ |
+| Name | Messages | Media Links   | Avatars |
+| :--- | :---:    | :---:   | :---:   |
+| <img src="./assets/icons/qronicle.png" width="22" align="center"> [**qronicle**](https://github.com/tdauth/qronicle) | ✅ | ⏳ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Signal_(software)#/media/File:Signal-Logo-Ultramarine_(2024).svg"><img src="./assets/icons/signal.svg" width="22" align="center"></a> [**Signal**](<https://en.wikipedia.org/wiki/Signal_(software)>) | ✅ | ✅ | ⏳ |
+| <a href="https://de.wikipedia.org/wiki/WhatsApp#/media/Datei:WhatsApp_Logo_green.svg"><img src="./assets/icons/whatsapp.svg" width="22" align="center"></a> [**WhatsApp**](https://en.wikipedia.org/wiki/WhatsApp) | ✅ | ✅ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Facebook_Messenger"><img src="./assets/icons/facebook.svg" width="22" align="center"></a> [**Facebook Messenger**](https://en.wikipedia.org/wiki/Facebook_Messenger) | ✅ | ⏳ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"><img src="./assets/icons/instagram.svg" width="22" align="center"></a> [**Instagram**](https://en.wikipedia.org/wiki/Instagram) | ⏳ | ⏳ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Telegram_(software)#/media/File:Telegram_2019_Logo.svg"><img src="./assets/icons/telegram.svg" width="22" align="center"></a> [**Telegram**](https://en.wikipedia.org/wiki/Telegram_\(software\)) | ✅ | ⏳ | ⏳ |
+| <a href="https://discord.com/branding"><img src="./assets/icons/discord.svg" width="22" align="center"></a> [**Discord**](https://en.wikipedia.org/wiki/Discord) | ⏳ | ⏳ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Skype"><img src="./assets/icons/skype.svg" width="22" align="center"></a> [**Skype**](https://en.wikipedia.org/wiki/Skype) | ✅ | ✅ | ✅ |
+| <a href="https://en.wikipedia.org/wiki/Kopete"><img src="./assets/icons/kopete.svg" width="22" align="center"></a> [**Kopete**](https://en.wikipedia.org/wiki/Kopete) | ✅ | ⏳ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/1/1a/Breezeicons-apps-48-konversation.svg"><img src="./assets/icons/konversation.svg" width="22" align="center"></a> [**Konversation**](https://en.wikipedia.org/wiki/Konversation) | ✅ | ⏳ | ⏳ |
+| <a href="https://en.wikipedia.org/wiki/Psi_(instant_messaging_client)"><img src="./assets/icons/psi.png" width="22" align="center"></a> [**Psi**](https://en.wikipedia.org/wiki/Psi_\(instant_messaging_client\)) | ✅ | ✅ | ✅ |
+| <a href="https://en.wikipedia.org/wiki/Trillian_(software)"><img src="./assets/icons/trillian.png" width="22" align="center"></a> [**Trillian**](https://en.wikipedia.org/wiki/Trillian_\(software\)) | ✅ | ⏳ | ⏳ |
+| <a href="https://download.kde.org/stable/oxygen-icons"><img src="./assets/icons/mail.png" width="22" align="center"></a> [**Maildir**](https://en.wikipedia.org/wiki/Maildir) (for email) | ⏳ | ⏳ | ⏳ |
+| <a href="https://avatars.githubusercontent.com/u/1395850?s=200&v=4"><img src="./assets/icons/gammu.png" width="22" align="center"></a> [**Gammu**](https://github.com/gammu/gammu) (for SMS) | ⏳ | ⏳ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/3/3a/AMSN_icon.svg"><img src="./assets/icons/amsn.svg" width="22" align="center"></a>  [**aMSN**](https://en.wikipedia.org/wiki/AMSN) | ✅ | ✅ | ✅ |
+| <a href="https://www.facebook.com/photo/?fbid=554414996712205&set=a.554414953378876"><img src="./assets/icons/knuddels.jpg" width="22" align="center"></a>  [**Knuddels**](https://de.wikipedia.org/wiki/Knuddels) | ✅ | ⏳ | ⏳ |
+| <a href="https://invent.kde.org/network/neochat/-/blob/master/icons/300-apps-neochat.png?ref_type=heads"><img src="./assets/icons/neochat.png" width="22" align="center"></a>  [**NeoChat**](https://apps.kde.org/de/neochat/) | ⏳ | ⏳ | ⏳ |
+| <a href="https://upload.wikimedia.org/wikipedia/commons/0/07/Microsoft_Office_Teams_%282025%E2%80%93present%29.svg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original"><img src="./assets/icons/microsoft-teams.svg" width="22" align="center"></a>  [**Microsoft Teams**](https://en.wikipedia.org/wiki/Microsoft_Teams) | ⏳ | ⏳ | ⏳ |
 
 **Offline:** The program does not connect online to any of those messengers.
 It requires local history data in a certain format to process it.
