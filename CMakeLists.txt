@@ -76,6 +76,7 @@ qt_add_qml_module(qronicle
       "src/Main.qml"
       "src/CustomSearchField.qml"
       "src/DateTimePicker.qml"
+      "src/ImportMessagesDialog.qml"
     DEPENDENCIES
       QtQuick
       QtQuick.Layouts
@@ -121,9 +122,7 @@ set(CPACK_PACKAGE_VERSION "1.0.0")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Offline Qt-based messenger history visualizer")
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-set(CPACK_DEBIAN_PACKAGE_DEPENDS
-  "libqt6sql6-sqlite;qml6-module-qtquick-layouts;qml6-module-qtquick-controls;qml6-module-qtquick-templates;qml6-module-qtquick-window;libqt6svg6"
-)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6sql6-sqlite;libqt6svg6;qml6-module-qtquick-layouts;qml6-module-qtquick-controls;qml6-module-qtquick-templates;qml6-module-qtquick-dialogs")
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 

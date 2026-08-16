@@ -137,11 +137,13 @@ int main(int argc, char *argv[]) {
     messengers << std::make_shared<Knuddels>();
 
     QMap<std::shared_ptr<Messenger>, QCommandLineOption*> optionMap;
+    HistorySearchProxy::Messengers messengersMap;
 
     for (const auto& messenger : messengers) {
         auto* opt = new QCommandLineOption(messenger->id(), QObject::tr("%1 directories.").arg(messenger->id()), "path");
         parser.addOption(*opt);
         optionMap.insert(messenger, opt);
+        messengersMap.insert(messenger->id(), messenger.get());
     }
 
     parser.process(app);
@@ -224,6 +226,8 @@ int main(int argc, char *argv[]) {
     proxyModel->setDynamicSortFilter(false);
     proxyModel->setFilterFrom(baseModel->getFrom());
     proxyModel->setFilterTo(baseModel->getTo());
+    proxyModel->setMessengers(messengersMap);
+    proxyModel->setDatabase(&db);
 
     qDebug() << "--- Registered files QRC ---";
     QDirIterator it(":", QDirIterator::Subdirectories);
@@ -245,6 +249,7 @@ int main(int argc, char *argv[]) {
     QDateTime buildDateTime(buildDate, buildTime);
     engine.rootContext()->setContextProperty("buildDateTime", buildDateTime);
 
+    engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/ImportMessagesDialog.qml")));
     engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/CustomSearchField.qml")));
     engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/DateTimePicker.qml")));
     engine.load(QUrl(QStringLiteral("qrc:/qronicle_qml/src/Main.qml")));

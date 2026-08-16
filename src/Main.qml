@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Dialogs
 import QtQuick.Layouts
 
 ApplicationWindow {
@@ -20,6 +21,59 @@ ApplicationWindow {
             console.log("Open:", folderUrl);
             Qt.openUrlExternally(folderUrl);
         }
+    }
+
+    MessageDialog {
+        id: errorDialog
+        title: qsTr("Error")
+        buttons: MessageDialog.Ok
+    }
+
+    ImportMessagesDialog {
+        id: importFolderDialog
+
+        anchors.centerIn: parent
+
+        onDialogAccepted: (folderUrl, selectedOption) => {
+            console.log("Folder URL:", folderUrl)
+            console.log("Messenger:", selectedOption)
+
+            const error = chatModel.importMessengerFolder(selectedOption, folderUrl);
+
+            if (error.length > 0) {
+                errorDialog.text = error
+                errorDialog.open()
+            }
+        }
+    }
+
+    Action {
+        id: importFolderAction
+        text: qsTr("Import messages from folder")
+        shortcut: "Ctrl+I"
+        onTriggered: importFolderDialog.openWithModel(chatModel.getAllMessengerIds())
+    }
+
+    MessageDialog {
+        id: clearAllMessagesConfirmDialog
+        title: qsTr("Clear all imported messages?")
+        text: qsTr("Do you really want to permanently clear all imported messages?")
+        buttons: MessageDialog.Yes | MessageDialog.No
+
+        onAccepted: {
+            const error = chatModel.clearAllMessages()
+
+            if (error.length > 0) {
+                errorDialog.text = error
+                errorDialog.open()
+            }
+        }
+    }
+
+    Action {
+        id: clearAllMessagesAction
+        text: qsTr("Clear all imported messages")
+        onTriggered: clearAllMessagesConfirmDialog.open()
     }
 
     Action {
@@ -124,6 +178,14 @@ ApplicationWindow {
 
                         MenuItem {
                             action: openConfigAction
+                        }
+
+                        MenuItem {
+                            action: importFolderAction
+                        }
+
+                        MenuItem {
+                            action: clearAllMessagesAction
                         }
 
                         MenuItem {

@@ -1,10 +1,54 @@
 #include <QGuiApplication>
 #include <QClipboard>
 #include <QSqlQuery>
+#include <QSqlError>
+#include <QUrl>
 
 #include "history_search_proxy.hpp"
+#include "messenger.hpp"
+#include "database.hpp"
 
 namespace qronicle {
+
+QStringList HistorySearchProxy::getAllMessengerIds() const {
+    return m_messengers.keys();
+}
+
+QString HistorySearchProxy::importMessengerFolder(const QString &messengerId, const QString &dirUrl) {
+    auto it = m_messengers.find(messengerId);
+
+    if (it != m_messengers.end()) {
+        const QString dirPath = QUrl(dirUrl).toLocalFile();
+
+        qDebug() << "Importing" << messengerId << "from" << dirUrl;
+
+        auto messages = it.value()->loadDirectories(QStringList(dirPath));
+
+        qDebug() << "Importing" << messages.size() << "messages from" << dirPath;
+
+        m_database->saveMessages(messages);
+
+        auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+        if (sqlModel != nullptr) {
+            sqlModel->select();
+        }
+    } else {
+        return QObject::tr("Unknown messenger with ID %1").arg(messengerId);
+    }
+
+    return QString();
+}
+
+QString HistorySearchProxy::clearAllMessages() {
+    m_database->removeDatabaseFile();
+
+    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
+    if (sqlModel != nullptr) {
+        sqlModel->select();
+    }
+
+    return QString();
+}
 
 void HistorySearchProxy::copyToClipboard(const QString &text) {
     QGuiApplication::clipboard()->setText(text);
@@ -24,7 +68,6 @@ int HistorySearchProxy::findIndexById(QVariant targetId) {
 }
 
 int HistorySearchProxy::getUnfilteredIndex(int currentProxyRow) {
-    // Mappt den sichtbaren Index (Proxy) auf den echten Index (SQL-Model)
     QModelIndex proxyIdx = index(currentProxyRow, 0);
     QModelIndex sourceIdx = mapToSource(proxyIdx);
     return sourceIdx.row();
@@ -118,7 +161,6 @@ int HistorySearchProxy::totalCount() const {
     auto *sqlModel = qobject_cast<QSqlTableModel*>(sourceModel());
     if (!sqlModel) return 0;
 
-    // Wir fragen SQLite direkt nach der echten Anzahl aller Zeilen
     QSqlQuery query("SELECT COUNT(*) FROM messages", sqlModel->database());
     if (query.next()) {
         return query.value(0).toInt();
@@ -130,12 +172,10 @@ int HistorySearchProxy::filteredCount() const {
     auto *sqlModel = qobject_cast<QSqlTableModel*>(sourceModel());
     if (!sqlModel) return 0;
 
-    // Wenn kein Filter aktiv ist, ist filtered == total
     if (sqlModel->filter().isEmpty()) {
         return totalCount();
     }
 
-    // Wenn ein Filter aktiv ist, zählen wir die Treffer mit der aktuellen WHERE-Klausel
     QString sql = QString("SELECT COUNT(*) FROM messages WHERE %1").arg(sqlModel->filter());
     QSqlQuery query(sql, sqlModel->database());
     if (query.next()) {
@@ -156,16 +196,13 @@ QString HistorySearchProxy::dateRange() const {
                     sqlModel->database());
 
     if (query.next() && !query.value(0).isNull()) {
-        // 1. Aus SQLite (ISO-String) in QDateTime wandeln
         QDateTime start = QDateTime::fromString(query.value(0).toString(), Qt::ISODate);
         QDateTime end = QDateTime::fromString(query.value(1).toString(), Qt::ISODate);
 
-        // 2. QLocale nutzen (formatiert automatisch nach Landessprache des Nutzers)
         QLocale locale;
         QString startStr = locale.toString(start.toLocalTime(), QLocale::ShortFormat);
         QString endStr = locale.toString(end.toLocalTime(), QLocale::ShortFormat);
 
-        // 3. Übersetzbar zurückgeben
         return tr("%1 - %2", "Date range from - to")
             .arg(startStr)
             .arg(endStr);
@@ -190,15 +227,11 @@ void HistorySearchProxy::triggerFilter() {
         );
     }
 
-    // Invalidate ist hier nicht mehr für die Zeilenprüfung nötig,
-    // aber wir emittieren das Signal für die UI.
     emit filterChanged();
 }
 
-// WICHTIG: Die C++ Filterung ausschalten
+// Important: Disable C++ filtering.
 bool HistorySearchProxy::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
-    // Da das SQL-Model nur noch Zeilen liefert, die dem Filter entsprechen,
-    // lassen wir hier einfach alles durch (true).
     return true;
 }
 

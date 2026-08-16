@@ -2,10 +2,14 @@
 #define QRONICLE_HISTORY_SEARCH_PROXY_HPP
 
 #include <QSortFilterProxyModel>
+#include <QMap>
 
 #include "history_model.hpp"
 
 namespace qronicle {
+
+class Messenger;
+class Database;
 
 // Faster searches in GUI without using regexs.
 class HistorySearchProxy : public QSortFilterProxyModel {
@@ -29,6 +33,13 @@ class HistorySearchProxy : public QSortFilterProxyModel {
     Q_PROPERTY(QString dateRange READ dateRange NOTIFY filterChanged)
 
 public:
+    typedef QMap<QString, Messenger*> Messengers;
+
+    Q_INVOKABLE QStringList getAllMessengerIds() const;
+    Q_INVOKABLE QString importMessengerFolder(const QString &messengerId, const QString &dirUrl);
+
+    Q_INVOKABLE QString clearAllMessages();
+
     Q_INVOKABLE void copyToClipboard(const QString &text);
     Q_INVOKABLE int findIndexById(QVariant targetId);
     Q_INVOKABLE int getUnfilteredIndex(int currentProxyRow);
@@ -157,6 +168,14 @@ public:
         triggerFilter();
     }
 
+    void setMessengers(Messengers messengers) {
+        m_messengers = messengers;
+    }
+
+    void setDatabase(Database *database) {
+        m_database = database;
+    }
+
 signals:
     void filterFilePathChanged();
     void filterMessageChanged();
@@ -185,6 +204,9 @@ private:
     QString m_filterProtocol;
     QDateTime m_filterFrom;
     QDateTime m_filterTo;
+
+    Messengers m_messengers;
+    Database *m_database;
 
     void triggerFilter();
 };
