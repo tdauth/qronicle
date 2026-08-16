@@ -4,15 +4,12 @@ sudo apt install \
   qt6-base-dev \
   qt6-declarative-dev \
   qt6-svg-dev \
-  qt6-base-private-dev \
-  qt6-declarative-private-dev \
-  libqt6quickwindow6-dev \
   qt6-tools-dev \
   qt6-l10n-tools \
-  qt6-languageserver-dev \
   qml-qt6 \
-  qml6-module-qtquick-templateses \
-  qml6-module-qtquick-window
+  qml6-module-qtquick-controls \
+  qml6-module-qtquick-templates \
+  qml6-module-qtquick-dialogs
 
 # Clean build
 rm -rf ../build/
