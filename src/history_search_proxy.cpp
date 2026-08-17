@@ -28,10 +28,7 @@ QString HistorySearchProxy::importMessengerFolder(const QString &messengerId, co
 
         m_database->saveMessages(messages);
 
-        auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
-        if (sqlModel != nullptr) {
-            sqlModel->select();
-        }
+        triggerFilter();
     } else {
         return QObject::tr("Unknown messenger with ID %1").arg(messengerId);
     }
@@ -40,12 +37,9 @@ QString HistorySearchProxy::importMessengerFolder(const QString &messengerId, co
 }
 
 QString HistorySearchProxy::clearAllMessages() {
-    m_database->removeDatabaseFile();
+    m_database->clearAllMessages();
 
-    auto *sqlModel = qobject_cast<HistoryModel*>(sourceModel());
-    if (sqlModel != nullptr) {
-        sqlModel->select();
-    }
+    triggerFilter();
 
     return QString();
 }

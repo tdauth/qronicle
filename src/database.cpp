@@ -6,7 +6,7 @@
 #include "database.hpp"
 
 namespace qronicle {
- 
+
 Database::Database() {
     initDb();
 }
@@ -21,7 +21,7 @@ void Database::removeDatabaseFile() {
     if (m_db.isOpen()) {
         m_db.close();
     }
-    
+
     QString dbPath = m_db.databaseName();
     QString connectionName = m_db.connectionName();
 
@@ -31,7 +31,7 @@ void Database::removeDatabaseFile() {
 
     if (QFile::remove(dbPath)) {
         qDebug() << "Sucessfully deleted database.";
-        
+
         initDb();
     } else {
         qDebug() << "Deleting database failed. Maybe database is still locked?";
@@ -48,15 +48,15 @@ void Database::saveMessages(const Messenger::Messages &messages) {
     QSqlQuery query(m_db);
     query.prepare(R"(
         INSERT INTO messages (
-            filePath, lineNumber, sender, senderNick, 
-            receiver, receiverNick, message, messageHtml, 
+            filePath, lineNumber, sender, senderNick,
+            receiver, receiverNick, message, messageHtml,
             created_at, messenger, protocol, status, "out", "type", channel
         ) VALUES (
             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
     )");
 
-    QVariantList fPaths, lines, snds, sndNicks, rcvs, rcvNicks, 
+    QVariantList fPaths, lines, snds, sndNicks, rcvs, rcvNicks,
                  msgs, msgHtmls, times, mngrs, protos, stats, out, type, channel;
 
     for (const auto &m : messages) {
@@ -145,9 +145,40 @@ void Database::applyAliases(QMap<QString, QString> &&aliases) {
     }
 }
 
+void Database::clearAllMessages() {
+    qDebug() << "Clearing all messages from database...";
+
+    if (!m_db.isOpen()) {
+        qDebug() << "Database error: Connection is not open.";
+        return;
+    }
+
+    QSqlQuery pragmaQuery(m_db);
+    // 1. Schreibt extrem schnell in den RAM-Cache statt synchron auf die langsame Festplatte zu warten
+    pragmaQuery.exec("PRAGMA synchronous = OFF");
+    // 2. Nutzt das moderne WAL-Journal, welches Löschvorgänge massiv beschleunigt
+    pragmaQuery.exec("PRAGMA journal_mode = WAL");
+
+    m_db.transaction();
+    QSqlQuery query(m_db);
+
+    query.prepare("DELETE FROM messages");
+
+    if (!query.exec()) {
+        qDebug() << "Clear Messages Error:" << query.lastError().text();
+        m_db.rollback();
+    } else {
+        m_db.commit();
+        qDebug() << "All messages successfully cleared from database.";
+    }
+
+    // Sicherer Standardzustand für normale App-Nutzung wiederherstellen
+    pragmaQuery.exec("PRAGMA synchronous = FULL");
+}
+
 void Database::initDb() {
     m_db = QSqlDatabase::addDatabase("QSQLITE", "qronicle");
-    
+
     QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     QDir configDir;
     if (!configDir.exists(configPath)) {
@@ -172,7 +203,7 @@ void Database::initDb() {
         file.close();
 
         // 2. Befehle am Semikolon trennen
-        // Hinweis: Das ist eine einfache Methode. Komplexere Skripte mit 
+        // Hinweis: Das ist eine einfache Methode. Komplexere Skripte mit
         // Triggern benötigen einen robusteren Parser.
         QStringList queries = sqlContent.split(";", Qt::SkipEmptyParts);
 
@@ -199,5 +230,5 @@ void Database::initDb() {
         qDebug() << "Database connection failed!";
     }
 }
-    
+
 }

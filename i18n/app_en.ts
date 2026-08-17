@@ -45,27 +45,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportMessagesDialog.qml" line="31"/>
+        <location filename="../src/ImportMessagesDialog.qml" line="30"/>
         <source>Select messages directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportMessagesDialog.qml" line="44"/>
+        <location filename="../src/ImportMessagesDialog.qml" line="43"/>
         <source>Folder Location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportMessagesDialog.qml" line="51"/>
+        <location filename="../src/ImportMessagesDialog.qml" line="50"/>
         <source>No folder selected...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportMessagesDialog.qml" line="56"/>
+        <location filename="../src/ImportMessagesDialog.qml" line="55"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportMessagesDialog.qml" line="62"/>
+        <location filename="../src/ImportMessagesDialog.qml" line="61"/>
         <source>Messenger:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -319,7 +319,7 @@ Alle rights reserved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="36"/>
+        <location filename="../src/history_search_proxy.cpp" line="33"/>
         <source>Unknown messenger with ID %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -327,13 +327,13 @@ Alle rights reserved.</source>
 <context>
     <name>qronicle::HistorySearchProxy</name>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="206"/>
+        <location filename="../src/history_search_proxy.cpp" line="200"/>
         <source>%1 - %2</source>
         <comment>Date range from - to</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history_search_proxy.cpp" line="210"/>
+        <location filename="../src/history_search_proxy.cpp" line="204"/>
         <source>-</source>
         <comment>No date available</comment>
         <translation type="unfinished"></translation>

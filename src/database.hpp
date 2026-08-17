@@ -16,6 +16,7 @@ class Database {
         void removeDatabaseFile();
         void saveMessages(const Messenger::Messages &messages);
         void applyAliases(QMap<QString, QString> &&aliases);
+        void clearAllMessages();
 
         QSqlDatabase db() const { return m_db; }
 
