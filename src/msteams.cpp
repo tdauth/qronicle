@@ -58,10 +58,10 @@ Messenger::Messages MsTeams::loadFile(const QString &filePath) {
                             QJsonObject message = v2.toObject();
 
                             if (message.contains("messagetype")) {
-                                QString messagetype = message.value("messagetype").toString();
+                                QString messageType = message.value("messagetype").toString();
 
                                 // ignore other chat events for now
-                                if (messagetype == "RichText") {
+                                if (messageType.startsWith("RichText") || messageType.startsWith("Text")) { // RichText/Html
                                     Message msg;
                                     msg.setFilePath(absoluteFilePath);
                                     msg.setProtocol("MS Teams");
