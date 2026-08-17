@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -14,6 +15,44 @@ namespace qronicle {
 
 QString MsTeams::id() const {
     return "msteams";
+}
+
+namespace {
+
+/*
+<URIObject type=\"Picture.1\" uri=\"https://api.asm.skype.com/v1/objects/filename\" url_thumbnail=\"https://api.asm.skype.com/v1/objects/filename/views/imgt1\">To view this shared photo, go to: <a href=\"https://login.skype.com/login/sso?go=webclient.xmm&amp;pic=filename\">https://login.skype.com/login/sso?go=webclient.xmm&amp;pic=filename</a><OriginalName v=\"test.jpg\"/><meta type=\"photo\" originalName=\"test.jpg\"/></URIObject>
+*/
+QString parseSkypePhotoToCustomLink(const QString &input, const QString &path, const QHash<QString, QString> &media) {
+    static const QRegularExpression idRegex("uri=\"https://api\\.asm\\.skype\\.com/v1/objects/([^\"]+)\"");
+    static const QRegularExpression nameRegex("originalName=\"([^\"]+)\"");
+
+    QRegularExpressionMatch idMatch = idRegex.match(input);
+    if (!idMatch.hasMatch()) {
+        return input;
+    }
+
+    QRegularExpressionMatch nameMatch = nameRegex.match(input);
+
+    QStringView objectId = idMatch.capturedView(1);
+    QStringView fileName = nameMatch.hasMatch() ? nameMatch.capturedView(1) : QStringView(u"Shared Photo");
+    QStringView nameStr = fileName;
+
+    QString baseName = QDir(path).absoluteFilePath(objectId.toString());
+    QString filePath = baseName;
+
+    auto it = media.find(baseName);
+
+    if (it != media.end()) {
+        filePath = it.value();
+    } else {
+        //qWarning() << "Missing media for base name" << baseName;
+    }
+
+    return QString("<a href=\"file://%1\">%2</a>")
+        .arg(filePath)
+        .arg(nameStr);
+}
+
 }
 
 Messenger::Messages MsTeams::loadFile(const QString &filePath) {
@@ -29,6 +68,16 @@ Messenger::Messages MsTeams::loadFile(const QString &filePath) {
     QFileInfo fileInfo(filePath);
     QString absoluteFilePath = fileInfo.absoluteFilePath();
     QString absoluteDirPath = fileInfo.absolutePath();
+
+    QHash<QString, QString> media;
+    QString mediaDir = QDir(absoluteDirPath).absoluteFilePath("media");
+    QDirIterator dirIt(mediaDir, QStringList() << "*", QDir::Files, QDirIterator::Subdirectories);
+    while (dirIt.hasNext()) {
+        QString mediaFilePath = dirIt.next();
+        QString mediaBaseName = QFileInfo(mediaFilePath).baseName();
+        QString absolutePathWithoutExtension = QDir(mediaDir).absoluteFilePath(mediaBaseName);
+        media.insert(absolutePathWithoutExtension, mediaFilePath);
+    }
 
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
@@ -141,7 +190,7 @@ Messenger::Messages MsTeams::loadFile(const QString &filePath) {
                                     if (message.contains("content")) {
                                         QString content = message.value("content").toString();
                                         msg.setContent(content);
-                                        msg.setContentHtml(formatHtml(content));
+                                        msg.setContentHtml(parseSkypePhotoToCustomLink(content, mediaDir, media));
                                     }
 
                                     messages.append(msg);

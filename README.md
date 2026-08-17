@@ -534,7 +534,8 @@ vcard XML file:
 ### Microsoft Teams
 
 - <https://teams.live.com/dataexport>: Select Chat History and Media and submit a request. You have to wait until a download link appears for the request on this page.
-- It contains the file `messages.json`:
+- Some media is stored in your OneDrive space in a folder like "Microsoft Teams-Chatdateien" and some media might be lost.
+- The export of your chat history and media contains the file `messages.json`:
 
 ```json
 {
